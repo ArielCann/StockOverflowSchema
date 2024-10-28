@@ -1,0 +1,17 @@
+{
+  "name": "stockoverflowschema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Schemas.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArielCann/StockOverflowSchema.git"
+  },
+  "private": true,
+  "dependencies": {
+    "mongoose": "^8.7.3"
+  }
+}
