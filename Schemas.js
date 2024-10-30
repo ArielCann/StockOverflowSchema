@@ -48,11 +48,11 @@ const userSchema = new Schema({
         type: Date,
         required: true
     },
+    followedStocks: [stockSchema]
 })
 const stockSchema = new Schema({
-    UserID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+    Name: {
+        type: String,
         required: true
     },
     Ticker: {
