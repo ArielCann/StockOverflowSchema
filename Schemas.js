@@ -48,7 +48,9 @@ const userSchema = new Schema({
         type: Date,
         required: true
     },
-    followedStocks: [stockSchema]
+    followedStocks: [stockSchema],
+    likedMessages: [{type: mongoose.Schema.Types.ObjectId, ref: 'Message'}],
+    dislikedMessages: [{type: mongoose.Schema.Types.ObjectId, ref: 'Message'}],
 })
 const stockSchema = new Schema({
     Name: {
