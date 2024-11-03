@@ -23,6 +23,10 @@ const userSchema = new Schema({
         required: true
     },
     followedStocks: [stockSchema],
+    recieveEmailNotifications: Boolean,
+    recieveSMSNotifications: Boolean,
+    recieveResponseNotifications: Boolean,
+    recieveLikedNotifications: Boolean,
     likedMessages: [{type: mongoose.Schema.Types.ObjectId, ref: 'Message'}],
     dislikedMessages: [{type: mongoose.Schema.Types.ObjectId, ref: 'Message'}],
 })
