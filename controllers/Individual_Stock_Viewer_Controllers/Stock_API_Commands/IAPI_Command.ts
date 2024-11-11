@@ -1,3 +1,3 @@
 export interface IAPI_Command {
-    get_data(): Promise<any>
+    get_data(ticker: string): any
 }

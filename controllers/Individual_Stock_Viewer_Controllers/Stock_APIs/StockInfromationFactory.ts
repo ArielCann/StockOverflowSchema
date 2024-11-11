@@ -3,9 +3,9 @@ import { Shwab } from "./Shwab";
 import { WallStreetJournal } from "./WallStreetJournal";
 import { YahooFinance } from "./YahooFinance";
 
-export class AbstractStockAPIInformationFactory {
+export class StockAPIInformationFactory {
 
-    public getAPIInstance(api: string): IStockAPIInformation { 
+    public static getAPIInstance(api: string): IStockAPIInformation { 
         if (api == 'Yahoo Finance') {
             return new YahooFinance();
         }

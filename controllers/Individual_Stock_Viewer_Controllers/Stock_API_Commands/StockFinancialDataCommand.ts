@@ -1,8 +1,18 @@
+import { IStockAPIInformation } from "../Stock_APIs/IStockInformation";
+import { StockAPIInformationFactory } from "../Stock_APIs/StockInfromationFactory";
 import { IAPI_Command } from "./IAPI_Command";
+/**
+ * this command is responsible for getting the stock information based of what command the backend wants to get 
+ */
+export class StockDataCommand implements IAPI_Command{
+    
+    private stockAPI: IStockAPIInformation;
 
-export class StockFinancialDataCommand implements IAPI_Command{
-    get_data(): Promise<any> {
-        throw new Error("Method not implemented.");
+    constructor(stockAPIType: string) {
+        this.stockAPI = StockAPIInformationFactory.getAPIInstance(stockAPIType);
+    }
+    get_data(ticker: string): any {
+        return this.stockAPI.getStockData(ticker);
     }
     
 }
