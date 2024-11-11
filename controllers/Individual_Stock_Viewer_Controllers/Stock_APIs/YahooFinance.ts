@@ -7,9 +7,11 @@ export class YahooFinance implements IStockAPIInformation{
     constructor () {
         dotenv.config();
     }
+    
     getStockData(ticker: string) {
-        throw new Error('Method not implemented.');
+        return this.getNews(ticker);
     }
+
     public async getNews(ticker: string) {
         const options = {
             method: 'GET',

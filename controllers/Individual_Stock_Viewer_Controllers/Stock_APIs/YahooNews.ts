@@ -1,0 +1,39 @@
+import axios from 'axios';
+import { IStockAPIInformation } from './IStockInformation';
+import * as dotenv from 'dotenv';
+/**
+ * this class is responsible for getting all the news for a specific stock 
+ */
+export class YahooNews implements IStockAPIInformation{
+
+    constructor () {
+        dotenv.config();
+    }
+
+    getStockData(ticker: string) {
+        return this.getNews(ticker);
+    }
+
+    public async getNews(ticker: string) {
+        const options = {
+            method: 'GET',
+            url: 'https://yahoo-finance166.p.rapidapi.com/api/news/list-by-symbol',
+            params: {
+              s: ticker,
+              region: 'US',
+              snippetCount: '500'
+            },
+            headers: {
+              'x-rapidapi-key': process.env.RAPID_API_KEY,
+              'x-rapidapi-host': 'yahoo-finance166.p.rapidapi.com'
+            }
+          };
+          
+          try {
+              const response = await axios.request(options);
+              console.log(response.data);
+          } catch (error) {
+              console.error(error);
+          }
+    }
+}
