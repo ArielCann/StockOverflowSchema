@@ -1,5 +1,5 @@
 import { IStockAPIInformation } from "../Stock_APIs/IStockInformation";
-import { StockAPIInformationFactory } from "../Stock_APIs/StockInfromationFactory";
+import { StockAPIInformationFactory } from "../Stock_APIs/StockInformationFactory";
 import { IAPI_Command } from "./IAPI_Command";
 /**
  * this command is responsible for getting the stock information based of what command the backend wants to get 
