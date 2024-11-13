@@ -1,32 +1,28 @@
 import axios from 'axios';
 import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
+/**
+ * 
+ */
+export class YahooEarnings implements IIndividualStockPageAPIInformation{
 
-export class WallStreetJournal implements IIndividualStockPageAPIInformation{
-
-    constructor() {
+    constructor () {
         dotenv.config();
     }
     getStockData(ticker: string) {
-        this.getStockTimestamp(ticker);
+        return this.getEarnings(ticker);
     }
-
-    /**
-     * this method is responsible for getting the stock data by timestamp
-     * @param ticker 
-     */
-    public async getStockTimestamp(ticker: string) {
-        //source: 
+    public async getEarnings(ticker: string) {
         const options = {
             method: 'GET',
-            url: 'https://wall-street-journal.p.rapidapi.com/api/v1/getTimeSeries',
+            url: 'https://yahoo-finance15.p.rapidapi.com/api/v1/markets/stock/modules',
             params: {
-              chartingSymbol: ticker,
-              timeFrame: '1d'
+              ticker: ticker,
+              module: 'earnings'
             },
             headers: {
               'x-rapidapi-key': process.env.RAPID_API_KEY,
-              'x-rapidapi-host': 'wall-street-journal.p.rapidapi.com'
+              'x-rapidapi-host': 'yahoo-finance15.p.rapidapi.com'
             }
           };
           
@@ -37,4 +33,5 @@ export class WallStreetJournal implements IIndividualStockPageAPIInformation{
               console.error(error);
           }
     }
+
 }

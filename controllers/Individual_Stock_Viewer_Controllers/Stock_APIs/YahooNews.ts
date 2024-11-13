@@ -1,32 +1,31 @@
 import axios from 'axios';
 import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
+/**
+ * this class is responsible for getting all the news for a specific stock 
+ */
+export class YahooNews implements IIndividualStockPageAPIInformation{
 
-export class WallStreetJournal implements IIndividualStockPageAPIInformation{
-
-    constructor() {
+    constructor () {
         dotenv.config();
     }
+
     getStockData(ticker: string) {
-        this.getStockTimestamp(ticker);
+        return this.getNews(ticker);
     }
 
-    /**
-     * this method is responsible for getting the stock data by timestamp
-     * @param ticker 
-     */
-    public async getStockTimestamp(ticker: string) {
-        //source: 
+    public async getNews(ticker: string) {
         const options = {
             method: 'GET',
-            url: 'https://wall-street-journal.p.rapidapi.com/api/v1/getTimeSeries',
+            url: 'https://yahoo-finance166.p.rapidapi.com/api/news/list-by-symbol',
             params: {
-              chartingSymbol: ticker,
-              timeFrame: '1d'
+              s: ticker,
+              region: 'US',
+              snippetCount: '500'
             },
             headers: {
               'x-rapidapi-key': process.env.RAPID_API_KEY,
-              'x-rapidapi-host': 'wall-street-journal.p.rapidapi.com'
+              'x-rapidapi-host': 'yahoo-finance166.p.rapidapi.com'
             }
           };
           

@@ -14,7 +14,8 @@
   "dependencies": {
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "mongoose": "^8.7.3"
+    "mongoose": "^8.7.3",
+    "worker-thread": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.8.4"

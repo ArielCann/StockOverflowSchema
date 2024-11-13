@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
 
-export class YahooFinance implements IStockAPIInformation{
+export class YahooFinance implements IIndividualStockPageAPIInformation{
 
     constructor () {
         dotenv.config();
     }
+    
     getStockData(ticker: string) {
-        throw new Error('Method not implemented.');
+        return this.getNews(ticker);
     }
+
     public async getNews(ticker: string) {
         const options = {
             method: 'GET',
