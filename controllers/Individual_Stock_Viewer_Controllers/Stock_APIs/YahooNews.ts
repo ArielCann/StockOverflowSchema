@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
 /**
  * this class is responsible for getting all the news for a specific stock 
  */
-export class YahooNews implements IStockAPIInformation{
+export class YahooNews implements IIndividualStockPageAPIInformation{
 
     constructor () {
         dotenv.config();

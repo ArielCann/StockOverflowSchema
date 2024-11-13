@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
 
-export class YahooFinance implements IStockAPIInformation{
+export class YahooFinance implements IIndividualStockPageAPIInformation{
 
     constructor () {
         dotenv.config();

@@ -1,4 +1,4 @@
-import { IStockAPIInformation } from "./IStockInformation";
+import { IIndividualStockPageAPIInformation } from "./IIndividualStockPageAPIInformation";
 import { Shwab } from "./Shwab";
 import { WallStreetJournal } from "./WallStreetJournal";
 import { YahooEarnings } from "./YahooEarnings";
@@ -8,7 +8,7 @@ import { YahooNews } from "./YahooNews";
 
 export class StockAPIInformationFactory {
 
-    public static getAPIInstance(api: string): IStockAPIInformation { 
+    public getAPIInstance(api: string): IIndividualStockPageAPIInformation { 
         if (api == 'YahooEarnings') {
             return new YahooEarnings();
         }

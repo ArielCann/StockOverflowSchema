@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
+import { ITrendingStocksPageAPIInformation } from './ITrendingStocksPageAPIInformation';
 /**
  * this class is responsible for getting data about stocks from the Shwab API
  */
-export class Shwab implements IStockAPIInformation{
+export class Shwab implements IIndividualStockPageAPIInformation, ITrendingStocksPageAPIInformation {
     constructor () {
         dotenv.config();
     }
@@ -34,7 +35,7 @@ export class Shwab implements IStockAPIInformation{
      * get the current trending stocks based on the trending category 
      * @param trendingCategory the different types of Trending Categories that can be used
      */
-    public async getStockMovers(trendingCategory: string) {
+    public async get_trending_data(trendingCategory: string) {
         const options = {
         method: 'GET',
         url: 'https://schwab.p.rapidapi.com/market/v2/get-movers',

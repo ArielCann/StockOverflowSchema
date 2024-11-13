@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
 
-export class WallStreetJournal implements IStockAPIInformation{
+export class WallStreetJournal implements IIndividualStockPageAPIInformation{
 
     constructor() {
         dotenv.config();

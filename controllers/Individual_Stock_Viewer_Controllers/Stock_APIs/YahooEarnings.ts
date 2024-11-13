@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { IStockAPIInformation } from './IStockInformation';
+import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
 /**
  * 
  */
-export class YahooEarnings implements IStockAPIInformation{
+export class YahooEarnings implements IIndividualStockPageAPIInformation{
 
     constructor () {
         dotenv.config();
