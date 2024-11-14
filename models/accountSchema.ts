@@ -44,11 +44,10 @@ accountSchema.methods.addFollowedStock = function(name: String,ticker:String): b
     return true;
 }
 /**
- * Makes a user stop following the specified
+ * Makes a user stop following the specified stock
  * @param name the name of the stock
- * @param ticker the ticker of the stock
  */
-accountSchema.methods.removeFollowedStock = function(name: String,ticker:String): boolean{
+accountSchema.methods.removeFollowedStock = function(name: String): boolean{
     if(this.followedStocks.has(name)){
         this.followedStocks.delete(name);
         return true;
