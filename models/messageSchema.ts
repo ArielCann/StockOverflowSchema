@@ -5,11 +5,11 @@ const  messageSchema = new mongoose.Schema({
         required: true,
     },
     Text: String,
-    AccountID: {
+    Account: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account',
     },
-    Date_created: {
+    Date_Created: {
         type: Date,
         required: true
     },
