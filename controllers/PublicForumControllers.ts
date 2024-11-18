@@ -9,6 +9,11 @@ exports.postResponse = (req: Request, res: Response) => {
     var msg = Message.create({
         text: text,
         AccountID: req.session.AccountID,
+        IsQuery: false,
         Date_Created: new Date(),
+        RepliedTo: req.body.Question,
+        Replies: [],
+        Likes: 0,
+        Dislikes: 0
     });
 }
