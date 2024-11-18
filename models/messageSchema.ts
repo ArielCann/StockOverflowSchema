@@ -23,9 +23,29 @@ const  messageSchema = new mongoose.Schema({
 })
 messageSchema.methods.like = function(){
     this.Likes += 1;
+    this.save();
 }
+messageSchema.methods.unlike = function(){
+    this.Likes -= 1;
+    this.save();
+}
+
 messageSchema.methods.dislike = function(){
     this.Dislikes += 1;
+    this.save();
+}
+messageSchema.methods.un_dislike = function(){
+    this.Dislikes -= 1;
+    this.save();
+}
+messageSchema.methods.addReply = function(reply_id: mongoose.Schema.Types.ObjectId){
+    var oldSize = this.Replies.length;
+    this.Replies.addToSet([reply_id]);
+    if(this.Replies.length > oldSize){
+        this.save();
+        return true;
+    }
+    return false;
 }
 const Message = mongoose.model("Message", messageSchema);
 export default Message;
