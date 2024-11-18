@@ -5,7 +5,7 @@ import { ExpressValidator } from 'express-validator';
 const router = express.Router();
 router.get('/question_responses');
 router.post('/question');
-router.post('/response');
+router.post('/response/:text');
 router.post('/comment')
 //individual
 
