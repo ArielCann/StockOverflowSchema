@@ -4,7 +4,7 @@ const accountSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    email: {
+    Email: {
         type:String,
         required:true
     },
@@ -21,21 +21,21 @@ const accountSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    followedStocks: {
+    FollowedStocks: {
         type: Map,
         of: String
     },
-    recieveEmailNotifications: Boolean,
-    recieveSMSNotifications: Boolean,
-    recieveResponseNotifications: Boolean,
-    recieveLikedNotifications: Boolean,
+    RecieveEmailNotifications: Boolean,
+    RecieveSMSNotifications: Boolean,
+    RecieveResponseNotifications: Boolean,
+    RecieveLikedNotifications: Boolean,
     LikedDislikedMessages: {
         type: Map,
         of: Boolean
     }
 });
 
-const User = mongoose.model("Account", accountSchema);
+const Account = mongoose.model("Account", accountSchema);
 accountSchema.methods.addFollowedStock = function(name: String,ticker:String): boolean{
     if(this.followedStocks.has(name)){
         return false;
@@ -54,4 +54,4 @@ accountSchema.methods.removeFollowedStock = function(name: String): boolean{
     }
     return false;
 }
-export default User;
+export default Account;

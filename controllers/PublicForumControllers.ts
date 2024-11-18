@@ -3,17 +3,19 @@ import express, { Request, Response } from "express";
 import session from "express-session";
 import Message from "../models/messageSchema";
 import Account from "../models/accountSchema";
-exports.postResponse = (req: Request, res: Response) => {
-    const user = Account.findById(req.session.AccountID);
-    var text = req.body.text;
-    var msg = Message.create({
+exports.postResponse = async (req: Request, res: Response) => {
+    const account = await Account.findOne({AccountID: req.session.AccountID});
+    const text = req.body.text;
+    const question = await Message.findOne({MessageID: req.body.QuestionID})
+    var msg = await Message.create({
         text: text,
-        AccountID: req.session.AccountID,
+        Account: account?._id,
         IsQuery: false,
         Date_Created: new Date(),
-        RepliedTo: req.body.Question,
+        RepliedTo: question?._id,
         Replies: [],
         Likes: 0,
         Dislikes: 0
     });
+    msg.save();
 }
