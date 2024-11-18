@@ -4,9 +4,9 @@ import session from "express-session";
 import Message from "../models/messageSchema";
 import Account from "../models/accountSchema";
 exports.postResponse = async (req: Request, res: Response) => {
-    const account = await Account.findOne({AccountID: req.session.AccountID});
+    const account = await Account.findById(req.body.AccountID);
     const text = req.body.text;
-    const question = await Message.findOne({MessageID: req.body.QuestionID})
+    const question = await Message.findById(req.body.QuestionID)
     const msg = await Message.create({
         text: text,
         Account: account?._id,
