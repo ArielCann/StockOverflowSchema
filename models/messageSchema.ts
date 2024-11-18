@@ -5,9 +5,9 @@ const  messageSchema = new mongoose.Schema({
         required: true,
     },
     Text: String,
-    UserID: {
+    AccountID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Account',
     },
     Date_created: {
         type: Date,
