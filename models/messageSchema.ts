@@ -15,7 +15,7 @@ const  messageSchema = new mongoose.Schema({
     },
     Likes: Number,
     Dislikes: Number,
-    IsQuery: {
+    IsQuestion: {
         type: Boolean,
         required: true
     },
