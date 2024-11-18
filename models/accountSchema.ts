@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
 const accountSchema = new mongoose.Schema({
-    AccountID: {
-        type: Number,
-        required: true
-    },
     Email: {
         type:String,
         required:true

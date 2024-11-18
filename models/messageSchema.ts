@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
 const  messageSchema = new mongoose.Schema({
-    MessageID: {
-        type: Number,
-        required: true,
-    },
     Text: String,
     Account: {
         type: mongoose.Schema.Types.ObjectId,
