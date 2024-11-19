@@ -10,7 +10,7 @@ export class YahooNews implements IIndividualStockPageAPIInformation{
         dotenv.config();
     }
 
-    getStockData(ticker: string) {
+    getStockData(ticker: string): Promise<any> {
         return this.getNews(ticker);
     }
 
@@ -31,9 +31,11 @@ export class YahooNews implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
-          } catch (error) {
-              console.error(error);
-          }
+            //   console.log(response.data);
+              return {'Name': 'News', 'Data': response.data};
+            } catch (error) {
+                console.error(error);
+                return {'msg': 'Cannot get the News data'}
+            }
     }
 }

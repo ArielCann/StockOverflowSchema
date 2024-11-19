@@ -9,7 +9,7 @@ export class YahooEarnings implements IIndividualStockPageAPIInformation{
     constructor () {
         dotenv.config();
     }
-    getStockData(ticker: string) {
+    getStockData(ticker: string): Promise<any> {
         return this.getEarnings(ticker);
     }
     public async getEarnings(ticker: string) {
@@ -28,9 +28,11 @@ export class YahooEarnings implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
+            //   console.log(response.data);
+            return {'Name': 'Earnings', 'Data': response.data};
           } catch (error) {
               console.error(error);
+              return {'msg': 'cannot get earnings'}
           }
     }
 

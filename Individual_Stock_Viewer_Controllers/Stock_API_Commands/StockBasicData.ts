@@ -7,7 +7,7 @@ import { IAPI_Command } from "./IAPI_Command";
 /**
  * this class represents a command to get the basic stock information 
  */
-export class StockTrendingCommand implements IAPI_Command {
+export class StockBasicCommand implements IAPI_Command {
 
     private basicStockAPI : IBasicStockDataAPI;
 

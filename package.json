@@ -18,6 +18,7 @@
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^5.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
@@ -30,6 +31,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/connect-flash": "^0.0.40",
     "@types/connect-mongodb-session": "^2.4.7",
+    "@types/cors": "^2.8.17",
     "@types/express-session": "^1.18.0",
     "@types/node": "^22.8.4",
     "typescript": "^5.6.3"

@@ -13,8 +13,11 @@ export class StockDataCommand implements IAPI_Command{
         const factory: StockAPIInformationFactory = AbstractStockAPIFactory.getStockInformationFactory()
         this.stockAPI = factory.getAPIInstance(stockAPIType);
     }
-    get_data(ticker: string): any {
-        return this.stockAPI.getStockData(ticker);
+    async get_data(ticker: string): Promise<any> {
+        const data = await this.stockAPI.getStockData(ticker);
+        // console.log('in the command')
+        // console.log(data);
+        return data;
     }
     
 }

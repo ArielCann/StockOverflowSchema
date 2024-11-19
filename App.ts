@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import flash from 'connect-flash';
 import * as dotenv from 'dotenv';
-
+import cors from 'cors'
 import AuthRoutes from './routes/AuthRoutes';
 import ErrorRoutes from './routes/ErrorRoutes';
 import PublicForumRoutes from './routes/PublicForumRoutes';
@@ -18,6 +18,8 @@ dotenv.config();
 const MongodbStore = MongodbSession(session);
 const app = express();
 //routes
+app.use(cors()); // Enable CORS for React frontend
+app.use(express.json()); // Parse JSON request bodies
 app.use('/auth', AuthRoutes);
 app.use(ErrorRoutes);
 app.use('/public-forum', PublicForumRoutes);
@@ -26,7 +28,7 @@ app.use('/user', UserRoutes);
 
 const dbUrl: string = process.env.DB_CONNECTION_URL ? process.env.DB_CONNECTION_URL : ''
 mongoose.connect(dbUrl).then(result => {
-    app.listen(3000)
+    app.listen(8000)
 }).catch(err => {
     console.log(err)
 })
