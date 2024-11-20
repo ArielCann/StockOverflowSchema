@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
-const  messageSchema = new mongoose.Schema({
+interface IMessage extends Document {
+    Text: string;
+    Account: mongoose.Types.ObjectId;
+    Date_Created: Date;
+    Likes: Number;
+    Dislikes: Number;
+    IsQuestion: Boolean;
+    RepliedTo: mongoose.Types.ObjectId;
+    Replies: Array<mongoose.Types.ObjectId>;
+    like(): Boolean;
+    dislike(): Boolean;
+    unlike(): Boolean;
+    un_dislike(): Boolean;
+    addReply(message: mongoose.Types.ObjectId): Boolean;
+}
+const  messageSchema = new mongoose.Schema<IMessage>({
     Text: String,
     Account: {
         type: mongoose.Schema.Types.ObjectId,
