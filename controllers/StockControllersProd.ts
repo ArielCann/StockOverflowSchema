@@ -1,3 +1,5 @@
+import { resolve } from "path";
+import { Worker } from 'worker_threads';
 import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command";
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
 import { StockDataCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
@@ -45,18 +47,35 @@ export const getBasicStockInformation = async(req: Request<StockTickerParams>, r
         }
     }
 }
-
-export const getIndividualStockViewer = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {   
+/**
+ * 
+ * @param data the type of API and the stock ticker that will be sent to the API 
+ * @returns the stock data
+ */
+function runWorker(data:any): Promise<any> {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker("./Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockWorker.ts", {workerData: data});
+        worker.on('message', resolve);
+        worker.on('error', reject);
+        worker.on('exit', (code) => {
+            if (code !==0) {
+                reject(new Error('Worker stopped with an exit code ' + code))
+            };
+        });
+    });
+}
+export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const responseMap: Map<string, any> = new Map<string, any>();
-        const stockCommand1: IAPI_Command = new StockDataCommand('YahooEarnings');
-        const stockCommand2: IAPI_Command = new StockDataCommand('Shwab');
-        const stockCommand4: IAPI_Command = new StockDataCommand('Yahoo Finance');
-        const stockCommand5: IAPI_Command = new StockDataCommand('Yahoo News');
-        const commands: IAPI_Command[] = [stockCommand1, stockCommand2, stockCommand4, stockCommand5];
-        const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
-        const responses = await Promise.all(promises);
-        responses.forEach(response => {
+        const tasks = [
+            {id: 1, data: {'API': 'YahooEarnings', 'Data': req.params.stockTicker}},
+            {id: 2, data: {'API': 'Shwab', 'Data': req.params.stockTicker}},
+            {id: 3, data: {'API': 'Yahoo Company Info', 'Data': req.params.stockTicker}},
+            {id: 4, data: {'API': 'Yahoo Finance', 'Data': req.params.stockTicker}},
+            {id: 5, data: {'API': 'Yahoo News', 'Data': req.params.stockTicker}}
+        ]
+        const results = await Promise.all(tasks.map(task => runWorker(task)));
+        results.forEach(response => {
             console.log(response)
             responseMap.set(response.Name, response.Data)
         });
@@ -68,8 +87,32 @@ export const getIndividualStockViewer = async (req: Request<StockTickerParams>, 
             res.status(500).send({error: 'Failed to retrieve stock data'})
         }
     }
-
 }
+// export const getIndividualStockViewer = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {   
+//     try {
+//         const responseMap: Map<string, any> = new Map<string, any>();
+//         const stockCommand1: IAPI_Command = new StockDataCommand('YahooEarnings');
+//         const stockCommand2: IAPI_Command = new StockDataCommand('Shwab');
+//         const stockCommand3: IAPI_Command = new StockDataCommand('Yahoo Company Info');
+//         const stockCommand4: IAPI_Command = new StockDataCommand('Yahoo Finance');
+//         const stockCommand5: IAPI_Command = new StockDataCommand('Yahoo News');
+//         const commands: IAPI_Command[] = [stockCommand1, stockCommand2, stockCommand3, stockCommand4, stockCommand5];
+//         const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
+//         const responses = await Promise.all(promises);
+//         responses.forEach(response => {
+//             console.log(response)
+//             responseMap.set(response.Name, response.Data)
+//         });
+//         const responseObject = Object.fromEntries(responseMap);
+//         res.status(200).send(responseObject);
+//     } catch (error) {
+//         console.error(error);
+//         if (!res.headersSent) {
+//             res.status(500).send({error: 'Failed to retrieve stock data'})
+//         }
+//     }
+
+// }
 
 
 

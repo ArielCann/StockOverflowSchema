@@ -25,7 +25,11 @@
     "express-validator": "^7.2.0",
     "mongoose": "^8.7.3",
     "nodemon": "^3.1.7",
-    "worker-thread": "^1.1.0"
+    "worker-threads": "^1.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.7.2",
+    "@types/node": "^22.9.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -33,7 +37,7 @@
     "@types/connect-mongodb-session": "^2.4.7",
     "@types/cors": "^2.8.17",
     "@types/express-session": "^1.18.0",
-    "@types/node": "^22.8.4",
-    "typescript": "^5.6.3"
+    "@types/node": "^22.9.1",
+    "typescript": "^5.7.2"
   }
 }

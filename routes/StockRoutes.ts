@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation } from '../controllers/StockControllerDev';
+import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation } from '../controllers/StockControllersProd';
 
 
 const router = express.Router();

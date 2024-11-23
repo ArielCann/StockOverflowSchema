@@ -19,6 +19,7 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
 export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const fakeData = data;
+        console.log('getting data')
         res.status(200).send(fakeData);
     } catch (error) {
         console.error(error);
