@@ -1,5 +1,6 @@
-import mongoose, {Mongoose} from "mongoose";
+import mongoose from "mongoose";
 import Message from "./messageSchema";
+import ProfileImage from "./imageSchema";
 interface IAccount extends Document {
     _id: mongoose.Types.ObjectId;
     Email: String,
@@ -13,7 +14,10 @@ interface IAccount extends Document {
     RecieveResponseNotifications: Boolean;
     RecieveLikedNotifications: Boolean;
     LikedDislikedMessages: Map<String,Boolean>;
-
+    ProfileImage: mongoose.Types.ObjectId;
+    PhoneNumber: String;
+    setPhoneNumber(phone: String): Boolean;
+    setProfileImage(image: Buffer, contentType: String): Promise<boolean>;
     /**
      * Makes a user follow a specified stock
      * @param name the name of the stock
@@ -104,8 +108,10 @@ interface IAccount extends Document {
 const accountSchema = new mongoose.Schema<IAccount>({
     Email: {
         type:String,
-        required:true
+        required:true,
+        unique:true,
     },
+    PhoneNumber: String,
     ProfileDesc: String,
     Password: {
         type: String,
@@ -113,7 +119,8 @@ const accountSchema = new mongoose.Schema<IAccount>({
     },
     Username: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     Signup: {
         type: Date,
@@ -130,7 +137,8 @@ const accountSchema = new mongoose.Schema<IAccount>({
     LikedDislikedMessages: {
         type: Map,
         of: Boolean
-    }
+    },
+    ProfileImage: mongoose.Types.ObjectId,
 });
 /**
  * Makes a user follow a specified stock
@@ -332,6 +340,39 @@ accountSchema.methods.noLikedNotifications = function(){
         return true;
     }
     return false;
+}
+accountSchema.methods.setProfileImage = async function(image: Buffer, contentType: String){
+    const img = {
+        imageData: image,
+        contentType: contentType,
+    }
+    if(this.ProfileImage) {
+        let profImage = await ProfileImage.findById(this.profileImage).exec();
+        profImage?.overwrite(img);
+        profImage?.save();
+        this.ProfileImage = profImage?._id;
+    }
+    else{
+        let saved = true;
+        let profImage = new ProfileImage(img);
+        await profImage.save().catch((error)=>{
+            saved = false;
+            console.error(error);
+        });
+        if(saved) {
+            this.ProfileImage = profImage._id;
+            this.save();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
+accountSchema.methods.setPhoneNumber = function(phone: string){
+    this.phoneNumber = phone;
+    this.save();
+    return true;
 }
 
 const Account = mongoose.model("Account", accountSchema);
