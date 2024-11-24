@@ -23,6 +23,7 @@
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "express-validator": "^7.2.0",
+    "fuse.js": "^7.0.0",
     "mongoose": "^8.7.3",
     "nodemon": "^3.1.7",
     "worker-thread": "^1.1.0"
@@ -32,6 +33,7 @@
     "@types/connect-flash": "^0.0.40",
     "@types/connect-mongodb-session": "^2.4.7",
     "@types/express-session": "^1.18.0",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^22.8.4",
     "typescript": "^5.6.3"
   }

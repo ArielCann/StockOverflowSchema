@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 interface IMessage extends Document {
+    _id: mongoose.Types.ObjectId;
     Text: string;
     Account: mongoose.Types.ObjectId;
     Date_Created: Date;

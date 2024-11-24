@@ -1,6 +1,7 @@
 import mongoose, {Mongoose} from "mongoose";
 import Message from "./messageSchema";
 interface IAccount extends Document {
+    _id: mongoose.Types.ObjectId;
     Email: String,
     Password: String
     ProfileDesc: String;
@@ -177,7 +178,7 @@ accountSchema.methods.likeMessage = async function (message: mongoose.Types.Obje
         return false;
     } else {
         this.LikedDislikedMessages.put(message.toString(), true);
-        const messageObj = await Message.findById(message)
+        const messageObj = await Message.findById(message).exec()
         messageObj?.like();
         messageObj?.save();
         this.save();
@@ -195,7 +196,7 @@ accountSchema.methods.dislikeMessage = async function(message: mongoose.Types.Ob
     }
     else{
         this.LikedDislikedMessages.put(message.toString(),false);
-        const messageObj = await Message.findById(message)
+        const messageObj = await Message.findById(message).exec()
         messageObj?.dislike();
         messageObj?.save();
         this.save();
@@ -210,7 +211,7 @@ accountSchema.methods.dislikeMessage = async function(message: mongoose.Types.Ob
 accountSchema.methods.removeMessage = async function(message: mongoose.Types.ObjectId): Promise<boolean> {
     if(message.toString() in this.LikedDislikedMessages){
         const liked = this.LikedDislikedMessages[message.toString()];
-        const messageObj = await Message.findById(message);
+        const messageObj = await Message.findById(message).exec();
         if(liked){
             messageObj?.unlike();
             messageObj?.save();

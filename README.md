@@ -1,2 +1,2 @@
 # StockOverflowSchema
-Schema for Stock Overflow School prject
+Backend for StockOverflow website.

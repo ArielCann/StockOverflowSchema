@@ -3,10 +3,16 @@ import { ExpressValidator } from 'express-validator';
 
 
 const router = express.Router();
-router.get('/question_responses');
-router.post('/question');
-router.post('/response/:text');
-router.post('/comment')
+router.get('/messages/:MessageID');
+router.post('/messages');
+router.get('messages/search')
+router.get('/questions/:QuestionID');
+router.get('/questions/:QuestionID/replies');
+router.post('/questions');
+router.post('/responses');
+router.get('/responses/:ResponseID/replies');
+router.post('responses/:ResponseID/replies');
+router.get('/comments/:CommentID');
 //individual
 
 
