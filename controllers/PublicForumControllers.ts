@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import express, { Request, Response } from "express";
-import session from "express-session";
 import Message from "../models/messageSchema";
 import Account from "../models/accountSchema";
 import Fuse from "fuse.js";
