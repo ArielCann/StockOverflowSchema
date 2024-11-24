@@ -14,7 +14,9 @@ export class StockDataCommand implements IAPI_Command{
         this.stockAPI = factory.getAPIInstance(stockAPIType);
     }
     async get_data(ticker: string): Promise<any> {
+        console.log('inside the executor')
         const data = await this.stockAPI.getStockData(ticker);
+
         // console.log('in the command')
         // console.log(data);
         return data;

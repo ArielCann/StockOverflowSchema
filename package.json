@@ -2,7 +2,6 @@
   "name": "stockoverflowschema",
   "version": "1.0.0",
   "description": "",
-  "main": "Schemas.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon App.ts"
@@ -25,11 +24,12 @@
     "express-validator": "^7.2.0",
     "mongoose": "^8.7.3",
     "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
     "worker-threads": "^1.0.0"
   },
   "peerDependencies": {
-    "typescript": "^5.7.2",
-    "@types/node": "^22.9.3"
+    "@types/node": "^22.9.3",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

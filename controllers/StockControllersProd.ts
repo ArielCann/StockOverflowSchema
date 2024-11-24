@@ -54,7 +54,8 @@ export const getBasicStockInformation = async(req: Request<StockTickerParams>, r
  */
 function runWorker(data:any): Promise<any> {
     return new Promise((resolve, reject) => {
-        const worker = new Worker("./Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockWorker.ts", {workerData: data});
+        console.log('inside the ')
+        const worker = new Worker("./Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockWorker.ts", { execArgv: ['-r', 'ts-node/register'], workerData: data});
         worker.on('message', resolve);
         worker.on('error', reject);
         worker.on('exit', (code) => {
@@ -101,7 +102,8 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
 //         const responses = await Promise.all(promises);
 //         responses.forEach(response => {
 //             console.log(response)
-//             responseMap.set(response.Name, response.Data)
+//             let tempResponse = {'Data': response.Data}
+//             responseMap.set(response.Name, tempResponse)
 //         });
 //         const responseObject = Object.fromEntries(responseMap);
 //         res.status(200).send(responseObject);

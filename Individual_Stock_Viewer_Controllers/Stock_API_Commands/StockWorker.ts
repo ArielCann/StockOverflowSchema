@@ -5,8 +5,10 @@ import { IAPI_Command } from "./IAPI_Command";
 
 
 async function processTask(data: any): Promise<any> {
-    const command: IAPI_Command = new StockDataCommand(data.API);
-    const result: any = await command.get_data(data.Data)
+    console.log(data)
+    const command: IAPI_Command = new StockDataCommand(data.data.API);
+    const result: any = await command.get_data(data.data.Data)
+    console.log('dfd')
     return {Name: result.Name, Data: result};
 }
 

@@ -32,7 +32,7 @@ export class WallStreetJournal implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-            //   console.log(response.data);
+              console.log(response.data);
               return {'Name': 'Chart', 'Data': response.data};
             } catch (error) {
                 console.error(error);
