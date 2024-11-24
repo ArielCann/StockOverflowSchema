@@ -7,8 +7,8 @@ export class WallStreetJournal implements IIndividualStockPageAPIInformation{
     constructor() {
         dotenv.config();
     }
-    getStockData(ticker: string) {
-        this.getStockTimestamp(ticker);
+    getStockData(ticker: string): Promise<any> {
+        return this.getStockTimestamp(ticker);
     }
 
     /**
@@ -33,8 +33,10 @@ export class WallStreetJournal implements IIndividualStockPageAPIInformation{
           try {
               const response = await axios.request(options);
               console.log(response.data);
-          } catch (error) {
-              console.error(error);
-          }
+              return {'Name': 'Chart', 'Data': response.data};
+            } catch (error) {
+                console.error(error);
+                return {'msg': 'Cannot get the chart data'}
+            }
     }
 }

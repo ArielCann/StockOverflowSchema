@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 /**
  * 
  */
-export class YahooEarnings implements IIndividualStockPageAPIInformation{
+export class YahooCompanyInfo implements IIndividualStockPageAPIInformation{
 
     constructor () {
         dotenv.config();
@@ -13,12 +13,12 @@ export class YahooEarnings implements IIndividualStockPageAPIInformation{
         return this.getEarnings(ticker);
     }
     public async getEarnings(ticker: string) {
-          const options = {
+        const options = {
             method: 'GET',
             url: 'https://yahoo-finance15.p.rapidapi.com/api/v1/markets/stock/modules',
             params: {
               ticker: ticker,
-              module: 'earnings'
+              module: 'asset-profile'
             },
             headers: {
               'x-rapidapi-key': process.env.RAPID_API_KEY,
@@ -29,7 +29,7 @@ export class YahooEarnings implements IIndividualStockPageAPIInformation{
           try {
               const response = await axios.request(options);
             //   console.log(response.data);
-            return {'Name': 'Earnings', 'Data': response.data};
+            return {'Name': 'Company_Info', 'Data': response.data};
           } catch (error) {
               console.error(error);
               return {'msg': 'cannot get earnings'}
