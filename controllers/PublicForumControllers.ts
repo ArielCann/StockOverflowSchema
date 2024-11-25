@@ -9,7 +9,7 @@ exports.questionSearch = async (req: Request, res: Response) => {
     let results = searcher.search(req.body.Text);
     let matches = [];
     for (const result of results) {
-        matches.push(result.item.toObject({versionKey: false,depopulate: true}));
+        matches.push(result.item.toJSON());
     }
     res.json(matches);
 }
@@ -19,7 +19,7 @@ exports.getMessage = async(req: Request, res: Response) => {
         res.status(404).send("Message could not be found");
         return;
     }
-    res.status(200).json(message.toObject({versionKey: false,depopulate: true}));
+    res.status(200).json(message.toJSON());
 }
 exports.postQuestion = async (req: Request, res: Response) => {
     const account = await Account.findOne({AccountID: req.session.AccountID}).exec();
@@ -110,7 +110,7 @@ exports.getQuestionResponses = async (req: Request, res: Response) => {
     }
     let responses = [];
     for (const reply of question.Replies) {
-        responses.push((await Message.findById(reply).exec())?.toObject({versionKey: false,depopulate: true}));
+        responses.push((await Message.findById(reply).exec())?.toJSON());
     }
     res.status(200).json(responses);
 }
@@ -126,7 +126,7 @@ exports.getResponseComments = async (req: Request, res: Response) => {
     }
     let comments = [];
     for (const comment of response.Replies) {
-        comments.push((await Message.findById(comment).exec())?.toObject({versionKey: false,depopulate: true}));
+        comments.push((await Message.findById(comment).exec())?.toJSON());
     }
     res.status(200).json(comments);
 }
