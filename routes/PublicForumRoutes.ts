@@ -3,11 +3,12 @@ import { ExpressValidator } from 'express-validator';
 
 
 const router = express.Router();
+router.get('/likedDislikedMessages')
 router.get('/messages/:MessageID');
 router.post('/messages');
 router.get('messages/search')
 router.get('/questions/:QuestionID');
-router.get('/questions/:QuestionID/replies');
+router.get('/questions/:QuestionID/page');
 router.post('/questions');
 router.post('/responses');
 router.get('/responses/:ResponseID/replies');

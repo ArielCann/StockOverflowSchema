@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import express, { Request, Response } from "express";
+import {Request, Response} from "express";
 import Message from "../models/messageSchema";
 import Account from "../models/accountSchema";
 import Fuse from "fuse.js";
+
 exports.questionSearch = async (req: Request, res: Response) => {
     const questions = await Message.find({IsQuestion: true}).exec();
     const searcher = new Fuse(questions,{keys: ["text"]});
@@ -98,7 +99,14 @@ exports.postComment = async (req: Request, res: Response) => {
     response.addReply(msg._id);
     msg.save();
 }
-exports.getQuestionResponses = async (req: Request, res: Response) => {
+/**
+ * Gets all the responses to a Question whose Id is a path parameter, as well as comments on those responses
+ * @param req
+ * @param res sends http code 404 if the Question could not be found,
+ * 422 if the supplied Id is not a Question,
+ * or if susccessful, code 200 with a Map where the keys are response objects and the keys are comment obejcts.
+ */
+exports.getQuestionPage = async (req: Request, res: Response) => {
     const question = await Message.findById(req.params.QuestionID).exec();
     if(question == null) {
         res.status(404).send("Error: Question could not be found.");
@@ -108,9 +116,10 @@ exports.getQuestionResponses = async (req: Request, res: Response) => {
         res.status(422).send("Message was found, but is not a forum Question.");
         return;
     }
-    let responses = [];
+    let responses = new Map();
     for (const reply of question.Replies) {
-        responses.push((await Message.findById(reply).exec())?.toJSON());
+        let response = await Message.findById(reply).exec();
+        responses?.set(response?._id, await Message.find({_id: {$in: response?.Replies}}).lean().exec());
     }
     res.status(200).json(responses);
 }
@@ -129,4 +138,44 @@ exports.getResponseComments = async (req: Request, res: Response) => {
         comments.push((await Message.findById(comment).exec())?.toJSON());
     }
     res.status(200).json(comments);
+}
+/**
+ * Likes a message whose Id should be a path parameter
+ * @param req needs to have a session with an AccountID
+ * @param res will send http code 200 upon completion
+ */
+exports.patchLikeMessage = async(req: Request, res: Response) => {
+    let account = await Account.findById(req.session.AccountID).exec();
+    account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200);
+}
+/**
+ * Dislikes a message whose Id is a path parameter.
+ * @param req needs to have a session with an AccountId
+ * @param res will send http code 200 upon completion
+ */
+exports.patchDislikeMessage = async(req: Request, res: Response) => {
+    let account = await Account.findById(req.session.AccountID).exec();
+    account?.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200);
+}
+/**
+ * Sets the Account to no longer like or dislike a message whose Id is a path parameter
+ * @param req needs to have a session with an AccountID
+ * @param res will send http code 200 upon completion
+ */
+exports.patchRemoveMessage = async(req: Request, res: Response) => {
+    let account = await Account.findById(req.session.AccountID).exec();
+    account?.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200);
+}
+/**
+ *
+ * @param req needs to have a session with an AccountID
+ * @param res sends http code 200 and a map of message Ids (as strings)
+ *      to booleans that the user has either liked or disliked, true for liked, false for disliked.
+ */
+exports.getLikedDislikedMessages = async (req: Request, res: Response) => {
+    let account = await Account.findById(req.session.AccountID).exec();
+    res.status(200).json(account?.LikedDislikedMessages);
 }
