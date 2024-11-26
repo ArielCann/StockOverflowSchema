@@ -15,22 +15,7 @@ exports.patchProfile = async (req: Request, res: Response) => {
         return;
     }
 }
-exports.postSignup = async (req: Request, res: Response) => {
-    let account = new Account({Username: req.body.username, password: req.body.password, Email: req.body.email});
-    await account.save().catch((err) => {
-        if(err.code === 11000) {
-            console.log(err.message);
-            res.status(400).json("User with this information already exists!");
-            return;
-        }
-        else{
-            console.error(err.message);
-            res.status(400).json("Could not create Account with this information.");
-            return;
-        }
-    });
-    res.status(201).json(account.toJSON());
-}
+
 exports.getMessages = async (req: Request, res: Response)=> {
     let account = await Account.findById(req.session.AccountID).exec();
     let messages = await Message.find({Account: account?._id}).exec();
@@ -40,7 +25,7 @@ exports.getMessages = async (req: Request, res: Response)=> {
     }
     res.status(200).json({messages: messageObjs});
 }
-exports.setNotifications = async (req: Request, res: Response) => {
+exports.patchNotifications = async (req: Request, res: Response) => {
     let account = await Account.findById(req.session.AccountID).exec();
     try {
         if ("receiveSMS" in req.body) {

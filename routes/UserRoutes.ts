@@ -12,5 +12,5 @@ router.patch('/unlike/:MessageID');
 router.patch('/un_dislike/:MessageID');
 router.post('/information/signup');
 router.patch('/information/profile');
-router.put('/information/updateMany');
+router.patch('/information/notifications');
 export default router;
