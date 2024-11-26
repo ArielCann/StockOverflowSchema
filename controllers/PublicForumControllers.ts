@@ -50,7 +50,7 @@ exports.postQuestion = async (req: Request, res: Response) => {
  * @param res will send http error 404 code if either the Account or Question couldn't be found.
  */
 exports.postResponse = async (req: Request, res: Response) => {
-    const account = await Account.findById(req.body.AccountID).exec();
+    const account = await Account.findById(req.session.AccountID).exec();
     const question = await Message.findById(req.body.QuestionID).exec();
     if (question == null) {
         res.status(404).send("Error: Question could not be found.");
@@ -74,7 +74,7 @@ exports.postResponse = async (req: Request, res: Response) => {
     msg.save();
 }
 exports.postComment = async (req: Request, res: Response) => {
-    const account = await Account.findById(req.body.AccountID).exec();
+    const account = await Account.findById(req.session.AccountID).exec();
     const text = req.body.text;
     const response = await Message.findById(req.body.ResponseID).exec();
     if (response == null) {

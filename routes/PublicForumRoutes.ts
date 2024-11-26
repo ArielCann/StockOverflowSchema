@@ -13,6 +13,10 @@ router.post('/responses');
 router.get('/responses/:ResponseID/replies');
 router.post('responses/:ResponseID/replies');
 router.get('/comments/:CommentID');
+router.patch('/dislike/:MessageID');
+router.patch('/like/:MessageID');
+router.patch('/unlike/:MessageID');
+router.patch('/un_dislike/:MessageID');
 //individual
 
 
