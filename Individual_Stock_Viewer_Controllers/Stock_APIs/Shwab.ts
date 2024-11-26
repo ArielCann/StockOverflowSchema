@@ -9,8 +9,8 @@ export class Shwab implements IIndividualStockPageAPIInformation, ITrendingStock
     constructor () {
         dotenv.config();
     }
-    getStockData(ticker: string) {
-        this.getStockSummary(ticker);
+    getStockData(ticker: string): Promise<any> {
+        return this.getStockSummary(ticker);
     }
   
     public async getStockSummary(ticker: string) {
@@ -26,10 +26,12 @@ export class Shwab implements IIndividualStockPageAPIInformation, ITrendingStock
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
-          } catch (error) {
-              console.error(error);
-          }
+            //   console.log(response.data);
+              return {'Name': 'Summary', 'Data': response.data};
+            } catch (error) {
+                console.error(error);
+                return {'msg': 'Cannot get the Stock Summary'}
+            }
     }
     /**
      * get the current trending stocks based on the trending category 
@@ -50,9 +52,11 @@ export class Shwab implements IIndividualStockPageAPIInformation, ITrendingStock
 
         try {
             const response = await axios.request(options);
-            console.log(response.data);
+            // console.log(response.data);
+            return {'Name': 'Trending', 'Data': response.data};
         } catch (error) {
             console.error(error);
+            return {'msg': 'Cannot get the Trending stock data'}
         }
     }
 }

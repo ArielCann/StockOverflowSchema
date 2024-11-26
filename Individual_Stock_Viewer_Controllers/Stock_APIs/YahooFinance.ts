@@ -8,8 +8,8 @@ export class YahooFinance implements IIndividualStockPageAPIInformation{
         dotenv.config();
     }
     
-    getStockData(ticker: string) {
-        return this.getNews(ticker);
+    getStockData(ticker: string): Promise<any> {
+        return this.getFinancialData(ticker);
     }
 
     public async getNews(ticker: string) {
@@ -29,9 +29,11 @@ export class YahooFinance implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
+              // console.log(response.data);
+              return {'Name': 'News', 'Data': response.data};
           } catch (error) {
               console.error(error);
+              return {'msg': 'Cannot get the News data'}
           }
     }
     public async getEarnings(ticker: string) {
@@ -50,9 +52,11 @@ export class YahooFinance implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
+              // console.log(response.data);
+              return {'Name': 'Earnings', 'Data': response.data};
           } catch (error) {
               console.error(error);
+              return {'msg': 'Cannot get the earnings data'}
           }
     }
 
@@ -72,9 +76,11 @@ export class YahooFinance implements IIndividualStockPageAPIInformation{
           
           try {
               const response = await axios.request(options);
-              console.log(response.data);
+              // console.log(response.data);
+              return {'Name': 'Financial', 'Data': response.data};
           } catch (error) {
               console.error(error);
+              return {'msg': 'Cannot get financial data'}
           }
     }
 }
