@@ -1,23 +1,25 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-
+import {
+    getLikedDislikedMessages,
+    getMessage,
+    getResponseComments, patchClearLike, patchDislikeMessage, patchLikeMessage, postComment,
+    postQuestion,
+    postResponse, getQuestionSearch, getQuestionPage
+} from '../controllers/PublicForumControllers'
 
 const router = express.Router();
-router.get('/likedDislikedMessages')
-router.get('/messages/:MessageID');
-router.post('/messages');
-router.get('messages/search')
-router.get('/questions/:QuestionID');
-router.get('/questions/:QuestionID/page');
-router.post('/questions');
-router.post('/responses');
-router.get('/responses/:ResponseID/replies');
-router.post('responses/:ResponseID/replies');
-router.get('/comments/:CommentID');
-router.patch('/dislike/:MessageID');
-router.patch('/like/:MessageID');
-router.patch('/unlike/:MessageID');
-router.patch('/un_dislike/:MessageID');
+router.get('/likedDislikedMessages',getLikedDislikedMessages)
+router.get('/messages/:MessageID',getMessage);
+router.get('/questions/search',getQuestionSearch);
+router.get('/questions/:QuestionID/page',getQuestionPage);
+router.post('/questions',postQuestion);
+router.post('/:QuestionID/responses',postResponse);
+router.get('/responses/:ResponseID/comments',getResponseComments);
+router.post('responses/:ResponseID/comments',postComment);
+router.patch('/dislike/:MessageID',patchDislikeMessage);
+router.patch('/like/:MessageID',patchLikeMessage);
+router.patch('/clearLike/:MessageID',patchClearLike);
 //individual
 
 

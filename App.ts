@@ -1,4 +1,3 @@
-import path from 'path';
 
 import session from 'express-session';
 import MongodbSession from 'connect-mongodb-session';
