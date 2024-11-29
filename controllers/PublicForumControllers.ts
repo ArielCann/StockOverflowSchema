@@ -15,12 +15,13 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
     res.json(matches);
 }
 export const getMessage = async(req: Request, res: Response) => {
-    const message = await Message.findById(req.params.MessageID).exec();
+    const message = await Message.findById(req.params.MessageID).lean().exec();
     if(message == null){
         res.status(404).send("Message could not be found");
         return;
     }
-    res.status(200).json(message.toJSON());
+    const user = await Account.findById(message.Account).lean().exec();
+    res.status(200).json({username: user?.Username, message: message});
 }
 export const postQuestion = async (req: Request, res: Response) => {
     const account = await Account.findOne({AccountID: req.session.AccountID}).exec();
