@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation } from '../controllers/StockControllersProd';
+import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation } from '../controllers/StockControllerDev';
 
 const AuthController = require('../controllers/AuthControllers');
 const isUserMiddleware = require('../middleware/IsUser');

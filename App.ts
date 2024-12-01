@@ -17,16 +17,41 @@ dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
 const app = express();
+
+const dbUrl = process.env.DB_CONNECTION_URL || '';
+
+mongoose.connect(dbUrl)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(8000, () => console.log('Server running on http://localhost:8000'));
+    })
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+    });
+const store = new MongodbStore({
+    uri: dbUrl,
+    collection: 'UserData',
+});
+store.on('error', (error) => console.error('Session store error:', error));
+
+// Middleware
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+app.use(express.json());
 app.use(session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    store: store,
     cookie: {
-        maxAge: 1000 * 60 * 60
-    }
-}))
-//routes
-app.use(cors()); // Enable CORS for React frontend
+        maxAge: 1000 * 60 * 60,
+        secure: false,
+        httpOnly: true,
+    },
+}));
+
 app.use(express.json()); // Parse JSON request bodies
 app.use('/auth', AuthRoutes);
 app.use(ErrorRoutes);
@@ -34,14 +59,10 @@ app.use('/public-forum', PublicForumRoutes);
 app.use('/stocks', StockRoutes);
 app.use('/user', UserRoutes);
 
-const dbUrl: string = process.env.DB_CONNECTION_URL ? process.env.DB_CONNECTION_URL : ''
-mongoose.connect(dbUrl).then(result => {
-    app.listen(8000)
-}).catch(err => {
-    console.log(err)
-})
-const store = new MongodbStore({
-    uri: dbUrl,
-    collection: 'UserData',
-});
+// mongoose.connect(dbUrl).then(result => {
+//     app.listen(8000)
+// }).catch(err => {
+//     console.log(err)
+// })
+
 
