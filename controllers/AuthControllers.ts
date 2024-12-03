@@ -128,7 +128,7 @@ export class AuthController {
                     return;
                 }
                 req.session.loggedIn = true;
-                req.session.currAccount = account._id;
+                req.session.currAccount = account._id.toString();
                 req.session.save(err => {
                     console.error(err)
                 })
@@ -164,7 +164,8 @@ export class AuthController {
                 Username: userName,
                 Password: hashedPassword,
                 Email: email,
-                Signup: Date.now()
+                Signup: Date.now(),
+                FollowedStocks: {},
             });
     
             const result = await account.save();

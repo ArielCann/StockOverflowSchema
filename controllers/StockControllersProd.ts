@@ -4,6 +4,7 @@ import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_C
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
 import { StockDataCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
 import express, {Request, Response} from 'express';
+import Account from "../models/accountSchema";
 
 interface StockTickerParams {
     stockTicker: string;
@@ -88,6 +89,21 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             res.status(500).json({error: 'Failed to retrieve stock data', isAuthenticated: req.session.loggedIn})
         }
     }
+}
+export const postAddUserStock = async (req: Request, res: Response): Promise<void> => {
+    const account = await Account.findById(req.session.currAccount);
+    if (!account) {
+        res.status(422).send({msg: "No Current User is Signed in"});
+        return;
+    }
+    const isChanged: boolean = await account.addFollowedStock(req.body.stockName, req.body.ticker)
+    if (!isChanged) {
+        console.log('sfsdfsf')
+        res.status(422).send({msg: "Stock Already Added"})
+        return;
+    }
+    res.status(200).send({msg: "Stock Added Successfully"})
+
 }
 // export const getIndividualStockViewer = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {   
 //     try {
