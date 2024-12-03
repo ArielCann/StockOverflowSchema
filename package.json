@@ -12,6 +12,9 @@
   },
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.699.0",
+    "@aws-sdk/client-sns": "^3.699.0",
+    "@types/nodemailer": "^6.4.17",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -25,6 +28,7 @@
     "express-validator": "^7.2.0",
     "fuse.js": "^7.0.0",
     "mongoose": "^8.7.3",
+    "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "worker-threads": "^1.0.0"

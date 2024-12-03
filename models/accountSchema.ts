@@ -3,8 +3,8 @@ import Message from "./messageSchema";
 import ProfileImage from "./imageSchema";
 interface IAccount extends Document {
     _id: mongoose.Types.ObjectId;
-    Email: String,
-    Password: String
+    Email: String;
+    Password: string;
     ProfileDesc: String;
     Username: String;
     Signup: Date;
@@ -13,6 +13,8 @@ interface IAccount extends Document {
     RecieveSMSNotifications: Boolean;
     RecieveResponseNotifications: Boolean;
     RecieveLikedNotifications: Boolean;
+    verificationNumber: string,
+    verificationExpiration: Date,
     LikedDislikedMessages: Map<String,Boolean>;
     ProfileImage: mongoose.Types.ObjectId;
     PhoneNumber: String;
@@ -117,6 +119,8 @@ const accountSchema = new mongoose.Schema<IAccount>({
         type: String,
         required: true
     },
+    verificationNumber: {type: String},
+    verificationExpiration: {type: Date},
     Username: {
         type: String,
         required: true,
@@ -375,6 +379,6 @@ accountSchema.methods.setPhoneNumber = function(phone: string){
     return true;
 }
 
-const Account = mongoose.model("Account", accountSchema);
+const Account = mongoose.model("accounts", accountSchema);
 
 export default Account;

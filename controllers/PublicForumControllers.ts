@@ -145,9 +145,9 @@ export const getResponseComments = async (req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchLikeMessage = async(req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
-    account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    res.status(200);
+    // let account = await Account.findById(req.session.AccountID).exec();
+    // account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    // res.status(200);
 }
 /**
  * Dislikes a message whose Id is a path parameter.
@@ -155,9 +155,9 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchDislikeMessage = async(req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
-    account?.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    res.status(200);
+    // let account = await Account.findById(req.session.AccountID).exec();
+    // account?.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    // res.status(200);
 }
 /**
  * Sets the Account to no longer like or dislike a message whose Id is a path parameter
@@ -165,9 +165,9 @@ export const patchDislikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchClearLike = async(req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
-    account?.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    res.status(200);
+    // let account = await Account.findById(req.session.AccountID).exec();
+    // account?.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    // res.status(200);
 }
 /**
  *
