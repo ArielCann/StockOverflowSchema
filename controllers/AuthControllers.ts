@@ -42,7 +42,7 @@ export class AuthController {
                 console.error("Error destroying session:", err);
                 return res.status(500).send({ msg: "Failed to log out" });
             }
-            res.clearCookie("connect.sid", { path: "/" }); 
+            res.clearCookie("connect.sid", { path: "/" });
             return res.status(200).send({ msg: "Logged out Successfully" });
         });
     }
