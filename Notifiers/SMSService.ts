@@ -1,9 +1,9 @@
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
-import { Observer } from './Subscribers';
+import { Notifyer } from './Subscribers';
 /**
  * this class is responsible for sending SMS messages out to users
  */
-export class SMSService implements Observer {
+export class SMSService implements Notifyer {
 
     async notify(to: string, subject: string, bodyText: string): Promise<any> {
         const snsClient = new SNSClient({ region: 'us-east-1' }); // Replace with your AWS region

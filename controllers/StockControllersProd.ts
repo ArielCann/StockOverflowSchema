@@ -3,7 +3,7 @@ import { Worker } from 'worker_threads';
 import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command";
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
 import { StockDataCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
-import express, {Request, Response} from 'express'
+import express, {Request, Response} from 'express';
 
 interface StockTickerParams {
     stockTicker: string;
@@ -24,7 +24,7 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
         }
         const isUp: boolean =  response[0]['Data']['data']['Series'][0]['DataPoints'][0][1] < response[0]['Data']['data']['Series'][0]['DataPoints'][timeLen - 1][1]
         const responseObject = Object.fromEntries(stockChartMap);
-        res.status(200).send({'chart': responseObject, 'isUp': isUp});
+        res.status(200).send({'Stock': {'chart': responseObject}, 'isUp': isUp});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {
@@ -81,11 +81,11 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             responseMap.set(response.Name, response.Data)
         });
         const responseObject = Object.fromEntries(responseMap);
-        res.status(200).send(responseObject);
+        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {
-            res.status(500).send({error: 'Failed to retrieve stock data'})
+            res.status(500).json({error: 'Failed to retrieve stock data', isAuthenticated: req.session.loggedIn})
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Observer } from "./Subscribers";
+import { Notifyer } from "./Subscribers";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import nodemailer from 'nodemailer'
 
@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer'
  * this email service class sends emails to Accounts using the Simple Email Service by AWS to notify them 
  */
 
-export class EmailService implements Observer  {
+export class EmailService implements Notifyer  {
     async notify(toEmail: string, subject: string, bodyText: string) {
         var transporter = nodemailer.createTransport({
             service: 'gmail',

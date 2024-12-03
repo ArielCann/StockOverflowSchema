@@ -1,15 +1,18 @@
 import express from 'express';
 import { ExpressValidator, check, body } from 'express-validator';
 import Account from '../models/accountSchema';
-import { GetChangePassword, PostChangePassword, PostLogin, PostSignup } from '../controllers/AuthControllers';
+import { AuthController } from '../controllers/AuthControllers';
+import { Notifyer } from '../Notifiers/Subscribers';
+import { EmailService } from '../Notifiers/EmailService';
 //const AuthController = require('../controllers/AuthControllers');
 //const isUserMiddleware = require('../middleware/IsUser');
-
+const emailService: Notifyer = new EmailService();
 const router = express.Router();
+const authController = new AuthController()
 
 //login routes
 
-router.post('/login', PostLogin);
+router.post('/login', authController.PostLogin);
 
 //signup routes 
 router.post('/sign-up', 
@@ -41,11 +44,13 @@ router.post('/sign-up',
                 throw new Error('Username already exists'); 
             }
         })
-, PostSignup)
+, authController.PostSignup)
 
 //password reset
-router.post('/change-password', GetChangePassword);
-router.post('/password-reset', PostChangePassword);
+router.post('/change-password', authController.addObserver(),authController.GetChangePassword);
+router.post('/password-reset', authController.PostChangePassword);
+
+router.post('/logout', authController.Logout);
 
 export default router;
 

@@ -12,7 +12,9 @@ import AuthRoutes from './routes/AuthRoutes';
 import ErrorRoutes from './routes/ErrorRoutes';
 import PublicForumRoutes from './routes/PublicForumRoutes';
 import StockRoutes from './routes/StockRoutes';
+import GeneralRoutes from './routes/GeneralRoutes';
 import UserRoutes from './routes/UserRoutes';
+import { GeneralController } from './controllers/GeneralController';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
@@ -43,8 +45,8 @@ app.use(express.json());
 app.use(session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: false,
     store: store,
+    saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60,
         secure: false,
@@ -55,6 +57,7 @@ app.use(session({
 app.use(express.json()); // Parse JSON request bodies
 app.use('/auth', AuthRoutes);
 app.use(ErrorRoutes);
+app.use(GeneralRoutes)
 app.use('/public-forum', PublicForumRoutes);
 app.use('/stocks', StockRoutes);
 app.use('/user', UserRoutes);
