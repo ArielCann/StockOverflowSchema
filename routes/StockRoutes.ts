@@ -1,14 +1,14 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation } from '../controllers/StockControllerDev';
+import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock } from '../controllers/StockControllerDev';
 
 const AuthController = require('../controllers/AuthControllers');
 const isUserMiddleware = require('../middleware/IsUser');
 
 
 const router = express.Router();
-
-
+//this route adds a stock to a user
+router.post('/add-stock', postAddUserStock)
 
 //this route is to grab stock data like the company information
 router.get('/stock-data/:stockTicker', getIndividualStockViewer);
