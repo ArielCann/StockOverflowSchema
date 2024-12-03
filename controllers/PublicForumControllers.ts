@@ -101,7 +101,7 @@ export const postComment = async (req: Request, res: Response) => {
     msg.save();
 }
 /**
- * Gets all the responses to a Question whose Id is a path parameter, as well as comments on those responses
+ * Gets all the ids of responses to a Question whose Id is a path parameter, as well as ids comments on those responses
  * @param req
  * @param res sends http code 404 if the Question could not be found,
  * 422 if the supplied Id is not a Question,
@@ -117,10 +117,18 @@ export const getQuestionPage = async (req: Request, res: Response) => {
         res.status(422).send("Message was found, but is not a forum Question.");
         return;
     }
-    let responses = new Map();
+    let responses = [];
     for (const reply of question.Replies) {
-        let response = await Message.findById(reply).exec();
-        responses?.set(response?._id, await Message.find({_id: {$in: response?.Replies}}).lean().exec());
+        let response = await Message.findById(reply).lean().exec();
+        let id = response?._id;
+        let username = (await Account.findById(id).lean().exec())?.Username;
+        let comments = await Message.find({_id: {$in: response?.Replies}}).lean().exec();
+        let comment_users = []
+        for (let i = 0; i < comments.length; i++) {
+            let commenter = (await Account.findById(comments[i].Account).lean().exec())?.Username;
+            comment_users.push({Username: commenter,Message: comments[i]});
+        }
+        responses?.push({Username: username,Response: response,Comments: comment_users});
     }
     res.status(200).json(responses);
 }

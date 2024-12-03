@@ -1,5 +1,7 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
+const AuthController = require('../controllers/AuthControllers');
+const isUserMiddleware = require('../middleware/IsUser');
 import {
     getLikedDislikedMessages,
     getMessage,
