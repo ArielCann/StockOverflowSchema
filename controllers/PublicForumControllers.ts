@@ -22,6 +22,11 @@ export const getMessage = async(req: Request, res: Response) => {
     }
     res.status(200).json({'message': message.toJSON(),'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
+/**
+ * Creates a new Question with the specified text. Session must have current AccountId and be logged in
+ * @param req body should have text
+ * @param res will send a 401 if not logged in, 404 if the Account Id couldn't be resolved.
+ */
 export const postQuestion = async (req: Request, res: Response) => {
     if(!req.session.loggedIn || !req.session.currAccount){
         res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
@@ -47,9 +52,8 @@ export const postQuestion = async (req: Request, res: Response) => {
     res.status(201).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
- *
- * @param req body should have the following properties
- *     @param AccountID the ObjectID of the Account posting the new response
+ *  Session should have AccountID as currAccount.
+ * @param req body should have the following properties.
  *     @param QuestionID the ObjectID of the Question being responded to
  *     @param text the text of the message
  * @param res will send http error 404 code if either the Account or Question couldn't be found.
