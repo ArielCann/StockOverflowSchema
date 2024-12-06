@@ -13,7 +13,7 @@ interface IMessage extends Document {
     dislike(): Boolean;
     unlike(): Boolean;
     un_dislike(): Boolean;
-    addReply(message: mongoose.Types.ObjectId): Boolean;
+    addReply(message: mongoose.Types.ObjectId): Promise<Boolean>;
 }
 const  messageSchema = new mongoose.Schema<IMessage>({
     Text: String,
@@ -54,14 +54,15 @@ messageSchema.methods.un_dislike = function(){
     this.Dislikes -= 1;
     this.save();
 }
-messageSchema.methods.addReply = function(reply_id: mongoose.Schema.Types.ObjectId){
+messageSchema.methods.addReply = async function(reply_id: mongoose.Schema.Types.ObjectId){
     const oldSize = this.Replies.length;
     this.Replies.addToSet([reply_id]);
     if(this.Replies.length > oldSize){
-        this.save();
+        await this.save();
         return true;
     }
     return false;
 }
 const Message = mongoose.model("Message", messageSchema);
 export default Message;
+export type {IMessage};

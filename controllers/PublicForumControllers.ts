@@ -15,12 +15,14 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
     res.json({'matches': matches,'isAuthenticated': req.session.loggedIn,'userId': req.session.currAccount});
 }
 export const getMessage = async(req: Request, res: Response) => {
-    const message = await Message.findById(req.params.MessageID).exec();
+    const message = await Message.findById(req.params.MessageID).lean().exec();
     if(message == null){
         res.status(404).json({'error': "Message could not be found",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
-    res.status(200).json({'message': message.toJSON(),'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+    const account = await Account.findById(message.Account);
+    let username = account?.Username;
+    res.status(200).json({'message': message,'username': username,'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
  * Creates a new Question with the specified text. Session must have current AccountId and be logged in
@@ -133,10 +135,18 @@ export const getQuestionPage = async (req: Request, res: Response) => {
         res.status(422).json({'error': "Message was found, but is not a forum Question.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
-    let responses = new Map();
+    let responses = [];
     for (const reply of question.Replies) {
-        let response = await Message.findById(reply).exec();
-        responses?.set(response?._id, await Message.find({_id: {$in: response?.Replies}}).lean().exec());
+        let response = await Message.findById(reply).lean().exec();
+        let id = response?._id;
+        let username = (await Account.findById(id).lean().exec())?.Username;
+        let comments = await Message.find({_id: {$in: response?.Replies}}).lean().exec();
+        let comment_users = []
+        for (let i = 0; i < comments.length; i++) {
+            let commenter = (await Account.findById(comments[i].Account).lean().exec())?.Username;
+            comment_users.push({Username: commenter,Message: comments[i]});
+        }
+        responses?.push({Username: username,Response: response,Comments: comment_users});
     }
     res.status(200).json({'responses': responses,'isAuthenticated': req.session.loggedIn,'userId': req.session.currAccount});
 }
