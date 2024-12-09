@@ -1,17 +1,23 @@
 import { resolve } from "path";
 import { Worker } from 'worker_threads';
-import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command";
+import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
-import { StockDataCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
+import { StockDataExecutor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
 import express, {Request, Response} from 'express';
 import Account from "../models/accountSchema";
 
 interface StockTickerParams {
     stockTicker: string;
 }
+/**
+ * this method is responsible for getting the latest price of the stock 
+ * @param req 
+ * @param res 
+ * @returns a map representation of the x, y cordinates for the cart {time: price}
+ */
 export const getIndividualStockChart = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
-        const stockChartCommand: IAPI_Command = new StockDataCommand('WallStreet Journal');
+        const stockChartCommand: IAPI_Command = new StockDataExecutor('WallStreet Journal');
         const commands: IAPI_Command[] = [stockChartCommand]
         const stockChartMap: Map<string, string> = new Map<string, string>();
         const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
@@ -33,7 +39,12 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
         }
     }
 }
-
+/**
+ * this method is reponsible for getting the stocks basic information, such as the current price, percentage change and monetary change. Unlike the chart and teh individualStockViewer methods that 
+ * are called once per get request. THis method is meant to be called many times in order to continuosly update the price 
+ * @param req 
+ * @param res 
+ */
 export const getBasicStockInformation = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const stockBasicDataCommand: IAPI_Command = new StockBasicCommand('RealTime');
@@ -53,7 +64,7 @@ export const getBasicStockInformation = async(req: Request<StockTickerParams>, r
  * @param data the type of API and the stock ticker that will be sent to the API 
  * @returns the stock data
  */
-function runWorker(data:any): Promise<any> {
+export function runStockWorker(data:any): Promise<any> {
     return new Promise((resolve, reject) => {
         console.log('inside the ')
         const worker = new Worker("./Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockWorker.ts", { execArgv: ['-r', 'ts-node/register'], workerData: data});
@@ -66,6 +77,7 @@ function runWorker(data:any): Promise<any> {
         });
     });
 }
+
 export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const responseMap: Map<string, any> = new Map<string, any>();
@@ -76,7 +88,7 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             {id: 4, data: {'API': 'Yahoo Finance', 'Data': req.params.stockTicker}},
             {id: 5, data: {'API': 'Yahoo News', 'Data': req.params.stockTicker}}
         ]
-        const results = await Promise.all(tasks.map(task => runWorker(task)));
+        const results = await Promise.all(tasks.map(task => runStockWorker(task)));
         results.forEach(response => {
             console.log(response)
             responseMap.set(response.Name, response.Data)
@@ -104,6 +116,20 @@ export const postAddUserStock = async (req: Request, res: Response): Promise<voi
     }
     res.status(200).send({msg: "Stock Added Successfully"})
 
+}
+export const postDeleteUserStock = async(req: Request, res: Response): Promise<void> => {
+    const account = await Account.findById(req.session.currAccount);
+    if (!account) {
+        res.status(422).send({msg: "No Current User is Signed in"});
+        return;
+    }
+    const isChanged: boolean = await account.removeFollowedStock(req.body.stockName, req.body.ticker)
+    if (!isChanged) {
+        console.log('sfsdfsf')
+        res.status(422).send({msg: "Stock Already Added"})
+        return;
+    }
+    res.status(200).send({msg: "Stock Deleted Successfully"})
 }
 // export const getIndividualStockViewer = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {   
 //     try {

@@ -9,11 +9,11 @@ interface IAccount extends Document {
     Username: String;
     Signup: Date;
     FollowedStocks: Map<String,String>;
-    RecieveEmailNotifications: Boolean;
-    RecieveSMSNotifications: Boolean;
+    RecieveStockNewsNotifications: Boolean;
     RecieveResponseNotifications: Boolean;
     RecieveLikedNotifications: Boolean;
     verificationNumber: string,
+    Birthday: Date,
     verificationExpiration: Date,
     LikedDislikedMessages: Map<String,Boolean>;
     ProfileImage: mongoose.Types.ObjectId;
@@ -119,6 +119,7 @@ const accountSchema = new mongoose.Schema<IAccount>({
         type: String,
         required: true
     },
+    Birthday: {type: Date},
     verificationNumber: {type: String},
     verificationExpiration: {type: Date},
     Username: {
@@ -134,8 +135,7 @@ const accountSchema = new mongoose.Schema<IAccount>({
         type: Map,
         of: String
     },
-    RecieveEmailNotifications: Boolean,
-    RecieveSMSNotifications: Boolean,
+    RecieveStockNewsNotifications: Boolean,
     RecieveResponseNotifications: Boolean,
     RecieveLikedNotifications: Boolean,
     LikedDislikedMessages: {

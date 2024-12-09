@@ -47,7 +47,7 @@ router.post('/sign-up',
 , authController.PostSignup)
 
 //password reset
-router.post('/change-password', authController.addObserver(),authController.GetChangePassword);
+router.post('/change-password', authController.addObserver(), authController.GetChangePassword.bind(authController));
 router.post('/password-reset', authController.PostChangePassword);
 
 router.post('/logout', authController.Logout);

@@ -1,12 +1,17 @@
 import { parentPort, workerData } from "worker_threads";
 
-import { StockDataCommand } from "./StockDataCommand";
-import { IAPI_Command } from "./IAPI_Command";
+import { StockDataExecutor } from "./StockDataCommand";
+import { IAPI_Command } from "./IAPI_Executor";
 
-
+/**
+ * this method is responsible for calling the StockDataExecutor to execucute an API (command). This method is called by the different worker 
+ * threads to create concurrency 
+ * @param data a JSON object that includes the type of API to invoke and the ticker
+ * @returns 
+ */
 async function processTask(data: any): Promise<any> {
     console.log(data)
-    const command: IAPI_Command = new StockDataCommand(data.data.API);
+    const command: IAPI_Command = new StockDataExecutor(data.data.API);
     const result: any = await command.get_data(data.data.Data)
     console.log('dfd')
     return {Name: result.Name, Data: result};
