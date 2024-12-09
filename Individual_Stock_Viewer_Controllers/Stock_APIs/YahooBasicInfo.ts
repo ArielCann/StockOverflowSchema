@@ -1,8 +1,12 @@
 import { IBasicStockDataAPI } from "./IBasicStockDataAPI";
 import axios from 'axios';
+import { IIndividualStockPageAPIInformation } from "./IIndividualStockPageAPIInformation";
 
 
-export class YahooBasicInfo implements IBasicStockDataAPI {
+export class YahooBasicInfo implements IBasicStockDataAPI, IIndividualStockPageAPIInformation {
+    async getStockData(ticker: string): Promise<any> {
+        return await this.get_data(ticker);
+    }
 
     public async get_data(ticker: string): Promise<any> {
         
@@ -14,7 +18,7 @@ export class YahooBasicInfo implements IBasicStockDataAPI {
               symbol: ticker
             },
             headers: {
-              'x-rapidapi-key': '0bc2aaf1b2mshcd620cae6b97baep1cf3d3jsn46b5ab94a5fe',
+              'x-rapidapi-key': process.env.RAPID_API_KEY,
               'x-rapidapi-host': 'yahoo-finance166.p.rapidapi.com'
             }
           };

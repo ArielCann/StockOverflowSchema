@@ -1,4 +1,4 @@
-import { IAPI_Command } from "./Stock_API_Commands/IAPI_Command";
+import { IAPI_Command } from "./Stock_API_Commands/IAPI_Executor";
 import { StockDataCommand } from "./Stock_API_Commands/StockDataCommand";
 
 

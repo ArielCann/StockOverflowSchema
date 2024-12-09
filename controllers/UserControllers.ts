@@ -2,7 +2,85 @@ import { Request, Response } from "express";
 import Message from "../models/messageSchema";
 import Account from "../models/accountSchema";
 import Fuse from "fuse.js";
+import { runStockWorker } from "./StockControllersProd";
 
+
+
+export const getUserEditProfilePage = async (req: Request, res: Response) => {
+    if (req.params.userId !== req.session.currAccount?.toString()) {
+        console.log('nobody')
+        res.status(422).send({'status': 422, 'msg': "Error", 'success': false, 'changed-profile': false})
+        return;
+    }
+    let currAccount = await Account.findById(req.params.userId);
+    res.status(200).send({'currAccount': currAccount, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : 'None'})
+    return;
+}
+export const postEditProfilePage = async (req: Request, res:Response) => {
+    console.log(req.body);
+    if (req.params.userId !== req.session.currAccount?.toString()) {
+        res.status(422).send({'msg': "Error", 'success': false, 'changed-profile': false})
+        return;
+    }
+    let currAccount = await Account.findById(req.params.userId);
+    let changedProfile = false;
+    if (!currAccount) {
+        res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
+        return;
+    }
+    if (req.body.birthday !== "" || currAccount.Birthday !== req.body.birthday) {
+        currAccount.Birthday = req.body.birthday;
+        changedProfile = true;
+    } 
+    if (req.body.profileDescription !== "" || currAccount.ProfileDesc !== req.body.profileDescription) {
+        currAccount.ProfileDesc = req.body.profileDescription;
+        changedProfile = true;
+    }
+    if (req.body.username !== "" || currAccount.Username !== req.body.username) {
+        currAccount.Username = req.body.username;
+        changedProfile = true;
+    }
+    currAccount.RecieveStockNewsNotifications = req.body.notifyStockNews;
+    currAccount.RecieveResponseNotifications = req.body.notifyPublicForumResponse;
+    currAccount.RecieveLikedNotifications = req.body.notifyPublicForumLikes;
+    currAccount.save();
+    res.status(200).send({'success': true, 'changed-profile': false})
+    return;
+}
+/**
+ * this method is responsible for getting all the stocks for a user. It calls the runStockWorker in the stock controller
+ * @param req 
+ * @param res 
+ */
+export const getAllStocks = async(userStock: Map<String, String>): Promise<any> => {
+    let counter = 0;
+    const taskList: any[] = [];
+    userStock.forEach((ticker: any) => {
+        counter += 1;
+        taskList.push({id: counter, data: {API: "YahooBasicInfo", 'Data': ticker}})
+    })
+    return await Promise.all(taskList.map(task => runStockWorker(task))) 
+}
+/**
+ * this method is responsible for getting the user information based off of the passed in user id. Such as there followed stocks
+ * username, profile description, profile picture, birthday, ect
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export const GetUserProfile = async (req: Request, res: Response) => {
+    console.log("Received userId:", req.params.userId); 
+    let currAccount = await Account.findById(req.params.userId);
+    console.log(currAccount)
+    if (!currAccount) {
+        res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
+        return;
+    }
+    const userStocks: any = await getAllStocks(currAccount.FollowedStocks);
+    console.log(userStocks);
+    res.status(200).send({'currViewedUser': currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : 'None'});
+    return;
+}
 /**
  * Alters a users profile description
  * @param req nneds a session with Account Id

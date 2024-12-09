@@ -20,7 +20,7 @@ export class AuthController {
     public addObserver(): (req: Request, res: Response, next: NextFunction) => void {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
-                const notifyer = NotifyerFactory.GetNotifyers(req.body.service);
+                const notifyer = NotifyerFactory.GetNotifyers('Email');
                 if (!notifyer) {
                     throw new Error('Invalid service provided');
                 }
