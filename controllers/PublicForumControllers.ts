@@ -12,20 +12,29 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
     for (const result of results) {
         matches.push(result.item.toJSON());
     }
-    res.json(matches);
+    res.json({'matches': matches,'isAuthenticated': req.session.loggedIn,'userId': req.session.currAccount});
 }
 export const getMessage = async(req: Request, res: Response) => {
     const message = await Message.findById(req.params.MessageID).exec();
     if(message == null){
-        res.status(404).send("Message could not be found");
+        res.status(404).json({'error': "Message could not be found",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
-    res.status(200).json(message.toJSON());
+    res.status(200).json({'message': message.toJSON(),'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
+/**
+ * Creates a new Question with the specified text. Session must have current AccountId and be logged in
+ * @param req body should have text
+ * @param res will send a 401 if not logged in, 404 if the Account Id couldn't be resolved.
+ */
 export const postQuestion = async (req: Request, res: Response) => {
-    const account = await Account.findOne({AccountID: req.session.AccountID}).exec();
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    const account = await Account.findOne({AccountID: req.session.currAccount}).exec();
     if(account == null) {
-        res.status(404).send("Error: Account could not be found.");
+        res.status(404).json({'error': "Account could not be found.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     const text = req.body.text;
@@ -40,25 +49,28 @@ export const postQuestion = async (req: Request, res: Response) => {
         Dislikes: 0
     });
     msg.save();
-    res.status(200);
+    res.status(201).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
- *
- * @param req body should have the following properties
- *     @param AccountID the ObjectID of the Account posting the new response
+ *  Session should have AccountID as currAccount.
+ * @param req body should have the following properties.
  *     @param QuestionID the ObjectID of the Question being responded to
  *     @param text the text of the message
  * @param res will send http error 404 code if either the Account or Question couldn't be found.
  */
 export const postResponse = async (req: Request, res: Response) => {
-    const account = await Account.findById(req.session.AccountID).exec();
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    const account = await Account.findById(req.session.currAccount).exec();
     const question = await Message.findById(req.body.QuestionID).exec();
     if (question == null) {
-        res.status(404).send("Error: Question could not be found.");
+        res.status(404).json({'error': "Question could not be found.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     if (account == null) {
-        res.status(404).send("Error: Account could not be found.");
+        res.status(404).json({'error': "Account could not be found", 'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     const msg = new Message({
@@ -75,15 +87,19 @@ export const postResponse = async (req: Request, res: Response) => {
     msg.save();
 }
 export const postComment = async (req: Request, res: Response) => {
-    const account = await Account.findById(req.session.AccountID).exec();
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    const account = await Account.findById(req.session.currAccount).exec();
     const text = req.body.text;
     const response = await Message.findById(req.body.ResponseID).exec();
     if (response == null) {
-        res.status(404).send("Error: Question could not be found.");
+        res.status(404).json({'error': "Question could not be found",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     if (account == null) {
-        res.status(404).send("Error: Account could not be found.");
+        res.status(404).json({'error': "Account could not be found",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     const msg = new Message({
@@ -97,6 +113,7 @@ export const postComment = async (req: Request, res: Response) => {
         Dislikes: 0
     });
     response.addReply(msg._id);
+    res.status(201).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
     msg.save();
 }
 /**
@@ -109,11 +126,11 @@ export const postComment = async (req: Request, res: Response) => {
 export const getQuestionPage = async (req: Request, res: Response) => {
     const question = await Message.findById(req.params.QuestionID).exec();
     if(question == null) {
-        res.status(404).send("Error: Question could not be found.");
+        res.status(404).json({'error': "Question could not be found",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     if(!question.IsQuestion){
-        res.status(422).send("Message was found, but is not a forum Question.");
+        res.status(422).json({'error': "Message was found, but is not a forum Question.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     let responses = new Map();
@@ -121,23 +138,23 @@ export const getQuestionPage = async (req: Request, res: Response) => {
         let response = await Message.findById(reply).exec();
         responses?.set(response?._id, await Message.find({_id: {$in: response?.Replies}}).lean().exec());
     }
-    res.status(200).json(responses);
+    res.status(200).json({'responses': responses,'isAuthenticated': req.session.loggedIn,'userId': req.session.currAccount});
 }
 export const getResponseComments = async (req: Request, res: Response) => {
     const response = await Message.findById(req.params.ResponseID).exec();
     if(response == null){
-        res.status(404).send("Error: Response could not be found.");
+        res.status(404).json({'error': "Response could not be found.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     if(response?.IsQuestion){
-        res.status(422).send("Message was found, but a Question, not a response.");
+        res.status(422).json({'error': "Message was found, but a Question, not a response.",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
         return;
     }
     let comments = [];
     for (const comment of response.Replies) {
         comments.push((await Message.findById(comment).exec())?.toJSON());
     }
-    res.status(200).json(comments);
+    res.status(200).json({'comments': comments,'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
  * Likes a message whose Id should be a path parameter
@@ -145,9 +162,13 @@ export const getResponseComments = async (req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchLikeMessage = async(req: Request, res: Response) => {
-    // let account = await Account.findById(req.session.AccountID).exec();
-    // account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    // res.status(200);
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    let account = await Account.findById(req.session.currAccount).exec();
+    account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
  * Dislikes a message whose Id is a path parameter.
@@ -155,9 +176,13 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchDislikeMessage = async(req: Request, res: Response) => {
-    // let account = await Account.findById(req.session.AccountID).exec();
-    // account?.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    // res.status(200);
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    let account = await Account.findById(req.session.currAccount).exec();
+    account?.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
  * Sets the Account to no longer like or dislike a message whose Id is a path parameter
@@ -165,9 +190,13 @@ export const patchDislikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchClearLike = async(req: Request, res: Response) => {
-    // let account = await Account.findById(req.session.AccountID).exec();
-    // account?.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
-    // res.status(200);
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
+        return;
+    }
+    let account = await Account.findById(req.session.currAccount).exec();
+    account?.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    res.status(200).json({'isAuthenticated':req.session.loggedIn,'userId': req.session.currAccount});
 }
 /**
  *
@@ -176,6 +205,6 @@ export const patchClearLike = async(req: Request, res: Response) => {
  *      to booleans that the user has either liked or disliked, true for liked, false for disliked.
  */
 export const getLikedDislikedMessages = async (req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
+    let account = await Account.findById(req.session.currAccount).exec();
     res.status(200).json(account?.LikedDislikedMessages);
 }

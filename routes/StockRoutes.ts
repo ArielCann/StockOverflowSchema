@@ -3,9 +3,6 @@ import { ExpressValidator } from 'express-validator';
 import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock } from '../controllers/StockControllersProd';
 import { postDeleteUserStock } from '../controllers/StockControllersProd';
 
-const AuthController = require('../controllers/AuthControllers');
-const isUserMiddleware = require('../middleware/IsUser');
-
 
 const router = express.Router();
 //this route adds a stock to a user

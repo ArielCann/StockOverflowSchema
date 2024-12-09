@@ -21,7 +21,7 @@ export class YahooNews implements IIndividualStockPageAPIInformation{
             params: {
               s: ticker,
               region: 'US',
-              snippetCount: '500'
+              snippetCount: '20'
             },
             headers: {
               'x-rapidapi-key': process.env.RAPID_API_KEY,

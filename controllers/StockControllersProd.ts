@@ -47,7 +47,7 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
  */
 export const getBasicStockInformation = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
-        const stockBasicDataCommand: IAPI_Command = new StockBasicCommand('RealTime');
+        const stockBasicDataCommand: IAPI_Command = new StockBasicCommand('Yahoo');
         const commands: IAPI_Command[] = [stockBasicDataCommand]
         const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
         const response = await Promise.all(promises);

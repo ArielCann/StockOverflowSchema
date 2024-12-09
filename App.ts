@@ -5,6 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import flash from 'connect-flash';
+import cron from 'node-cron'
 import * as dotenv from 'dotenv';
 import crypto from 'crypto'
 import cors from 'cors'
@@ -15,6 +16,10 @@ import StockRoutes from './routes/StockRoutes';
 import GeneralRoutes from './routes/GeneralRoutes';
 import UserRoutes from './routes/UserRoutes';
 import { GeneralController } from './controllers/GeneralController';
+import { SNSDailyNotifyer } from './StockDailyNotifyer/SNSDailyNotifyer';
+import { DailyNotifyerService } from './StockDailyNotifyer/DailyNotifyerService';
+import AWS from 'aws-sdk';
+import { StockDataCommand } from './Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
@@ -61,6 +66,24 @@ app.use(GeneralRoutes)
 app.use('/public-forum', PublicForumRoutes);
 app.use('/stocks', StockRoutes);
 app.use('/user', UserRoutes);
+//this middleware is responsible for invoking aws sns to send messages to users about daily news
+const triggerNotifications = () => {
+    const sns = new AWS.SNS({region: 'us-east-1'})
+    const dailyNotifyerService: DailyNotifyerService = new SNSDailyNotifyer(sns, new StockDataCommand('Yahoo News'));
+    try {
+        console.log('about to notify all accounts');
+        dailyNotifyerService.notifyAllAccounts();
+    } catch (error) {
+        console.log("error notifying accounts ")
+    }
+    
+};
+cron.schedule('0 8 * * *', async () => {
+    await triggerNotifications();
+});
+(async () => {
+    await triggerNotifications();
+})();
 
 // mongoose.connect(dbUrl).then(result => {
 //     app.listen(8000)

@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 import { StockDataExecutor } from '../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
 import { IAPI_Command } from '../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor';
 
+
 const sns = new AWS.SNS({ region: 'us-east-1' }); 
 
 (async () => {
@@ -25,6 +26,7 @@ const sns = new AWS.SNS({ region: 'us-east-1' });
         return newNewsDict;
     }
     try {
+
         const stockNewsAPI: IAPI_Command = new StockDataExecutor('Yahoo News');
         const stockNews = await stockNewsAPI.get_data(extractTickerName(topicArn));
         const formattedStockNews = formatNews(stockNews['Data']['data']['main']['stream']);
