@@ -5,6 +5,7 @@ import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_
 import { StockDataExecutor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
 import express, {Request, Response} from 'express';
 import Account from "../models/accountSchema";
+import ProfileImage from "../models/imageSchema";
 
 interface StockTickerParams {
     stockTicker: string;
@@ -94,7 +95,18 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             responseMap.set(response.Name, response.Data)
         });
         const responseObject = Object.fromEntries(responseMap);
-        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn});
+        let currAccount = await Account.findById(req.session.currAccount);
+        let profileImageBase64 = null;
+        if (currAccount) {
+            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+            if (!currProfilePic) {
+                currProfilePic = null;
+            } else {
+                //have to cast it to base 64 to be read
+                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+            }
+        }
+        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {
@@ -108,7 +120,9 @@ export const postAddUserStock = async (req: Request, res: Response): Promise<voi
         res.status(422).send({msg: "No Current User is Signed in"});
         return;
     }
-    const isChanged: boolean = await account.addFollowedStock(req.body.stockName, req.body.ticker)
+    const StockName = req.body.stockName.replace(/\./g, "");
+
+    const isChanged: boolean = await account.addFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
         console.log('sfsdfsf')
         res.status(422).send({msg: "Stock Already Added"})
@@ -123,7 +137,8 @@ export const postDeleteUserStock = async(req: Request, res: Response): Promise<v
         res.status(422).send({msg: "No Current User is Signed in"});
         return;
     }
-    const isChanged: boolean = await account.removeFollowedStock(req.body.stockName, req.body.ticker)
+    const StockName = req.body.stockName.replace(/\./g, "");
+    const isChanged: boolean = await account.removeFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
         console.log('sfsdfsf')
         res.status(422).send({msg: "Stock Already Added"})

@@ -19,7 +19,7 @@ import { GeneralController } from './controllers/GeneralController';
 import { SNSDailyNotifyer } from './StockDailyNotifyer/SNSDailyNotifyer';
 import { DailyNotifyerService } from './StockDailyNotifyer/DailyNotifyerService';
 import AWS from 'aws-sdk';
-import { StockDataCommand } from './Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
+import { StockDataExecutor } from './Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
@@ -69,7 +69,7 @@ app.use('/user', UserRoutes);
 //this middleware is responsible for invoking aws sns to send messages to users about daily news
 const triggerNotifications = () => {
     const sns = new AWS.SNS({region: 'us-east-1'})
-    const dailyNotifyerService: DailyNotifyerService = new SNSDailyNotifyer(sns, new StockDataCommand('Yahoo News'));
+    const dailyNotifyerService: DailyNotifyerService = new SNSDailyNotifyer(sns, new StockDataExecutor('Yahoo News'));
     try {
         console.log('about to notify all accounts');
         dailyNotifyerService.notifyAllAccounts();
@@ -78,12 +78,15 @@ const triggerNotifications = () => {
     }
     
 };
-cron.schedule('0 8 * * *', async () => {
+/**
+ * this method is responsible for triggering sns to send the latest stock news to users
+ */
+cron.schedule('28 15 * * *', async () => {
     await triggerNotifications();
 });
-(async () => {
-    await triggerNotifications();
-})();
+// (async () => {
+//     await triggerNotifications();
+// })();
 
 // mongoose.connect(dbUrl).then(result => {
 //     app.listen(8000)
