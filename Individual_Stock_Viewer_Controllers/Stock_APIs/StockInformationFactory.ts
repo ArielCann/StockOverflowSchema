@@ -1,6 +1,7 @@
 import { IIndividualStockPageAPIInformation } from "./IIndividualStockPageAPIInformation";
 import { Shwab } from "./Shwab";
 import { WallStreetJournal } from "./WallStreetJournal";
+import { YahooBasicInfo } from "./YahooBasicInfo";
 import { YahooCompanyInfo } from "./YahooCompanyInfo";
 import { YahooEarnings } from "./YahooEarnings";
 import { YahooFinance } from "./YahooFinance";
@@ -24,6 +25,8 @@ export class StockAPIInformationFactory {
             return new YahooNews();
         } else if (api == 'Yahoo Company Info') {
             return new YahooCompanyInfo();
+        } else if (api == 'YahooBasicInfo') {
+            return new YahooBasicInfo();
         }
         else {
             throw new Error('API not found')
