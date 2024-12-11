@@ -1,10 +1,13 @@
 import { resolve } from "path";
 import { Worker } from 'worker_threads';
-import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
+import { IAPI_Executor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
 import { StockDataExecutor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
 import express, {Request, Response} from 'express';
 import Account from "../models/accountSchema";
+import ProfileImage from "../models/imageSchema";
+import { NotifyerHandlerService } from "../StockDailyNotifyer/NotifyerHandlerService";
+import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerServiceHandlerFactory";
 
 interface StockTickerParams {
     stockTicker: string;
@@ -17,8 +20,8 @@ interface StockTickerParams {
  */
 export const getIndividualStockChart = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
-        const stockChartCommand: IAPI_Command = new StockDataExecutor('WallStreet Journal');
-        const commands: IAPI_Command[] = [stockChartCommand]
+        const stockChartCommand: IAPI_Executor = new StockDataExecutor('WallStreet Journal');
+        const commands: IAPI_Executor[] = [stockChartCommand]
         const stockChartMap: Map<string, string> = new Map<string, string>();
         const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
         const response = await Promise.all(promises);
@@ -47,8 +50,8 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
  */
 export const getBasicStockInformation = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
-        const stockBasicDataCommand: IAPI_Command = new StockBasicCommand('Yahoo');
-        const commands: IAPI_Command[] = [stockBasicDataCommand]
+        const stockBasicDataCommand: IAPI_Executor = new StockBasicCommand('Yahoo');
+        const commands: IAPI_Executor[] = [stockBasicDataCommand]
         const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
         const response = await Promise.all(promises);
         res.status(200).send(response);
@@ -94,7 +97,18 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             responseMap.set(response.Name, response.Data)
         });
         const responseObject = Object.fromEntries(responseMap);
-        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn});
+        let currAccount = await Account.findById(req.session.currAccount);
+        let profileImageBase64 = null;
+        if (currAccount) {
+            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+            if (!currProfilePic) {
+                currProfilePic = null;
+            } else {
+                //have to cast it to base 64 to be read
+                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+            }
+        }
+        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {
@@ -102,17 +116,29 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
         }
     }
 }
+/**
+ * this post route is responsible for adding teh stock ticker and stock name to the user that clicked the add button. 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export const postAddUserStock = async (req: Request, res: Response): Promise<void> => {
     const account = await Account.findById(req.session.currAccount);
     if (!account) {
         res.status(422).send({msg: "No Current User is Signed in"});
         return;
     }
-    const isChanged: boolean = await account.addFollowedStock(req.body.stockName, req.body.ticker)
+    const StockName = req.body.stockName.replace(/\./g, "");
+
+    const isChanged: boolean = await account.addFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
-        console.log('sfsdfsf')
+        console.log('geez')
         res.status(422).send({msg: "Stock Already Added"})
         return;
+    }
+    if (account.RecieveStockNewsNotifications) {
+        const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
+        notifyerHandlerService.subscribeStocks([req.body.ticker], 'email', account.Email.toString())
     }
     res.status(200).send({msg: "Stock Added Successfully"})
 
@@ -123,11 +149,18 @@ export const postDeleteUserStock = async(req: Request, res: Response): Promise<v
         res.status(422).send({msg: "No Current User is Signed in"});
         return;
     }
-    const isChanged: boolean = await account.removeFollowedStock(req.body.stockName, req.body.ticker)
+    console.log('removing stock...')
+    const StockName = req.body.stockName.replace(/\./g, "");
+    console.log(StockName);
+    const isChanged: boolean = await account.removeFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
         console.log('sfsdfsf')
         res.status(422).send({msg: "Stock Already Added"})
         return;
+    }
+    if (account.RecieveStockNewsNotifications) {
+        const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
+        notifyerHandlerService.unsubscribeStocks([req.body.ticker], account.Email.toString())
     }
     res.status(200).send({msg: "Stock Deleted Successfully"})
 }

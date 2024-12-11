@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command";
+import { IAPI_Executor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
 import { DailyNotifyerService } from "./DailyNotifyerService";
 import { Worker } from 'worker_threads';
 /**
@@ -9,9 +9,9 @@ import { Worker } from 'worker_threads';
 export class SNSDailyNotifyer implements DailyNotifyerService{
 
     private sns: any;
-    private stockNewsAPI: IAPI_Command;
+    private stockNewsAPI: IAPI_Executor;
 
-    constructor(sns: any, stockNewsAPI: IAPI_Command) {
+    constructor(sns: any, stockNewsAPI: IAPI_Executor) {
         this.sns = sns;
         this.stockNewsAPI = stockNewsAPI;
     }
@@ -25,7 +25,7 @@ export class SNSDailyNotifyer implements DailyNotifyerService{
             const workerPromises = topics.map(
                 (topicArn) =>
                     new Promise<void>((resolve, reject) => {
-                        const worker = new Worker('./StockDailyNotifyer/TopicNotifierWorker.ts', {
+                        const worker = new Worker('./StockDailyNotifyer/SNSWorkers/TopicNotifierWorker.ts', {
                             execArgv: ['-r', 'ts-node/register'],
                             workerData: { topicArn},
                         });
@@ -67,7 +67,7 @@ export class SNSDailyNotifyer implements DailyNotifyerService{
 
 function runTopicsWorker(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        const topicworker = new Worker("./StockDailyNotifyer/GetTopicWorker.ts", {execArgv: ['-r', 'ts-node/register']});
+        const topicworker = new Worker("./StockDailyNotifyer/SNSWorkers/GetTopicWorker.ts", {execArgv: ['-r', 'ts-node/register']});
         topicworker.on('message', (data: string[]) => {
             resolve(data);
         });

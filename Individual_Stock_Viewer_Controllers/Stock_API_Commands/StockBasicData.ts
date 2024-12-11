@@ -2,12 +2,12 @@ import { AbstractStockAPIFactory } from "../Stock_APIs/AbstractStockAPIFactory";
 import { IBasicStockDataAPI } from "../Stock_APIs/IBasicStockDataAPI";
 import { ITrendingStocksPageAPIInformation } from "../Stock_APIs/ITrendingStocksPageAPIInformation";
 import { StockBasicDataFactory } from "../Stock_APIs/StockBasicDataFactory";
-import { IAPI_Command } from "./IAPI_Executor";
+import { IAPI_Executor } from "./IAPI_Executor";
 
 /**
  * this class represents an executor to exeute a command to get the basic stock information 
  */
-export class StockBasicCommand implements IAPI_Command {
+export class StockBasicCommand implements IAPI_Executor {
 
     private basicStockAPI : IBasicStockDataAPI;
 

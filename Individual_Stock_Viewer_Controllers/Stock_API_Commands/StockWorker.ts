@@ -1,7 +1,7 @@
 import { parentPort, workerData } from "worker_threads";
 
 import { StockDataExecutor } from "./StockDataCommand";
-import { IAPI_Command } from "./IAPI_Executor";
+import { IAPI_Executor } from "./IAPI_Executor";
 
 /**
  * this method is responsible for calling the StockDataExecutor to execucute an API (command). This method is called by the different worker 
@@ -11,7 +11,7 @@ import { IAPI_Command } from "./IAPI_Executor";
  */
 async function processTask(data: any): Promise<any> {
     console.log(data)
-    const command: IAPI_Command = new StockDataExecutor(data.data.API);
+    const command: IAPI_Executor = new StockDataExecutor(data.data.API);
     const result: any = await command.get_data(data.data.Data)
     console.log('dfd')
     return {Name: result.Name, Data: result};

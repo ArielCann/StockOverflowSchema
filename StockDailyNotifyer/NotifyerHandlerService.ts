@@ -10,10 +10,10 @@ export interface NotifyerHandlerService {
     /**
      * this method is responsible for subsribing a user to a certain stock to recieve daily news about it 
      */
-    subscribeStock(stock: string, protocol: string, endpoint: string): Promise<string>;
+    subscribeStocks(stock: string[], protocol: string, endpoint: string): Promise<void>;
 
     /**
      * this method is responsible for unsubscibing a user from a certain stock to not recieve daily news about it 
      */
-    unsubscribeStock(topicName: string, endpoint: string): Promise<string>;
+    unsubscribeStocks(topicName: string[], endpoint: string): Promise<void>;
 }

@@ -1,7 +1,5 @@
 import { parentPort, workerData } from 'worker_threads';
 import AWS from 'aws-sdk';
-import { StockDataCommand } from '../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
-import { IAPI_Command } from '../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command';
 const sns = new AWS.SNS({ region: 'us-east-1' }); 
 (async () => {
     try {

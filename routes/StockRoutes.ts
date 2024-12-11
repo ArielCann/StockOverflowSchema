@@ -6,10 +6,10 @@ import { postDeleteUserStock } from '../controllers/StockControllersProd';
 
 const router = express.Router();
 //this route adds a stock to a user
-router.post('/add-stock', postAddUserStock)
+router.post('/add-stock', postAddUserStock);
 
 //this route removes a stock from the user
-router.post('/remove-stock', postDeleteUserStock)
+router.post('/remove-stock', postDeleteUserStock);
 
 //this route is to grab stock data like the company information
 router.get('/stock-data/:stockTicker', getIndividualStockViewer);
