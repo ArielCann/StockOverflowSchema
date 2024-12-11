@@ -151,10 +151,10 @@ const accountSchema = new mongoose.Schema<IAccount>({
  * @return true if the user wasn't already following that stock, false otherwise.
  */
 accountSchema.methods.addFollowedStock = function(name: String,ticker:String): boolean{
-    if(this.FollowedStocks.has(name.toString())){
+    if(this.FollowedStocks.has(ticker.toString())){
         return false;
     }
-    this.FollowedStocks.set(name,ticker);
+    this.FollowedStocks.set(ticker, name);
     this.save();
     return true;
 }
@@ -165,8 +165,8 @@ accountSchema.methods.addFollowedStock = function(name: String,ticker:String): b
  * @return true if the user had been following that stock, false otherwise.
  */
 accountSchema.methods.removeFollowedStock = function(name: String,ticker:String): boolean{
-    if(name.toString() in this.FollowedStocks){
-        this.FollowedStocks.delete(name);
+    if(this.FollowedStocks.has(ticker.toString())){
+        this.FollowedStocks.delete(ticker);
         this.save();
         return true;
     }

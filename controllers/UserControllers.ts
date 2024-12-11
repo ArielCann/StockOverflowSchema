@@ -5,8 +5,10 @@ import Fuse from "fuse.js";
 import { runStockWorker } from "./StockControllersProd";
 import ProfileImage from "../models/imageSchema";
 import mongoose from "mongoose";
+import { NotifyerHandlerService } from "../StockDailyNotifyer/NotifyerHandlerService";
+import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerServiceHandlerFactory";
 
-
+const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
 
 export const getUserEditProfilePage = async (req: Request, res: Response) => {
     if (req.params.userId !== req.session.currAccount?.toString()) {
@@ -29,8 +31,7 @@ export const getUserEditProfilePage = async (req: Request, res: Response) => {
     return;
 }
 export const postEditProfilePage = async (req: Request, res:Response) => {
-    console.log(req.body);
-    console.log(req.file);
+    console.log('sfsdfsdfsdfsdfsdfsdfsdf')
     console.log(req.params.userId)
     console.log(req.session.currAccount)
     console.log(req.session.loggedIn)
@@ -74,7 +75,18 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
         currAccount.Username = req.body.username;
         changedProfile = true;
     }
-    currAccount.RecieveStockNewsNotifications = req.body.notifyStockNews;
+    if (req.body.notifyStockNews && !currAccount.RecieveStockNewsNotifications || !req.body.notifyStockNews && currAccount.RecieveStockNewsNotifications) {
+        currAccount.RecieveStockNewsNotifications = req.body.notifyStockNews;
+        let accountStockArray: string[] = [];
+        currAccount.FollowedStocks.forEach(stock => {
+            accountStockArray.push(stock.toString());
+        });
+        if (accountStockArray.length > 0) {
+            req.body.notifyStockNews ? notifyerHandlerService.subscribeStocks(accountStockArray, 'email', currAccount.Email.toString()) : notifyerHandlerService.unsubscribeStocks(accountStockArray, currAccount.Email.toString());
+        }
+
+    }
+    
     currAccount.RecieveResponseNotifications = req.body.notifyPublicForumResponse;
     currAccount.RecieveLikedNotifications = req.body.notifyPublicForumLikes;
     currAccount.save();
@@ -89,10 +101,12 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
 export const getAllStocks = async(userStock: Map<String, String>): Promise<any> => {
     let counter = 0;
     const taskList: any[] = [];
-    userStock.forEach((ticker: any) => {
+    for(const [ticker, data] of userStock){
         counter += 1;
+        console.log('thing')
+        console.log(ticker)
         taskList.push({id: counter, data: {API: "YahooBasicInfo", 'Data': ticker}})
-    })
+    }
     return await Promise.all(taskList.map(task => runStockWorker(task))) 
 }
 /**
@@ -122,7 +136,7 @@ export const GetUserProfile = async (req: Request, res: Response) => {
     console.log(req.session.loggedIn)
     const userStocks: any = await getAllStocks(currAccount.FollowedStocks);
     console.log(userStocks);
-    res.status(200).send({'profilePicture': profileImageBase64, 'currViewedUser': currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : 'None'});
+    res.status(200).send({'profilePicture': profileImageBase64, 'currViewedUser': currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
     return;
 }
 /**

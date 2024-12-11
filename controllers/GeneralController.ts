@@ -20,6 +20,6 @@ export class GeneralController {
                 profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
             }
         }
-        res.status(200).send({'data': "home", 'isAuthenticated': req.session.loggedIn ? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64})
+        res.status(200).send({'path': "home", 'isAuthenticated': req.session.loggedIn ? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64})
     }
 }
