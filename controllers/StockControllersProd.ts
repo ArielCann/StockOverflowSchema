@@ -85,11 +85,11 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
     try {
         const responseMap: Map<string, any> = new Map<string, any>();
         const tasks = [
-            {id: 1, data: {'API': 'YahooEarnings', 'Data': req.params.stockTicker}},
-            {id: 2, data: {'API': 'Shwab', 'Data': req.params.stockTicker}},
-            {id: 3, data: {'API': 'Yahoo Company Info', 'Data': req.params.stockTicker}},
-            {id: 4, data: {'API': 'Yahoo Finance', 'Data': req.params.stockTicker}},
-            {id: 5, data: {'API': 'Yahoo News', 'Data': req.params.stockTicker}}
+            {id: 1, data: {'API': 'YahooEarnings', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}},
+            {id: 2, data: {'API': 'Shwab', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}},
+            {id: 3, data: {'API': 'Yahoo Company Info', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}},
+            {id: 4, data: {'API': 'Yahoo Finance', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}},
+            {id: 5, data: {'API': 'Yahoo News', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}}
         ]
         const results = await Promise.all(tasks.map(task => runStockWorker(task)));
         results.forEach(response => {
@@ -98,7 +98,7 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
         });
         const responseObject = Object.fromEntries(responseMap);
         let currAccount = await Account.findById(req.session.currAccount);
-        let profileImageBase64 = null;
+        let profileImageBase64 = "";
         if (currAccount) {
             let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
             if (!currProfilePic) {

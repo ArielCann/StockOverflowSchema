@@ -27,7 +27,7 @@ export class StockAPIInformationFactory {
             return new YahooCompanyInfo();
         } else if (api == 'YahooBasicInfo') {
             return new YahooBasicInfo();
-        }
+        } 
         else {
             throw new Error('API not found')
         }

@@ -17,7 +17,7 @@ export const getUserEditProfilePage = async (req: Request, res: Response) => {
         return;
     }
     let currAccount = await Account.findById(req.params.userId);
-    let profileImageBase64 = null;
+    let profileImageBase64 = "";
     if (currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
         if (!currProfilePic) {
@@ -32,6 +32,7 @@ export const getUserEditProfilePage = async (req: Request, res: Response) => {
 }
 export const postEditProfilePage = async (req: Request, res:Response) => {
     console.log('sfsdfsdfsdfsdfsdfsdfsdf')
+    console.log(req.body)
     console.log(req.params.userId)
     console.log(req.session.currAccount)
     console.log(req.session.loggedIn)
@@ -75,14 +76,20 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
         currAccount.Username = req.body.username;
         changedProfile = true;
     }
-    if (req.body.notifyStockNews && !currAccount.RecieveStockNewsNotifications || !req.body.notifyStockNews && currAccount.RecieveStockNewsNotifications) {
+    console.log('reached here ')
+    const recieveStockNews: boolean = req.body.notifyStockNews === 'false' ? false: true;
+    console.log(recieveStockNews)
+    console.log(currAccount.RecieveStockNewsNotifications)
+    console.log((!req.body.notifyStockNews && currAccount.RecieveStockNewsNotifications))
+    if ((recieveStockNews && !currAccount.RecieveStockNewsNotifications) || (!recieveStockNews && currAccount.RecieveStockNewsNotifications)) {
         currAccount.RecieveStockNewsNotifications = req.body.notifyStockNews;
         let accountStockArray: string[] = [];
-        currAccount.FollowedStocks.forEach(stock => {
-            accountStockArray.push(stock.toString());
-        });
+        for(const [ticker, data] of currAccount.FollowedStocks){
+            accountStockArray.push(ticker.toString());
+        }
+        console.log(accountStockArray)
         if (accountStockArray.length > 0) {
-            req.body.notifyStockNews ? notifyerHandlerService.subscribeStocks(accountStockArray, 'email', currAccount.Email.toString()) : notifyerHandlerService.unsubscribeStocks(accountStockArray, currAccount.Email.toString());
+            recieveStockNews ? notifyerHandlerService.subscribeStocks(accountStockArray, 'email', currAccount.Email.toString()) : notifyerHandlerService.unsubscribeStocks(accountStockArray, currAccount.Email.toString());
         }
 
     }
@@ -125,7 +132,7 @@ export const GetUserProfile = async (req: Request, res: Response) => {
         return;
     }
     let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-    let profileImageBase64 = null;
+    let profileImageBase64 = "";
     if (!currProfilePic) {
         currProfilePic = null;
     } else {
