@@ -1,12 +1,12 @@
 import { AbstractStockAPIFactory } from "../Stock_APIs/AbstractStockAPIFactory";
 import { ITrendingStocksPageAPIInformation } from "../Stock_APIs/ITrendingStocksPageAPIInformation";
 import { StockTrendingFactory } from "../Stock_APIs/StockTrendingFactory";
-import { IAPI_Command } from "./IAPI_Executor";
+import { IAPI_Executor } from "./IAPI_Executor";
 
 /**
  * this class represents a command to get the trending stocks 
  */
-export class StockTrendingCommand implements IAPI_Command {
+export class StockTrendingCommand implements IAPI_Executor {
 
     private trendingApi : ITrendingStocksPageAPIInformation;
 

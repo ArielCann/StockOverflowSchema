@@ -1,5 +1,7 @@
+import { Worker } from 'worker_threads';
 import { NotifyerHandlerService } from "./NotifyerHandlerService";
 import AWS from 'aws-sdk';
+
 /**
  * this class is responsible for handling all the sns functionality 
  */
@@ -16,17 +18,49 @@ export class SNSHandler implements NotifyerHandlerService {
      * @param endpoint 
      */
     async unsubscribeStocks(topicNames: string[], endpoint: string): Promise<void> {
-        for (let topicName of topicNames) {
-            const topicArn = await this.getStockTopic(topicName);
-            const currSubscriptions = await this.listSubscriptions(topicArn);
-            const userSubscription = currSubscriptions.find(sub => sub.Endpoint === endpoint);
-            if (userSubscription && userSubscription.SubscriptionArn) {
-                 await this.removeUserSubscription(userSubscription.SubscriptionArn);
-            } else {
-                throw new Error("No User found to unsubscibe")
-            }
+        console.log('sfsdf')
+        const workerPromises =  topicNames.map((topicName) => {
+        new Promise<void>((resolve, reject) => {
+            const worker = new Worker('./StockDailyNotifyer/SNSWorkers/TopicWorker.ts', {
+                execArgv: ['-r', 'ts-node/register'],
+                workerData: { isSubscribing: false, topicName, endpoint },
+            });
+    
+         
+            worker.on('message', (data) => {
+                if (data.success) {
+                    console.log(`Successfully notified topic: `);
+                    resolve();
+                } else {
+                    console.error(`Failed to notify topic: `);
+                    reject(data.error);
+                }
+            });
+    
           
-        }
+            worker.on('error', (error) => {
+                console.error(`Worker error for topic `);
+                reject(error);
+            });
+    
+ 
+            worker.on('exit', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Worker stopped with exit code`));
+                }
+            });
+        })})
+        // for (let topicName of topicNames) {
+        //     const topicArn = await this.getStockTopic(topicName);
+        //     const currSubscriptions = await this.listSubscriptions(topicArn);
+        //     const userSubscription = currSubscriptions.find(sub => sub.Endpoint === endpoint);
+        //     if (userSubscription && userSubscription.SubscriptionArn) {
+        //          await this.removeUserSubscription(userSubscription.SubscriptionArn);
+        //     } else {
+        //         throw new Error("No User found to unsubscibe")
+        //     }
+          
+        // }
     }
     private async listSubscriptions(topicArn: string): Promise<any[]> {
         try {
@@ -47,26 +81,55 @@ export class SNSHandler implements NotifyerHandlerService {
         }
     }
     async subscribeStocks(stocks: string[], protocol: string, endpoint: string): Promise<void> {
-        for (let stock of stocks) {
-            console.log('the stock');
-            console.log(stock);
-            console.log(stocks);
-            let topicArn = await this.getStockTopic(stock);
-            try {
-            const response = await this.sns
-                .subscribe({
-                    TopicArn: topicArn, // ARN of the SNS topic
-                    Protocol: protocol, // Protocol (e.g., "email", "sms", "https")
-                    Endpoint: endpoint, // Endpoint based on the protocol
-                })
-                .promise();
+        const workerPromises = stocks.map((stock) => {
+            return new Promise<void>((resolve, reject) => {
+                const worker = new Worker('./StockDailyNotifyer/SNSWorkers/TopicWorker.ts', {execArgv: ['-r', 'ts-node/register'],
+                    workerData: { isSubscribing: true, topicName: stock, endpoint: endpoint, protocol: protocol},
+                });
+               
+                worker.on('message', (data) => {
+                    if (data.success) {
+                        console.log(`Successfully notified topic: `);
+                        resolve();
+                    } else {
+                        console.error(`Failed to notify topic: `);
+                        reject(data.error);
+                    }
+                });
+        
 
-            console.log(`Subscription ARN: ${response.SubscriptionArn}`);
-            } catch (error) {
-                console.error('Error subscribing user to topic:', error);
-                throw error;
-            }
-        }
+                worker.on('error', (error) => {
+                    console.error(`Worker error for topic `);
+                    reject(error);
+                });
+
+                worker.on('exit', (code) => {
+                    if (code !== 0) {
+                        reject(new Error(`Worker stopped with exit code `));
+                    }
+                });
+            })
+        })
+        // for (let stock of stocks) {
+        //     console.log('the stock');
+        //     console.log(stock);
+        //     console.log(stocks);
+        //     let topicArn = await this.getStockTopic(stock);
+        //     try {
+        //     const response = await this.sns
+        //         .subscribe({
+        //             TopicArn: topicArn, // ARN of the SNS topic
+        //             Protocol: protocol, // Protocol (e.g., "email", "sms", "https")
+        //             Endpoint: endpoint, // Endpoint based on the protocol
+        //         })
+        //         .promise();
+
+        //     console.log(`Subscription ARN: ${response.SubscriptionArn}`);
+        //     } catch (error) {
+        //         console.error('Error subscribing user to topic:', error);
+        //         throw error;
+        //     }
+        // }
 
     }
 

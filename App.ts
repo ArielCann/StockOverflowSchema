@@ -81,7 +81,7 @@ const triggerNotifications = () => {
 /**
  * this method is responsible for triggering sns to send the latest stock news to users
  */
-cron.schedule('28 15 * * *', async () => {
+cron.schedule('37 16 * * *', async () => {
     await triggerNotifications();
 });
 // (async () => {

@@ -8,7 +8,7 @@ export class GeneralController {
         console.log('home')
         console.log(req.session.loggedIn)
         let currAccount = await Account.findById(req.session.currAccount);
-        let profileImageBase64 = null;
+        let profileImageBase64 = "";
         if (currAccount) {
             console.log('found curr user')
             let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);

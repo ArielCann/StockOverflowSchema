@@ -21,7 +21,7 @@ router.post('/sign-up',
         .isEmail()
         .withMessage('Please enter a valid email address')
         .custom(async (value) => {
-            console.log(value)
+             console.log(value)
             const account = await Account.findOne({ Email: value });
             console.log(value)
             if (account) {
