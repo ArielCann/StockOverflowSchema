@@ -140,7 +140,8 @@ const accountSchema = new mongoose.Schema<IAccount>({
     RecieveLikedNotifications: Boolean,
     LikedDislikedMessages: {
         type: Map,
-        of: Boolean
+        of: Boolean,
+        default: new Map(),
     },
     ProfileImage: mongoose.Types.ObjectId,
 });
@@ -186,14 +187,13 @@ accountSchema.methods.alterProfileDesc = function(newDesc: string){
  * @return true if the message was successfully liked, false if it was already liked or disliked
  */
 accountSchema.methods.likeMessage = async function (message: mongoose.Types.ObjectId): Promise<boolean> {
-    if (message.toString() in this.LikedDislikedMessages) {
+    if (this.LikedDislikedMessages.has(message.toString())) {
         return false;
     } else {
-        this.LikedDislikedMessages.put(message.toString(), true);
+        this.LikedDislikedMessages.set(message.toString(), true);
         const messageObj = await Message.findById(message).exec()
-        messageObj?.like();
-        messageObj?.save();
-        this.save();
+        await messageObj?.like();
+        await this.save();
         return true;
     }
 }

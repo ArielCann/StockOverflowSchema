@@ -241,11 +241,11 @@ export const getResponseComments = async (req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchLikeMessage = async(req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
+    if(!req.session.loggedIn || req.session.currAccount == null){
         res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findOne({AccountID: new mongoose.Types.ObjectId(req.session.currAccount)}).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -254,10 +254,6 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
         } else {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
-    }
-    else{
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
-        return;
     }
     let account = await Account.findById(req.session.currAccount).exec();
     account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
@@ -296,7 +292,7 @@ export const patchDislikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchClearLike = async(req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
+    if(req.session.loggedIn == null || req.session.currAccount == null){
         res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
