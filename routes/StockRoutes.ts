@@ -1,10 +1,14 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock } from '../controllers/StockControllersProd';
+import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock, getStockSearcher, postStockSearcher } from '../controllers/StockControllersProd';
 import { postDeleteUserStock } from '../controllers/StockControllersProd';
 
 
 const router = express.Router();
+//this route is the main stock route, ie the stock searcher route
+router.get('/', getStockSearcher);
+router.post('/', postStockSearcher);
+
 //this route adds a stock to a user
 router.post('/add-stock', postAddUserStock);
 
@@ -19,6 +23,8 @@ router.get('/stock-chart/:stockTicker', getIndividualStockChart);
 
 //this route gets the stock summmary 
 router.get('/stock-basic-data/:stockTicker', getBasicStockInformation)
+
+
 
 
 

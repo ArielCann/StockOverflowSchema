@@ -33,7 +33,7 @@ export class StockSearcher implements IStockSearcher{
           try {
               const response = await axios.request(options);
               console.log(response.data);
-              return {'Name': 'Chart', 'Data': response.data};
+              return {'Name': 'Recommendations', 'Data': response.data};
             } catch (error) {
                 console.error(error);
                 return {'msg': 'Cannot get the chart data'}
