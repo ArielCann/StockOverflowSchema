@@ -63,6 +63,62 @@ export const getBasicStockInformation = async(req: Request<StockTickerParams>, r
     }
 }
 /**
+ * this class is responsible for getting the stock searcher page
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export const getStockSearcher = async(req: Request, res: Response): Promise<void> => {
+    console.log('stock searcher')
+    let currAccount = await Account.findById(req.session.currAccount);
+    let profileImageBase64 = "";
+    if (currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            //have to cast it to base 64 to be read
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    
+    res.status(200).json({isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+    return;
+}
+
+/**
+ * 
+ */
+export const postStockSearcher = async(req: Request, res: Response): Promise<void> => {
+    let currAccount = await Account.findById(req.session.currAccount);
+    let profileImageBase64 = "";
+    if (currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            //have to cast it to base 64 to be read
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    if (req.body.curr_user_input === "") {
+        res.status(200).json({data: []});
+        return;
+    }
+    const tasks = [{id: 1, data: {'API': 'StockSearcher', 'Data': req.body.curr_user_input, 'ExecutorType': 'Search'}}]
+    try {
+        const response = await Promise.all(tasks.map(task => runStockWorker(task)));
+        console.log("The response:", response);
+        res.status(200).json({ data: response});
+        return;
+    } catch (error) {
+        console.error("Error processing tasks:", error);
+        res.status(500).json({ data: 'Error getting stocks' });
+        return;
+    }
+    
+}
+/**
  * 
  * @param data the type of API and the stock ticker that will be sent to the API 
  * @returns the stock data

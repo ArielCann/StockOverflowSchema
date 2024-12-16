@@ -108,11 +108,11 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
 export const getAllStocks = async(userStock: Map<String, String>): Promise<any> => {
     let counter = 0;
     const taskList: any[] = [];
-    for(const [ticker, data] of userStock){
+    for(const [ticker, data] of userStock){ 
         counter += 1;
         console.log('thing')
         console.log(ticker)
-        taskList.push({id: counter, data: {API: "YahooBasicInfo", 'Data': ticker}})
+        taskList.push({id: counter, data: {API: "YahooBasicInfo", 'Data': ticker, 'ExecutorType': 'IndividualStockPageData'}})
     }
     return await Promise.all(taskList.map(task => runStockWorker(task))) 
 }
