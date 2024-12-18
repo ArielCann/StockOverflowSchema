@@ -6,7 +6,7 @@ import Fuse from "fuse.js";
 import ProfileImage from "../models/imageSchema";
 
 export const getQuestionSearch = async (req: Request, res: Response) => {
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -26,7 +26,7 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
     res.status(200).json({'matches': matches,'isAuthenticated': req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
 }
 export const getMessage = async(req: Request, res: Response) => {
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).lean().exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -41,9 +41,9 @@ export const getMessage = async(req: Request, res: Response) => {
         res.status(404).json({'error': "Message could not be found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
         return;
     }
-    const account = await Account.findById(message.Account);
+    const account = await Account.findById(message.Account).lean().exec();
     let username = account?.Username;
-    res.status(200).json({'message': message,'username': username,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
+    res.status(200).json({'message': message,'Username': username,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
 }
 /**
  * Creates a new Question with the specified text. Session must have current AccountId and be logged in
@@ -55,7 +55,7 @@ export const postQuestion = async (req: Request, res: Response) => {
         res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -69,7 +69,6 @@ export const postQuestion = async (req: Request, res: Response) => {
         res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
         return;
     }
-
     const text = req.body.text;
     const msg = new Message({
         text: text,
@@ -81,22 +80,22 @@ export const postQuestion = async (req: Request, res: Response) => {
         Likes: 0,
         Dislikes: 0
     });
-    msg.save();
+    await msg.save();
     res.status(201).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
 }
 /**
+ * Replies to a message on the Public Forum.
  *  Session should have AccountID as currAccount.
- * @param req body should have the following properties.
- *     @param QuestionID the ObjectID of the Question being responded to
- *     @param text the text of the message
- * @param res will send http error 404 code if either the Account or Question couldn't be found.
+ *     @param MessageId as a path parameter, the ObjectID of the Question being responded to
+ *     @param req body should have Text: the text of the message
+ * @param res will send http error 404 code if either the Account or Question couldn't be found, 401 if unauthorized, 201
  */
-export const postResponse = async (req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
+export const postReply = async (req: Request, res: Response) => {
+    if(!req.session.loggedIn || req.session.currAccount == null){
         res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById( req.session.currAccount).lean().exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -105,67 +104,28 @@ export const postResponse = async (req: Request, res: Response) => {
         } else {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
-    }
-    else{
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+    }else{
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const question = await Message.findById(req.body.QuestionID).exec();
-    if (question == null) {
+    const message = await Message.findById(req.params.MessageID).exec();
+    if (message == null) {
         res.status(404).json({'error': "Question could not be found.",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
         return;
     }
     const msg = new Message({
-        text: req.body.text,
-        Account: currAccount._id,
+        Text: req.body.Text,
+        Account: currAccount?._id,
         IsQuestion: false,
         Date_Created: new Date(),
-        RepliedTo: question._id,
+        RepliedTo: message._id,
         Replies: [],
         Likes: 0,
         Dislikes: 0
     });
-    question.addReply(msg._id);
-    msg.save();
-}
-export const postComment = async (req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
-        res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
-        return;
-    }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    else{
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
-        return;
-    }
-    const text = req.body.text;
-    const response = await Message.findById(req.body.ResponseID).exec();
-    if (response == null) {
-        res.status(404).json({'error': "Question could not be found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
-        return;
-    }
-    const msg = new Message({
-        text: text,
-        Account: currAccount._id,
-        IsQuestion: false,
-        Date_Created: new Date(),
-        RepliedTo: response._id,
-        Replies: [],
-        Likes: 0,
-        Dislikes: 0
-    });
-    response.addReply(msg._id);
-    res.status(201).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
-    msg.save();
+    await message.addReply(msg._id);
+    await msg.save();
+    res.status(201).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64})
 }
 /**
  * Gets all the responses to a Question whose Id is a path parameter, as well as comments on those responses
@@ -175,17 +135,17 @@ export const postComment = async (req: Request, res: Response) => {
  * or if susccessful, code 200 with a Map where the keys are response objects and the keys are comment obejcts.
  */
 export const getQuestionPage = async (req: Request, res: Response) => {
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById( req.session.currAccount).lean().exec();
     let profileImageBase64 = "";
     if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage).lean().exec();
         if (!currProfilePic) {
             currProfilePic = null;
         } else {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
     }
-    const question = await Message.findById(req.params.QuestionID).exec();
+    const question = await Message.findById(req.params.QuestionID).lean().exec();
     if(question == null) {
         res.status(404).json({'error': "Question could not be found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
         return;
@@ -197,43 +157,22 @@ export const getQuestionPage = async (req: Request, res: Response) => {
     let responses = [];
     for (const reply of question.Replies) {
         let response = await Message.findById(reply).lean().exec();
-        let id = response?._id;
+        let id = response?.Account;
         let username = (await Account.findById(id).lean().exec())?.Username;
         let comments = await Message.find({_id: {$in: response?.Replies}}).lean().exec();
         let comment_users = []
         for (let i = 0; i < comments.length; i++) {
             let commenter = (await Account.findById(comments[i].Account).lean().exec())?.Username;
             comment_users.push({Username: commenter,Message: comments[i]});
+            /** let commentReplies = await Message.find({_id: {$in: response?.Replies}}).lean().exec();
+            for(let commentReply of commentReplies) {
+                let commentReplier = (await Account.findById(commentReply.Account).lean().exec())?.Username;
+                comment_users.push({Username: commentReplier,Message: commentReply});
+            }*/
         }
-        responses?.push({Username: username,Response: response,Comments: comment_users});
+        responses.push({Username: username,Response: response,Comments: comment_users});
     }
     res.status(200).json({'responses': responses,'isAuthenticated': req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
-}
-export const getResponseComments = async (req: Request, res: Response) => {
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    const response = await Message.findById(req.params.ResponseID).exec();
-    if(response == null){
-        res.status(404).json({'error': "Response could not be found.",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
-        return;
-    }
-    if(response?.IsQuestion){
-        res.status(422).json({'error': "Message was found, but a Question, not a response.",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
-        return;
-    }
-    let comments = [];
-    for (const comment of response.Replies) {
-        comments.push((await Message.findById(comment).exec())?.toJSON());
-    }
-    res.status(200).json({'comments': comments,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
 }
 /**
  * Likes a message whose Id should be a path parameter
@@ -245,7 +184,7 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
         res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: new mongoose.Types.ObjectId(req.session.currAccount)}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -255,8 +194,11 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
     }
-    let account = await Account.findById(req.session.currAccount).exec();
-    account?.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    else{
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
+        return;
+    }
+    await currAccount.likeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
     res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture:profileImageBase64});
 }
 /**
@@ -265,11 +207,11 @@ export const patchLikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchDislikeMessage = async(req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
+    if(!req.session.loggedIn || req.session.currAccount == null){
         res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById( req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -280,10 +222,10 @@ export const patchDislikeMessage = async(req: Request, res: Response) => {
         }
     }
     else{
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    currAccount.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    await currAccount.dislikeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
     res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture:profileImageBase64});
 }
 /**
@@ -292,11 +234,11 @@ export const patchDislikeMessage = async(req: Request, res: Response) => {
  * @param res will send http code 200 upon completion
  */
 export const patchClearLike = async(req: Request, res: Response) => {
-    if(req.session.loggedIn == null || req.session.currAccount == null){
+    if(!req.session.loggedIn || req.session.currAccount == null){
         res.status(401).json({'error': "Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
@@ -307,10 +249,10 @@ export const patchClearLike = async(req: Request, res: Response) => {
         }
     }
     else{
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: ""});
         return;
     }
-    currAccount.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
+    await currAccount.removeMessage(new mongoose.Types.ObjectId(req.params.MessageID));
     res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture:profileImageBase64});
 }
 /**
@@ -320,7 +262,7 @@ export const patchClearLike = async(req: Request, res: Response) => {
  *      to booleans that the user has either liked or disliked, true for liked, false for disliked.
  */
 export const getLikedDislikedMessages = async (req: Request, res: Response) => {
-    const currAccount = await Account.findOne({AccountID: req.session.currAccount}).exec();
+    const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
     if(currAccount) {
         let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
