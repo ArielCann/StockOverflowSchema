@@ -2,6 +2,8 @@
 import express, {Request, Response} from 'express'
 import data from './IdividualStockDataForDev.json'
 import Account from '../models/accountSchema';
+import TrendingPageData from './TrendingPageData.json'
+import ProfileImage from '../models/imageSchema';
 interface StockTickerParams {
     stockTicker: string;
 }
@@ -16,7 +18,29 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
         }
     }
 }
+export const getTrendingPagee = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
+    try {
 
+        const results = TrendingPageData;
+        let currAccount = await Account.findById(req.session.currAccount);
+        let profileImageBase64 = "";
+        if (currAccount) {
+            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+            if (!currProfilePic) {
+                currProfilePic = null;
+            } else {
+                //have to cast it to base 64 to be read
+                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+            }
+        }
+        res.status(200).json({Stock: results, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+    } catch (error) {
+        console.error(error);
+        if (!res.headersSent) {
+            res.status(500).json({error: 'Failed to retrieve stock data', isAuthenticated: req.session.loggedIn})
+        }
+    }
+}
 export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const fakeData = data;
@@ -30,6 +54,36 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             res.status(500).send({error: 'Failed to retrieve stock data'})
         }
     }
+}
+/**
+ * this class is responsible for getting the stock searcher page
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export const getStockSearcher = async(req: Request, res: Response): Promise<void> => {
+    console.log('stock searcher')
+    let currAccount = await Account.findById(req.session.currAccount);
+    let profileImageBase64 = "";
+    if (currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            //have to cast it to base 64 to be read
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    
+    res.status(200).json({isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+    return;
+}
+
+/**
+ * 
+ */
+export const postStockSearcher = async(req: Request, res: Response): Promise<void> => {
+    
 }
 
 export const getBasicStockInformation = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {   

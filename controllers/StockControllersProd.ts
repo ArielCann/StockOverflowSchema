@@ -136,7 +136,38 @@ export function runStockWorker(data:any): Promise<any> {
         });
     });
 }
+export const getTrendingPagee = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
+    try {
 
+        const tasks = [
+            {id: 1, data: {'API': 'Shwab', 'Data': 'MostActive', 'ExecutorType': 'Trending'}},
+            {id: 2, data: {'API': 'Shwab', 'Data': 'PctChgGainers', 'ExecutorType': 'Trending'}},
+            {id: 3, data: {'API': 'Shwab', 'Data': 'PctChgLosers', 'ExecutorType': 'Trending'}},
+            {id: 4, data: {'API': 'Shwab', 'Data': 'NetGainers', 'ExecutorType': 'Trending'}},
+            {id: 5, data: {'API': 'Shwab', 'Data': 'NetLosers', 'ExecutorType': 'Trending'}},
+            {id: 6, data: {'API': 'Shwab', 'Data': 'High52Wk', 'ExecutorType': 'Trending'}},
+            {id: 7, data: {'API': 'Shwab', 'Data': 'Low52Wk', 'ExecutorType': 'Trending'}}
+        ]
+        const results = await Promise.all(tasks.map(task => runStockWorker(task)));
+        let currAccount = await Account.findById(req.session.currAccount);
+        let profileImageBase64 = "";
+        if (currAccount) {
+            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+            if (!currProfilePic) {
+                currProfilePic = null;
+            } else {
+                //have to cast it to base 64 to be read
+                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+            }
+        }
+        res.status(200).json({Stock: results, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+    } catch (error) {
+        console.error(error);
+        if (!res.headersSent) {
+            res.status(500).json({error: 'Failed to retrieve stock data', isAuthenticated: req.session.loggedIn})
+        }
+    }
+}
 export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
         const responseMap: Map<string, any> = new Map<string, any>();

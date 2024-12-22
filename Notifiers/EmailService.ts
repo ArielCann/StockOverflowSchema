@@ -12,7 +12,7 @@ export class EmailService implements Notifyer  {
             service: 'gmail',
             auth: {
               user: 'stockoverflowinfo@gmail.com',
-              pass: 'gvxv dgun urjr orge'
+              pass: process.env.EMAIL_PASSWORD
             }
           });
           

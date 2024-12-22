@@ -1,0 +1,1683 @@
+{
+    "Stock": [
+      {
+        "DataType": "MostActive",
+        "Data": {
+          "msg": "Cannot get the Trending stock data"
+        }
+      },
+      {
+        "Name": "Trending",
+        "DataType": "PctChgGainers",
+        "Data": {
+          "Name": "Trending",
+          "Data": {
+            "timeStamp": "/Date(1734367668216+0000)/",
+            "activityId": "d04ef342-2af9-4d65-8333-a5f19bf3ec6e",
+            "data": {
+              "companyMovers": [
+                {
+                  "companyName": "Sidus Space Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 1.3994,
+                  "priceChangeFormatted": "+1.40",
+                  "priceChangePercent": 97.8601398601399,
+                  "priceChangePercentFormatted": "+97.86%",
+                  "priceHigh52Week": 18.8499,
+                  "priceHigh52WeekFormatted": "$18.85",
+                  "priceLast": 2.8294,
+                  "priceLastFormatted": "$2.83",
+                  "priceLow52Week": 1.15,
+                  "priceLow52WeekFormatted": "$1.15",
+                  "ser": "NC",
+                  "symbol": "SIDU",
+                  "volume": 111697276,
+                  "volumeFormatted": "111.7M"
+                },
+                {
+                  "companyName": "Sealsq Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.98,
+                  "priceChangeFormatted": "+0.98",
+                  "priceChangePercent": 56,
+                  "priceChangePercentFormatted": "+56%",
+                  "priceHigh52Week": 3.95,
+                  "priceHigh52WeekFormatted": "$3.95",
+                  "priceLast": 2.73,
+                  "priceLastFormatted": "$2.73",
+                  "priceLow52Week": 0.29,
+                  "priceLow52WeekFormatted": "$0.29",
+                  "ser": "NC",
+                  "symbol": "LAES",
+                  "volume": 103001660,
+                  "volumeFormatted": "103M"
+                },
+                {
+                  "companyName": "Sagimet Biosciences Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 1.56,
+                  "priceChangeFormatted": "+1.56",
+                  "priceChangePercent": 35.5353075170843,
+                  "priceChangePercentFormatted": "+35.54%",
+                  "priceHigh52Week": 20.71,
+                  "priceHigh52WeekFormatted": "$20.71",
+                  "priceLast": 5.95,
+                  "priceLastFormatted": "$5.95",
+                  "priceLow52Week": 2.39,
+                  "priceLow52WeekFormatted": "$2.39",
+                  "ser": "NC",
+                  "symbol": "SGMT",
+                  "volume": 2789516,
+                  "volumeFormatted": "2.8M"
+                },
+                {
+                  "companyName": "Sangamo Therapeutics Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.67,
+                  "priceChangeFormatted": "+0.67",
+                  "priceChangePercent": 32.6829268292683,
+                  "priceChangePercentFormatted": "+32.68%",
+                  "priceHigh52Week": 3.179,
+                  "priceHigh52WeekFormatted": "$3.18",
+                  "priceLast": 2.72,
+                  "priceLastFormatted": "$2.72",
+                  "priceLow52Week": 0.304,
+                  "priceLow52WeekFormatted": "$0.30",
+                  "ser": "NC",
+                  "symbol": "SGMO",
+                  "volume": 9338197,
+                  "volumeFormatted": "9.3M"
+                },
+                {
+                  "companyName": "Clipper Realty Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 1.4083,
+                  "priceChangeFormatted": "+1.41",
+                  "priceChangePercent": 32.3004587155963,
+                  "priceChangePercentFormatted": "+32.30%",
+                  "priceHigh52Week": 7.12,
+                  "priceHigh52WeekFormatted": "$7.12",
+                  "priceLast": 5.7683,
+                  "priceLastFormatted": "$5.77",
+                  "priceLow52Week": 3.38,
+                  "priceLow52WeekFormatted": "$3.38",
+                  "ser": "D",
+                  "symbol": "CLPR",
+                  "volume": 235621,
+                  "volumeFormatted": "235.6K"
+                },
+                {
+                  "companyName": "Quantum Computing Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 2.1258,
+                  "priceChangeFormatted": "+2.13",
+                  "priceChangePercent": 31.7046979865772,
+                  "priceChangePercentFormatted": "+31.70%",
+                  "priceHigh52Week": 9.2,
+                  "priceHigh52WeekFormatted": "$9.20",
+                  "priceLast": 8.8308,
+                  "priceLastFormatted": "$8.83",
+                  "priceLow52Week": 0.3549,
+                  "priceLow52WeekFormatted": "$0.35",
+                  "ser": "NC",
+                  "symbol": "QUBT",
+                  "volume": 29962774,
+                  "volumeFormatted": "30M"
+                },
+                {
+                  "companyName": "D-Wave Quantum Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 1.4999,
+                  "priceChangeFormatted": "+1.50",
+                  "priceChangePercent": 29.998,
+                  "priceChangePercentFormatted": "+30%",
+                  "priceHigh52Week": 6.66,
+                  "priceHigh52WeekFormatted": "$6.66",
+                  "priceLast": 6.4999,
+                  "priceLastFormatted": "$6.50",
+                  "priceLow52Week": 0.6813,
+                  "priceLow52WeekFormatted": "$0.68",
+                  "ser": "F",
+                  "symbol": "QBTS",
+                  "volume": 70939867,
+                  "volumeFormatted": "70.9M"
+                },
+                {
+                  "companyName": "Viridian Therapeutics Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 5.15,
+                  "priceChangeFormatted": "+5.15",
+                  "priceChangePercent": 28.8515406162465,
+                  "priceChangePercentFormatted": "+28.85%",
+                  "priceHigh52Week": 27.2,
+                  "priceHigh52WeekFormatted": "$27.20",
+                  "priceLast": 23,
+                  "priceLastFormatted": "$23",
+                  "priceLow52Week": 11.4,
+                  "priceLow52WeekFormatted": "$11.40",
+                  "ser": "C",
+                  "symbol": "VRDN",
+                  "volume": 4289311,
+                  "volumeFormatted": "4.3M"
+                },
+                {
+                  "companyName": "Plby Group Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.395,
+                  "priceChangeFormatted": "+0.40",
+                  "priceChangePercent": 28.0141843971631,
+                  "priceChangePercentFormatted": "+28.01%",
+                  "priceHigh52Week": 1.99,
+                  "priceHigh52WeekFormatted": "$1.99",
+                  "priceLast": 1.805,
+                  "priceLastFormatted": "$1.81",
+                  "priceLow52Week": 0.52,
+                  "priceLow52WeekFormatted": "$0.52",
+                  "ser": "NC",
+                  "symbol": "PLBY",
+                  "volume": 2457511,
+                  "volumeFormatted": "2.5M"
+                },
+                {
+                  "companyName": "Syntec Optics Holdings Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.2736,
+                  "priceChangeFormatted": "+0.27",
+                  "priceChangePercent": 27.7597402597403,
+                  "priceChangePercentFormatted": "+27.76%",
+                  "priceHigh52Week": 8.39,
+                  "priceHigh52WeekFormatted": "$8.39",
+                  "priceLast": 1.2592,
+                  "priceLastFormatted": "$1.26",
+                  "priceLow52Week": 0.8451,
+                  "priceLow52WeekFormatted": "$0.85",
+                  "ser": "NC",
+                  "symbol": "OPTX",
+                  "volume": 588420,
+                  "volumeFormatted": "588.4K"
+                }
+              ],
+              "exchanges": [
+                {
+                  "shortName": "NYSE",
+                  "displayName": "New York Stock Exchange",
+                  "field": "nyse"
+                },
+                {
+                  "shortName": "NASDAQ",
+                  "displayName": "NASDAQ Exchange",
+                  "field": "nasdaq"
+                },
+                {
+                  "shortName": "NYSE MKT",
+                  "displayName": "NYSE MKT Composite Index",
+                  "field": "amex"
+                },
+                {
+                  "shortName": "All Exchanges",
+                  "displayName": "All Exchanges",
+                  "field": "all"
+                }
+              ],
+              "rankingSets": [
+                {
+                  "displayName": "Most Actives",
+                  "field": "MostActive"
+                },
+                {
+                  "displayName": "% Price Increase",
+                  "field": "PctChangeGainers"
+                },
+                {
+                  "displayName": "% Price Decrease",
+                  "field": "PctChangeLosers"
+                },
+                {
+                  "displayName": "$ Price Increase",
+                  "field": "NetGainers"
+                },
+                {
+                  "displayName": "$ Price Decrease",
+                  "field": "NetLosers"
+                },
+                {
+                  "displayName": "52 Week Highs",
+                  "field": "52WkHigh"
+                },
+                {
+                  "displayName": "52 Week Lows",
+                  "field": "52WkLow"
+                }
+              ],
+              "sectors": [
+                {
+                  "displayName": "Energy",
+                  "field": "energy"
+                },
+                {
+                  "displayName": "Materials",
+                  "field": "materials"
+                },
+                {
+                  "displayName": "Industrials",
+                  "field": "industrials"
+                },
+                {
+                  "displayName": "Consumer Discretionary",
+                  "field": "consumerDiscretionary"
+                },
+                {
+                  "displayName": "Consumer Staples",
+                  "field": "consumerStaples"
+                },
+                {
+                  "displayName": "Health Care",
+                  "field": "healthCare"
+                },
+                {
+                  "displayName": "Financials",
+                  "field": "financials"
+                },
+                {
+                  "displayName": "Information Technology",
+                  "field": "informationTechnology"
+                },
+                {
+                  "displayName": "Communication Services",
+                  "field": "communicationServices"
+                },
+                {
+                  "displayName": "Utilities",
+                  "field": "utilities"
+                },
+                {
+                  "displayName": "Real Estate",
+                  "field": "realEstate"
+                },
+                {
+                  "displayName": "All Sectors",
+                  "field": "all"
+                }
+              ],
+              "advancersDecliners": [
+                {
+                  "name": "NYSE",
+                  "advancers": "1,394",
+                  "decliners": "1,332",
+                  "unchanged": "79"
+                },
+                {
+                  "name": "NASDAQ",
+                  "advancers": "2,308",
+                  "decliners": "1,849",
+                  "unchanged": "123"
+                },
+                {
+                  "name": "NYSE MKT",
+                  "advancers": "112",
+                  "decliners": "158",
+                  "unchanged": "11"
+                },
+                {
+                  "name": "TSX",
+                  "advancers": "317",
+                  "decliners": "486",
+                  "unchanged": "108"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "Name": "Trending",
+        "DataType": "PctChgLosers",
+        "Data": {
+          "Name": "Trending",
+          "Data": {
+            "timeStamp": "/Date(1734367668502+0000)/",
+            "activityId": "0714f213-0f84-449a-b168-06b5f541b08c",
+            "data": {
+              "companyMovers": [
+                {
+                  "companyName": "Sobr Safe Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -2.53,
+                  "priceChangeFormatted": "-2.53",
+                  "priceChangePercent": -70.8683473389356,
+                  "priceChangePercentFormatted": "-70.87%",
+                  "priceHigh52Week": 87.945,
+                  "priceHigh52WeekFormatted": "$87.95",
+                  "priceLast": 1.04,
+                  "priceLastFormatted": "$1.04",
+                  "priceLow52Week": 0.99,
+                  "priceLow52WeekFormatted": "$0.99",
+                  "ser": "NC",
+                  "symbol": "SOBR",
+                  "volume": 2141737,
+                  "volumeFormatted": "2.1M"
+                },
+                {
+                  "companyName": "Zoomcar Holdings Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -3.54,
+                  "priceChangeFormatted": "-3.54",
+                  "priceChangePercent": -68.3397683397683,
+                  "priceChangePercentFormatted": "-68.34%",
+                  "priceHigh52Week": 1289,
+                  "priceHigh52WeekFormatted": "$1,289",
+                  "priceLast": 1.64,
+                  "priceLastFormatted": "$1.64",
+                  "priceLow52Week": 1.44,
+                  "priceLow52WeekFormatted": "$1.44",
+                  "ser": "NC",
+                  "symbol": "ZCAR",
+                  "volume": 1614861,
+                  "volumeFormatted": "1.6M"
+                },
+                {
+                  "companyName": "Larimar Therapeutics Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": -2.08,
+                  "priceChangeFormatted": "-2.08",
+                  "priceChangePercent": -33.7115072933549,
+                  "priceChangePercentFormatted": "-33.71%",
+                  "priceHigh52Week": 13.68,
+                  "priceHigh52WeekFormatted": "$13.68",
+                  "priceLast": 4.09,
+                  "priceLastFormatted": "$4.09",
+                  "priceLow52Week": 3.01,
+                  "priceLow52WeekFormatted": "$3.01",
+                  "ser": "C",
+                  "symbol": "LRMR",
+                  "volume": 2745915,
+                  "volumeFormatted": "2.7M"
+                },
+                {
+                  "companyName": "Roadzen Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.535,
+                  "priceChangeFormatted": "-0.54",
+                  "priceChangePercent": -30.0561797752809,
+                  "priceChangePercentFormatted": "-30.06%",
+                  "priceHigh52Week": 7.17,
+                  "priceHigh52WeekFormatted": "$7.17",
+                  "priceLast": 1.245,
+                  "priceLastFormatted": "$1.25",
+                  "priceLow52Week": 0.71,
+                  "priceLow52WeekFormatted": "$0.71",
+                  "ser": "NR",
+                  "symbol": "RDZN",
+                  "volume": 1020658,
+                  "volumeFormatted": "1M"
+                },
+                {
+                  "companyName": "PepGen Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": -0.8899,
+                  "priceChangeFormatted": "-0.89",
+                  "priceChangePercent": -19.0149572649573,
+                  "priceChangePercentFormatted": "-19.01%",
+                  "priceHigh52Week": 19.298,
+                  "priceHigh52WeekFormatted": "$19.30",
+                  "priceLast": 3.7901,
+                  "priceLastFormatted": "$3.79",
+                  "priceLow52Week": 2.9,
+                  "priceLow52WeekFormatted": "$2.90",
+                  "ser": "C",
+                  "symbol": "PEPG",
+                  "volume": 129298,
+                  "volumeFormatted": "129.3K"
+                },
+                {
+                  "companyName": "Global Engine Group Holding Ltd",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.42,
+                  "priceChangeFormatted": "-0.42",
+                  "priceChangePercent": -17.0731707317073,
+                  "priceChangePercentFormatted": "-17.07%",
+                  "priceHigh52Week": 5.44,
+                  "priceHigh52WeekFormatted": "$5.44",
+                  "priceLast": 2.04,
+                  "priceLastFormatted": "$2.04",
+                  "priceLow52Week": 2.02,
+                  "priceLow52WeekFormatted": "$2.02",
+                  "ser": "NC",
+                  "symbol": "GLE",
+                  "volume": 72633,
+                  "volumeFormatted": "72.6K"
+                },
+                {
+                  "companyName": "MicroAlgo Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.4,
+                  "priceChangeFormatted": "-0.40",
+                  "priceChangePercent": -17.0212765957447,
+                  "priceChangePercentFormatted": "-17.02%",
+                  "priceHigh52Week": 509.6,
+                  "priceHigh52WeekFormatted": "$509.60",
+                  "priceLast": 1.95,
+                  "priceLastFormatted": "$1.95",
+                  "priceLow52Week": 1.88,
+                  "priceLow52WeekFormatted": "$1.88",
+                  "ser": "NC",
+                  "symbol": "MLGO",
+                  "volume": 1231701,
+                  "volumeFormatted": "1.2M"
+                },
+                {
+                  "companyName": "CAMP4 Therapeutics Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -1.29,
+                  "priceChangeFormatted": "-1.29",
+                  "priceChangePercent": -16.9069462647444,
+                  "priceChangePercentFormatted": "-16.91%",
+                  "priceHigh52Week": 12.3,
+                  "priceHigh52WeekFormatted": "$12.30",
+                  "priceLast": 6.34,
+                  "priceLastFormatted": "$6.34",
+                  "priceLow52Week": 4.0601,
+                  "priceLow52WeekFormatted": "$4.06",
+                  "ser": "NC",
+                  "symbol": "CAMP",
+                  "volume": 22934,
+                  "volumeFormatted": "22.9K"
+                },
+                {
+                  "companyName": "Gaxos.AI Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.55,
+                  "priceChangeFormatted": "-0.55",
+                  "priceChangePercent": -15.7593123209169,
+                  "priceChangePercentFormatted": "-15.76%",
+                  "priceHigh52Week": 19.2,
+                  "priceHigh52WeekFormatted": "$19.20",
+                  "priceLast": 2.94,
+                  "priceLastFormatted": "$2.94",
+                  "priceLow52Week": 1.01,
+                  "priceLow52WeekFormatted": "$1.01",
+                  "ser": "NC",
+                  "symbol": "GXAI",
+                  "volume": 1599677,
+                  "volumeFormatted": "1.6M"
+                },
+                {
+                  "companyName": "CYNGN Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.51,
+                  "priceChangeFormatted": "-0.51",
+                  "priceChangePercent": -15.5487804878049,
+                  "priceChangePercentFormatted": "-15.55%",
+                  "priceHigh52Week": 25.88,
+                  "priceHigh52WeekFormatted": "$25.88",
+                  "priceLast": 2.77,
+                  "priceLastFormatted": "$2.77",
+                  "priceLow52Week": 2.6506,
+                  "priceLow52WeekFormatted": "$2.65",
+                  "ser": "NC",
+                  "symbol": "CYN",
+                  "volume": 165349,
+                  "volumeFormatted": "165.3K"
+                }
+              ],
+              "exchanges": [
+                {
+                  "shortName": "NYSE",
+                  "displayName": "New York Stock Exchange",
+                  "field": "nyse"
+                },
+                {
+                  "shortName": "NASDAQ",
+                  "displayName": "NASDAQ Exchange",
+                  "field": "nasdaq"
+                },
+                {
+                  "shortName": "NYSE MKT",
+                  "displayName": "NYSE MKT Composite Index",
+                  "field": "amex"
+                },
+                {
+                  "shortName": "All Exchanges",
+                  "displayName": "All Exchanges",
+                  "field": "all"
+                }
+              ],
+              "rankingSets": [
+                {
+                  "displayName": "Most Actives",
+                  "field": "MostActive"
+                },
+                {
+                  "displayName": "% Price Increase",
+                  "field": "PctChangeGainers"
+                },
+                {
+                  "displayName": "% Price Decrease",
+                  "field": "PctChangeLosers"
+                },
+                {
+                  "displayName": "$ Price Increase",
+                  "field": "NetGainers"
+                },
+                {
+                  "displayName": "$ Price Decrease",
+                  "field": "NetLosers"
+                },
+                {
+                  "displayName": "52 Week Highs",
+                  "field": "52WkHigh"
+                },
+                {
+                  "displayName": "52 Week Lows",
+                  "field": "52WkLow"
+                }
+              ],
+              "sectors": [
+                {
+                  "displayName": "Energy",
+                  "field": "energy"
+                },
+                {
+                  "displayName": "Materials",
+                  "field": "materials"
+                },
+                {
+                  "displayName": "Industrials",
+                  "field": "industrials"
+                },
+                {
+                  "displayName": "Consumer Discretionary",
+                  "field": "consumerDiscretionary"
+                },
+                {
+                  "displayName": "Consumer Staples",
+                  "field": "consumerStaples"
+                },
+                {
+                  "displayName": "Health Care",
+                  "field": "healthCare"
+                },
+                {
+                  "displayName": "Financials",
+                  "field": "financials"
+                },
+                {
+                  "displayName": "Information Technology",
+                  "field": "informationTechnology"
+                },
+                {
+                  "displayName": "Communication Services",
+                  "field": "communicationServices"
+                },
+                {
+                  "displayName": "Utilities",
+                  "field": "utilities"
+                },
+                {
+                  "displayName": "Real Estate",
+                  "field": "realEstate"
+                },
+                {
+                  "displayName": "All Sectors",
+                  "field": "all"
+                }
+              ],
+              "advancersDecliners": [
+                {
+                  "name": "NYSE",
+                  "advancers": "1,394",
+                  "decliners": "1,332",
+                  "unchanged": "79"
+                },
+                {
+                  "name": "NASDAQ",
+                  "advancers": "2,308",
+                  "decliners": "1,849",
+                  "unchanged": "123"
+                },
+                {
+                  "name": "NYSE MKT",
+                  "advancers": "112",
+                  "decliners": "158",
+                  "unchanged": "11"
+                },
+                {
+                  "name": "TSX",
+                  "advancers": "317",
+                  "decliners": "486",
+                  "unchanged": "108"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "Name": "Trending",
+        "DataType": "NetGainers",
+        "Data": {
+          "Name": "Trending",
+          "Data": {
+            "timeStamp": "/Date(1734367667980+0000)/",
+            "activityId": "e8d714d0-3440-4612-82ac-e5c6a33c7ef1",
+            "data": {
+              "companyMovers": [
+                {
+                  "companyName": "NVR Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 64.2200000000012,
+                  "priceChangeFormatted": "+64.22",
+                  "priceChangePercent": 0.747819829219484,
+                  "priceChangePercentFormatted": "+0.75%",
+                  "priceHigh52Week": 9964.77,
+                  "priceHigh52WeekFormatted": "$9,964.77",
+                  "priceLast": 8651.85,
+                  "priceLastFormatted": "$8,651.85",
+                  "priceLow52Week": 6768.018,
+                  "priceLow52WeekFormatted": "$6,768.02",
+                  "ser": "C",
+                  "symbol": "NVR",
+                  "volume": 4407,
+                  "volumeFormatted": "4.4K"
+                },
+                {
+                  "companyName": "Texas Pacific Land Corp",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 34.99,
+                  "priceChangeFormatted": "+34.99",
+                  "priceChangePercent": 2.91833824032294,
+                  "priceChangePercentFormatted": "+2.92%",
+                  "priceHigh52Week": 1769.14,
+                  "priceHigh52WeekFormatted": "$1,769.14",
+                  "priceLast": 1233.96,
+                  "priceLastFormatted": "$1,233.96",
+                  "priceLow52Week": 467.616666666667,
+                  "priceLow52WeekFormatted": "$467.62",
+                  "ser": "C",
+                  "symbol": "TPL",
+                  "volume": 42257,
+                  "volumeFormatted": "42.3K"
+                },
+                {
+                  "companyName": "Monolithic Power Systems Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 24.66,
+                  "priceChangeFormatted": "+24.66",
+                  "priceChangePercent": 4.05298796923279,
+                  "priceChangePercentFormatted": "+4.05%",
+                  "priceHigh52Week": 959.64,
+                  "priceHigh52WeekFormatted": "$959.64",
+                  "priceLast": 633.1,
+                  "priceLastFormatted": "$633.10",
+                  "priceLow52Week": 546.705,
+                  "priceLow52WeekFormatted": "$546.71",
+                  "ser": "D",
+                  "symbol": "MPWR",
+                  "volume": 418446,
+                  "volumeFormatted": "418.4K"
+                },
+                {
+                  "companyName": "First Citizens BancShares Inc (Delaware)",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 22.46,
+                  "priceChangeFormatted": "+22.46",
+                  "priceChangePercent": 1.07623232434557,
+                  "priceChangePercentFormatted": "+1.08%",
+                  "priceHigh52Week": 2388.78,
+                  "priceHigh52WeekFormatted": "$2,388.78",
+                  "priceLast": 2109.37,
+                  "priceLastFormatted": "$2,109.37",
+                  "priceLow52Week": 1363.97,
+                  "priceLow52WeekFormatted": "$1,363.97",
+                  "ser": "C",
+                  "symbol": "FCNCA",
+                  "volume": 14532,
+                  "volumeFormatted": "14.5K"
+                },
+                {
+                  "companyName": "Applovin Corp",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 22.4476,
+                  "priceChangeFormatted": "+22.45",
+                  "priceChangePercent": 6.91823589237833,
+                  "priceChangePercentFormatted": "+6.92%",
+                  "priceHigh52Week": 417.635,
+                  "priceHigh52WeekFormatted": "$417.64",
+                  "priceLast": 346.9176,
+                  "priceLastFormatted": "$346.92",
+                  "priceLow52Week": 37.58,
+                  "priceLow52WeekFormatted": "$37.58",
+                  "ser": "F",
+                  "symbol": "APP",
+                  "volume": 2448997,
+                  "volumeFormatted": "2.4M"
+                },
+                {
+                  "companyName": "TransDigm Group Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 22.2600000000002,
+                  "priceChangeFormatted": "+22.26",
+                  "priceChangePercent": 1.76790139144801,
+                  "priceChangePercentFormatted": "+1.77%",
+                  "priceHigh52Week": 1451.32,
+                  "priceHigh52WeekFormatted": "$1,451.32",
+                  "priceLast": 1281.38,
+                  "priceLastFormatted": "$1,281.38",
+                  "priceLow52Week": 972.08,
+                  "priceLow52WeekFormatted": "$972.08",
+                  "ser": "C",
+                  "symbol": "TDG",
+                  "volume": 51180,
+                  "volumeFormatted": "51.2K"
+                },
+                {
+                  "companyName": "Sezzle Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 20.99,
+                  "priceChangeFormatted": "+20.99",
+                  "priceChangePercent": 6.79266043170124,
+                  "priceChangePercentFormatted": "+6.79%",
+                  "priceHigh52Week": 477.525,
+                  "priceHigh52WeekFormatted": "$477.53",
+                  "priceLast": 330,
+                  "priceLastFormatted": "$330",
+                  "priceLow52Week": 12.93,
+                  "priceLow52WeekFormatted": "$12.93",
+                  "ser": "F",
+                  "symbol": "SEZL",
+                  "volume": 48033,
+                  "volumeFormatted": "48K"
+                },
+                {
+                  "companyName": "Tesla Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 20.38,
+                  "priceChangeFormatted": "+20.38",
+                  "priceChangePercent": 4.67184741993902,
+                  "priceChangePercentFormatted": "+4.67%",
+                  "priceHigh52Week": 458.97,
+                  "priceHigh52WeekFormatted": "$458.97",
+                  "priceLast": 456.61,
+                  "priceLastFormatted": "$456.61",
+                  "priceLow52Week": 138.8025,
+                  "priceLow52WeekFormatted": "$138.80",
+                  "ser": "F",
+                  "symbol": "TSLA",
+                  "volume": 54863483,
+                  "volumeFormatted": "54.9M"
+                },
+                {
+                  "companyName": "CorVel Corp",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 19.439,
+                  "priceChangeFormatted": "+19.44",
+                  "priceChangePercent": 5.52244318181819,
+                  "priceChangePercentFormatted": "+5.52%",
+                  "priceHigh52Week": 381.725,
+                  "priceHigh52WeekFormatted": "$381.73",
+                  "priceLast": 371.439,
+                  "priceLastFormatted": "$371.44",
+                  "priceLow52Week": 227.75,
+                  "priceLow52WeekFormatted": "$227.75",
+                  "ser": "A",
+                  "symbol": "CRVL",
+                  "volume": 13587,
+                  "volumeFormatted": "13.6K"
+                },
+                {
+                  "companyName": "Microstrategy Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 19.18,
+                  "priceChangeFormatted": "+19.18",
+                  "priceChangePercent": 4.69327330119657,
+                  "priceChangePercentFormatted": "+4.69%",
+                  "priceHigh52Week": 543,
+                  "priceHigh52WeekFormatted": "$543",
+                  "priceLast": 427.85,
+                  "priceLastFormatted": "$427.85",
+                  "priceLow52Week": 45.539,
+                  "priceLow52WeekFormatted": "$45.54",
+                  "ser": "F",
+                  "symbol": "MSTR",
+                  "volume": 12785402,
+                  "volumeFormatted": "12.8M"
+                }
+              ],
+              "exchanges": [
+                {
+                  "shortName": "NYSE",
+                  "displayName": "New York Stock Exchange",
+                  "field": "nyse"
+                },
+                {
+                  "shortName": "NASDAQ",
+                  "displayName": "NASDAQ Exchange",
+                  "field": "nasdaq"
+                },
+                {
+                  "shortName": "NYSE MKT",
+                  "displayName": "NYSE MKT Composite Index",
+                  "field": "amex"
+                },
+                {
+                  "shortName": "All Exchanges",
+                  "displayName": "All Exchanges",
+                  "field": "all"
+                }
+              ],
+              "rankingSets": [
+                {
+                  "displayName": "Most Actives",
+                  "field": "MostActive"
+                },
+                {
+                  "displayName": "% Price Increase",
+                  "field": "PctChangeGainers"
+                },
+                {
+                  "displayName": "% Price Decrease",
+                  "field": "PctChangeLosers"
+                },
+                {
+                  "displayName": "$ Price Increase",
+                  "field": "NetGainers"
+                },
+                {
+                  "displayName": "$ Price Decrease",
+                  "field": "NetLosers"
+                },
+                {
+                  "displayName": "52 Week Highs",
+                  "field": "52WkHigh"
+                },
+                {
+                  "displayName": "52 Week Lows",
+                  "field": "52WkLow"
+                }
+              ],
+              "sectors": [
+                {
+                  "displayName": "Energy",
+                  "field": "energy"
+                },
+                {
+                  "displayName": "Materials",
+                  "field": "materials"
+                },
+                {
+                  "displayName": "Industrials",
+                  "field": "industrials"
+                },
+                {
+                  "displayName": "Consumer Discretionary",
+                  "field": "consumerDiscretionary"
+                },
+                {
+                  "displayName": "Consumer Staples",
+                  "field": "consumerStaples"
+                },
+                {
+                  "displayName": "Health Care",
+                  "field": "healthCare"
+                },
+                {
+                  "displayName": "Financials",
+                  "field": "financials"
+                },
+                {
+                  "displayName": "Information Technology",
+                  "field": "informationTechnology"
+                },
+                {
+                  "displayName": "Communication Services",
+                  "field": "communicationServices"
+                },
+                {
+                  "displayName": "Utilities",
+                  "field": "utilities"
+                },
+                {
+                  "displayName": "Real Estate",
+                  "field": "realEstate"
+                },
+                {
+                  "displayName": "All Sectors",
+                  "field": "all"
+                }
+              ],
+              "advancersDecliners": [
+                {
+                  "name": "NYSE",
+                  "advancers": "1,394",
+                  "decliners": "1,332",
+                  "unchanged": "79"
+                },
+                {
+                  "name": "NASDAQ",
+                  "advancers": "2,308",
+                  "decliners": "1,849",
+                  "unchanged": "123"
+                },
+                {
+                  "name": "NYSE MKT",
+                  "advancers": "112",
+                  "decliners": "158",
+                  "unchanged": "11"
+                },
+                {
+                  "name": "TSX",
+                  "advancers": "317",
+                  "decliners": "486",
+                  "unchanged": "108"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "DataType": "NetLosers",
+        "Data": {
+          "msg": "Cannot get the Trending stock data"
+        }
+      },
+      {
+        "Name": "Trending",
+        "DataType": "High52Wk",
+        "Data": {
+          "Name": "Trending",
+          "Data": {
+            "timeStamp": "/Date(1734367668350+0000)/",
+            "activityId": "db871913-f2d2-4ac4-9566-a53f6cdfc36e",
+            "data": {
+              "companyMovers": [
+                {
+                  "companyName": "D-Wave Quantum Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 1.49,
+                  "priceChangeFormatted": "+1.49",
+                  "priceChangePercent": 29.8,
+                  "priceChangePercentFormatted": "+29.80%",
+                  "priceHigh52Week": 6.66,
+                  "priceHigh52WeekFormatted": "$6.66",
+                  "priceLast": 6.49,
+                  "priceLastFormatted": "$6.49",
+                  "priceLow52Week": 0.6813,
+                  "priceLow52WeekFormatted": "$0.68",
+                  "ser": "F",
+                  "symbol": "QBTS",
+                  "volume": 70942416,
+                  "volumeFormatted": "70.9M"
+                },
+                {
+                  "companyName": "Plby Group Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.395,
+                  "priceChangeFormatted": "+0.40",
+                  "priceChangePercent": 28.0141843971631,
+                  "priceChangePercentFormatted": "+28.01%",
+                  "priceHigh52Week": 1.99,
+                  "priceHigh52WeekFormatted": "$1.99",
+                  "priceLast": 1.805,
+                  "priceLastFormatted": "$1.81",
+                  "priceLow52Week": 0.52,
+                  "priceLow52WeekFormatted": "$0.52",
+                  "ser": "NC",
+                  "symbol": "PLBY",
+                  "volume": 2457511,
+                  "volumeFormatted": "2.5M"
+                },
+                {
+                  "companyName": "Creative Global Technology Holdings Ltd",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 1.65,
+                  "priceChangeFormatted": "+1.65",
+                  "priceChangePercent": 23.2394366197183,
+                  "priceChangePercentFormatted": "+23.24%",
+                  "priceHigh52Week": 10.5865,
+                  "priceHigh52WeekFormatted": "$10.59",
+                  "priceLast": 8.75,
+                  "priceLastFormatted": "$8.75",
+                  "priceLow52Week": 3.3675,
+                  "priceLow52WeekFormatted": "$3.37",
+                  "ser": "NC",
+                  "symbol": "CGTL",
+                  "volume": 172311,
+                  "volumeFormatted": "172.3K"
+                },
+                {
+                  "companyName": "Energy Services Of America Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 3.67,
+                  "priceChangeFormatted": "+3.67",
+                  "priceChangePercent": 22.9518449030644,
+                  "priceChangePercentFormatted": "+22.95%",
+                  "priceHigh52Week": 19.83,
+                  "priceHigh52WeekFormatted": "$19.83",
+                  "priceLast": 19.66,
+                  "priceLastFormatted": "$19.66",
+                  "priceLow52Week": 3.46,
+                  "priceLow52WeekFormatted": "$3.46",
+                  "ser": "NC",
+                  "symbol": "ESOA",
+                  "volume": 421584,
+                  "volumeFormatted": "421.6K"
+                },
+                {
+                  "companyName": "Rigetti Computing Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 1.3782,
+                  "priceChangeFormatted": "+1.38",
+                  "priceChangePercent": 19.2486033519553,
+                  "priceChangePercentFormatted": "+19.25%",
+                  "priceHigh52Week": 8.655,
+                  "priceHigh52WeekFormatted": "$8.66",
+                  "priceLast": 8.5382,
+                  "priceLastFormatted": "$8.54",
+                  "priceLow52Week": 0.66,
+                  "priceLow52WeekFormatted": "$0.66",
+                  "ser": "F",
+                  "symbol": "RGTI",
+                  "volume": 102194166,
+                  "volumeFormatted": "102.2M"
+                },
+                {
+                  "companyName": "United States Antimony Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.305,
+                  "priceChangeFormatted": "+0.31",
+                  "priceChangePercent": 15.8854166666667,
+                  "priceChangePercentFormatted": "+15.89%",
+                  "priceHigh52Week": 2.35,
+                  "priceHigh52WeekFormatted": "$2.35",
+                  "priceLast": 2.225,
+                  "priceLastFormatted": "$2.23",
+                  "priceLow52Week": 0.1732,
+                  "priceLow52WeekFormatted": "$0.17",
+                  "ser": "NC",
+                  "symbol": "UAMY",
+                  "volume": 6132163,
+                  "volumeFormatted": "6.1M"
+                },
+                {
+                  "companyName": "Bitdeer Technologies Group",
+                  "hasRatingsData": true,
+                  "isSeri": true,
+                  "priceChange": 3.15,
+                  "priceChangeFormatted": "+3.15",
+                  "priceChangePercent": 15.057361376673,
+                  "priceChangePercentFormatted": "+15.06%",
+                  "priceHigh52Week": 24.8,
+                  "priceHigh52WeekFormatted": "$24.80",
+                  "priceLast": 24.07,
+                  "priceLastFormatted": "$24.07",
+                  "priceLow52Week": 5.23,
+                  "priceLow52WeekFormatted": "$5.23",
+                  "ser": "F",
+                  "symbol": "BTDR",
+                  "volume": 8039510,
+                  "volumeFormatted": "8M"
+                },
+                {
+                  "companyName": "Satixfy Communications Ltd",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.147,
+                  "priceChangeFormatted": "+0.15",
+                  "priceChangePercent": 14.2996108949416,
+                  "priceChangePercentFormatted": "+14.30%",
+                  "priceHigh52Week": 1.26,
+                  "priceHigh52WeekFormatted": "$1.26",
+                  "priceLast": 1.175,
+                  "priceLastFormatted": "$1.18",
+                  "priceLow52Week": 0.3003,
+                  "priceLow52WeekFormatted": "$0.30",
+                  "ser": "NC",
+                  "symbol": "SATX",
+                  "volume": 404480,
+                  "volumeFormatted": "404.5K"
+                },
+                {
+                  "companyName": "Eos Energy Enterprises Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": 0.479,
+                  "priceChangeFormatted": "+0.48",
+                  "priceChangePercent": 14.0882352941176,
+                  "priceChangePercentFormatted": "+14.09%",
+                  "priceHigh52Week": 3.88,
+                  "priceHigh52WeekFormatted": "$3.88",
+                  "priceLast": 3.879,
+                  "priceLastFormatted": "$3.88",
+                  "priceLow52Week": 0.61,
+                  "priceLow52WeekFormatted": "$0.61",
+                  "ser": "NC",
+                  "symbol": "EOSE",
+                  "volume": 8224531,
+                  "volumeFormatted": "8.2M"
+                },
+                {
+                  "companyName": "Asana Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": 2.62,
+                  "priceChangeFormatted": "+2.62",
+                  "priceChangePercent": 10.8488612836439,
+                  "priceChangePercentFormatted": "+10.85%",
+                  "priceHigh52Week": 27.325,
+                  "priceHigh52WeekFormatted": "$27.33",
+                  "priceLast": 26.77,
+                  "priceLastFormatted": "$26.77",
+                  "priceLow52Week": 11.045,
+                  "priceLow52WeekFormatted": "$11.05",
+                  "ser": "C",
+                  "symbol": "ASAN",
+                  "volume": 4028990,
+                  "volumeFormatted": "4M"
+                }
+              ],
+              "exchanges": [
+                {
+                  "shortName": "NYSE",
+                  "displayName": "New York Stock Exchange",
+                  "field": "nyse"
+                },
+                {
+                  "shortName": "NASDAQ",
+                  "displayName": "NASDAQ Exchange",
+                  "field": "nasdaq"
+                },
+                {
+                  "shortName": "NYSE MKT",
+                  "displayName": "NYSE MKT Composite Index",
+                  "field": "amex"
+                },
+                {
+                  "shortName": "All Exchanges",
+                  "displayName": "All Exchanges",
+                  "field": "all"
+                }
+              ],
+              "rankingSets": [
+                {
+                  "displayName": "Most Actives",
+                  "field": "MostActive"
+                },
+                {
+                  "displayName": "% Price Increase",
+                  "field": "PctChangeGainers"
+                },
+                {
+                  "displayName": "% Price Decrease",
+                  "field": "PctChangeLosers"
+                },
+                {
+                  "displayName": "$ Price Increase",
+                  "field": "NetGainers"
+                },
+                {
+                  "displayName": "$ Price Decrease",
+                  "field": "NetLosers"
+                },
+                {
+                  "displayName": "52 Week Highs",
+                  "field": "52WkHigh"
+                },
+                {
+                  "displayName": "52 Week Lows",
+                  "field": "52WkLow"
+                }
+              ],
+              "sectors": [
+                {
+                  "displayName": "Energy",
+                  "field": "energy"
+                },
+                {
+                  "displayName": "Materials",
+                  "field": "materials"
+                },
+                {
+                  "displayName": "Industrials",
+                  "field": "industrials"
+                },
+                {
+                  "displayName": "Consumer Discretionary",
+                  "field": "consumerDiscretionary"
+                },
+                {
+                  "displayName": "Consumer Staples",
+                  "field": "consumerStaples"
+                },
+                {
+                  "displayName": "Health Care",
+                  "field": "healthCare"
+                },
+                {
+                  "displayName": "Financials",
+                  "field": "financials"
+                },
+                {
+                  "displayName": "Information Technology",
+                  "field": "informationTechnology"
+                },
+                {
+                  "displayName": "Communication Services",
+                  "field": "communicationServices"
+                },
+                {
+                  "displayName": "Utilities",
+                  "field": "utilities"
+                },
+                {
+                  "displayName": "Real Estate",
+                  "field": "realEstate"
+                },
+                {
+                  "displayName": "All Sectors",
+                  "field": "all"
+                }
+              ],
+              "advancersDecliners": [
+                {
+                  "name": "NYSE",
+                  "advancers": "1,394",
+                  "decliners": "1,332",
+                  "unchanged": "79"
+                },
+                {
+                  "name": "NASDAQ",
+                  "advancers": "2,308",
+                  "decliners": "1,849",
+                  "unchanged": "123"
+                },
+                {
+                  "name": "NYSE MKT",
+                  "advancers": "112",
+                  "decliners": "158",
+                  "unchanged": "11"
+                },
+                {
+                  "name": "TSX",
+                  "advancers": "317",
+                  "decliners": "486",
+                  "unchanged": "108"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "Name": "Trending",
+        "DataType": "Low52Wk",
+        "Data": {
+          "Name": "Trending",
+          "Data": {
+            "timeStamp": "/Date(1734367671512+0000)/",
+            "activityId": "6dee0777-ab3e-4a69-a317-0155133522f7",
+            "data": {
+              "companyMovers": [
+                {
+                  "companyName": "Sobr Safe Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -2.5104,
+                  "priceChangeFormatted": "-2.51",
+                  "priceChangePercent": -70.3193277310924,
+                  "priceChangePercentFormatted": "-70.32%",
+                  "priceHigh52Week": 87.945,
+                  "priceHigh52WeekFormatted": "$87.95",
+                  "priceLast": 1.0596,
+                  "priceLastFormatted": "$1.06",
+                  "priceLow52Week": 0.99,
+                  "priceLow52WeekFormatted": "$0.99",
+                  "ser": "NC",
+                  "symbol": "SOBR",
+                  "volume": 2142760,
+                  "volumeFormatted": "2.1M"
+                },
+                {
+                  "companyName": "Zoomcar Holdings Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -3.5012,
+                  "priceChangeFormatted": "-3.50",
+                  "priceChangePercent": -67.5907335907336,
+                  "priceChangePercentFormatted": "-67.59%",
+                  "priceHigh52Week": 1289,
+                  "priceHigh52WeekFormatted": "$1,289",
+                  "priceLast": 1.6788,
+                  "priceLastFormatted": "$1.68",
+                  "priceLow52Week": 1.44,
+                  "priceLow52WeekFormatted": "$1.44",
+                  "ser": "NC",
+                  "symbol": "ZCAR",
+                  "volume": 1615861,
+                  "volumeFormatted": "1.6M"
+                },
+                {
+                  "companyName": "Larimar Therapeutics Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": -2.08,
+                  "priceChangeFormatted": "-2.08",
+                  "priceChangePercent": -33.7115072933549,
+                  "priceChangePercentFormatted": "-33.71%",
+                  "priceHigh52Week": 13.68,
+                  "priceHigh52WeekFormatted": "$13.68",
+                  "priceLast": 4.09,
+                  "priceLastFormatted": "$4.09",
+                  "priceLow52Week": 3.01,
+                  "priceLow52WeekFormatted": "$3.01",
+                  "ser": "C",
+                  "symbol": "LRMR",
+                  "volume": 2745915,
+                  "volumeFormatted": "2.7M"
+                },
+                {
+                  "companyName": "PepGen Inc",
+                  "hasRatingsData": true,
+                  "isSeri": false,
+                  "priceChange": -0.8899,
+                  "priceChangeFormatted": "-0.89",
+                  "priceChangePercent": -19.0149572649573,
+                  "priceChangePercentFormatted": "-19.01%",
+                  "priceHigh52Week": 19.298,
+                  "priceHigh52WeekFormatted": "$19.30",
+                  "priceLast": 3.7901,
+                  "priceLastFormatted": "$3.79",
+                  "priceLow52Week": 2.9,
+                  "priceLow52WeekFormatted": "$2.90",
+                  "ser": "C",
+                  "symbol": "PEPG",
+                  "volume": 129298,
+                  "volumeFormatted": "129.3K"
+                },
+                {
+                  "companyName": "Global Engine Group Holding Ltd",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.42,
+                  "priceChangeFormatted": "-0.42",
+                  "priceChangePercent": -17.0731707317073,
+                  "priceChangePercentFormatted": "-17.07%",
+                  "priceHigh52Week": 5.44,
+                  "priceHigh52WeekFormatted": "$5.44",
+                  "priceLast": 2.04,
+                  "priceLastFormatted": "$2.04",
+                  "priceLow52Week": 2.02,
+                  "priceLow52WeekFormatted": "$2.02",
+                  "ser": "NC",
+                  "symbol": "GLE",
+                  "volume": 72633,
+                  "volumeFormatted": "72.6K"
+                },
+                {
+                  "companyName": "MicroAlgo Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.4,
+                  "priceChangeFormatted": "-0.40",
+                  "priceChangePercent": -17.0212765957447,
+                  "priceChangePercentFormatted": "-17.02%",
+                  "priceHigh52Week": 509.6,
+                  "priceHigh52WeekFormatted": "$509.60",
+                  "priceLast": 1.95,
+                  "priceLastFormatted": "$1.95",
+                  "priceLow52Week": 1.88,
+                  "priceLow52WeekFormatted": "$1.88",
+                  "ser": "NC",
+                  "symbol": "MLGO",
+                  "volume": 1231823,
+                  "volumeFormatted": "1.2M"
+                },
+                {
+                  "companyName": "CYNGN Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.51,
+                  "priceChangeFormatted": "-0.51",
+                  "priceChangePercent": -15.5487804878049,
+                  "priceChangePercentFormatted": "-15.55%",
+                  "priceHigh52Week": 25.88,
+                  "priceHigh52WeekFormatted": "$25.88",
+                  "priceLast": 2.77,
+                  "priceLastFormatted": "$2.77",
+                  "priceLow52Week": 2.6506,
+                  "priceLow52WeekFormatted": "$2.65",
+                  "ser": "NC",
+                  "symbol": "CYN",
+                  "volume": 165349,
+                  "volumeFormatted": "165.3K"
+                },
+                {
+                  "companyName": "Agape ATP Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.1911,
+                  "priceChangeFormatted": "-0.19",
+                  "priceChangePercent": -13.3636363636364,
+                  "priceChangePercentFormatted": "-13.36%",
+                  "priceHigh52Week": 15,
+                  "priceHigh52WeekFormatted": "$15",
+                  "priceLast": 1.2389,
+                  "priceLastFormatted": "$1.24",
+                  "priceLow52Week": 1.13,
+                  "priceLow52WeekFormatted": "$1.13",
+                  "ser": "NC",
+                  "symbol": "ATPC",
+                  "volume": 34964,
+                  "volumeFormatted": "35K"
+                },
+                {
+                  "companyName": "New Era Helium Inc",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.455,
+                  "priceChangeFormatted": "-0.46",
+                  "priceChangePercent": -13.3431085043988,
+                  "priceChangePercentFormatted": "-13.34%",
+                  "priceHigh52Week": 12.29,
+                  "priceHigh52WeekFormatted": "$12.29",
+                  "priceLast": 2.955,
+                  "priceLastFormatted": "$2.96",
+                  "priceLow52Week": 2.86,
+                  "priceLow52WeekFormatted": "$2.86",
+                  "ser": "NC",
+                  "symbol": "NEHC",
+                  "volume": 86125,
+                  "volumeFormatted": "86.1K"
+                },
+                {
+                  "companyName": "Nikola Corp",
+                  "hasRatingsData": false,
+                  "isSeri": false,
+                  "priceChange": -0.155,
+                  "priceChangeFormatted": "-0.16",
+                  "priceChangePercent": -10.8391608391608,
+                  "priceChangePercentFormatted": "-10.84%",
+                  "priceHigh52Week": 34.5,
+                  "priceHigh52WeekFormatted": "$34.50",
+                  "priceLast": 1.275,
+                  "priceLastFormatted": "$1.28",
+                  "priceLow52Week": 1.27,
+                  "priceLow52WeekFormatted": "$1.27",
+                  "ser": "NC",
+                  "symbol": "NKLA",
+                  "volume": 5389560,
+                  "volumeFormatted": "5.4M"
+                }
+              ],
+              "exchanges": [
+                {
+                  "shortName": "NYSE",
+                  "displayName": "New York Stock Exchange",
+                  "field": "nyse"
+                },
+                {
+                  "shortName": "NASDAQ",
+                  "displayName": "NASDAQ Exchange",
+                  "field": "nasdaq"
+                },
+                {
+                  "shortName": "NYSE MKT",
+                  "displayName": "NYSE MKT Composite Index",
+                  "field": "amex"
+                },
+                {
+                  "shortName": "All Exchanges",
+                  "displayName": "All Exchanges",
+                  "field": "all"
+                }
+              ],
+              "rankingSets": [
+                {
+                  "displayName": "Most Actives",
+                  "field": "MostActive"
+                },
+                {
+                  "displayName": "% Price Increase",
+                  "field": "PctChangeGainers"
+                },
+                {
+                  "displayName": "% Price Decrease",
+                  "field": "PctChangeLosers"
+                },
+                {
+                  "displayName": "$ Price Increase",
+                  "field": "NetGainers"
+                },
+                {
+                  "displayName": "$ Price Decrease",
+                  "field": "NetLosers"
+                },
+                {
+                  "displayName": "52 Week Highs",
+                  "field": "52WkHigh"
+                },
+                {
+                  "displayName": "52 Week Lows",
+                  "field": "52WkLow"
+                }
+              ],
+              "sectors": [
+                {
+                  "displayName": "Energy",
+                  "field": "energy"
+                },
+                {
+                  "displayName": "Materials",
+                  "field": "materials"
+                },
+                {
+                  "displayName": "Industrials",
+                  "field": "industrials"
+                },
+                {
+                  "displayName": "Consumer Discretionary",
+                  "field": "consumerDiscretionary"
+                },
+                {
+                  "displayName": "Consumer Staples",
+                  "field": "consumerStaples"
+                },
+                {
+                  "displayName": "Health Care",
+                  "field": "healthCare"
+                },
+                {
+                  "displayName": "Financials",
+                  "field": "financials"
+                },
+                {
+                  "displayName": "Information Technology",
+                  "field": "informationTechnology"
+                },
+                {
+                  "displayName": "Communication Services",
+                  "field": "communicationServices"
+                },
+                {
+                  "displayName": "Utilities",
+                  "field": "utilities"
+                },
+                {
+                  "displayName": "Real Estate",
+                  "field": "realEstate"
+                },
+                {
+                  "displayName": "All Sectors",
+                  "field": "all"
+                }
+              ],
+              "advancersDecliners": [
+                {
+                  "name": "NYSE",
+                  "advancers": "1,394",
+                  "decliners": "1,332",
+                  "unchanged": "79"
+                },
+                {
+                  "name": "NASDAQ",
+                  "advancers": "2,308",
+                  "decliners": "1,849",
+                  "unchanged": "123"
+                },
+                {
+                  "name": "NYSE MKT",
+                  "advancers": "112",
+                  "decliners": "158",
+                  "unchanged": "11"
+                },
+                {
+                  "name": "TSX",
+                  "advancers": "317",
+                  "decliners": "486",
+                  "unchanged": "108"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "currUser": "",
+    "profilePicture": ""
+  }
