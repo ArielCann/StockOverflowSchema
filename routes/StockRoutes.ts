@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock, getStockSearcher, postStockSearcher, getTrendingPagee } from '../controllers/StockControllerDev';
+import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock, getStockSearcher, postStockSearcher, getTrendingPagee } from '../controllers/StockControllersProd';
 import { postDeleteUserStock } from '../controllers/StockControllersProd';
 
 

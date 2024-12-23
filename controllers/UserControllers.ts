@@ -12,8 +12,8 @@ const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFac
 
 export const getUserEditProfilePage = async (req: Request, res: Response) => {
     if (req.params.userId !== req.session.currAccount?.toString()) {
-        console.log('nobody')
-        res.status(422).send({'status': 422, 'msg': "Error", 'success': false, 'changed-profile': false})
+        //its a 404 since this page shouldn't exist to the user themselves 
+        res.status(404).send({'status': 404, 'msg': "Error", 'success': false, 'changed-profile': false})
         return;
     }
     let currAccount = await Account.findById(req.params.userId);
@@ -125,7 +125,8 @@ export const getAllStocks = async(userStock: Map<String, String>): Promise<any> 
  */
 export const GetUserProfile = async (req: Request, res: Response) => {
     console.log("Received userId:", req.params.userId); 
-    let currAccount = await Account.findById(req.params.userId);
+    try {
+        let currAccount = await Account.findById(req.params.userId);
     console.log(currAccount)
     if (!currAccount) {
         res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
@@ -145,6 +146,12 @@ export const GetUserProfile = async (req: Request, res: Response) => {
     console.log(userStocks);
     res.status(200).send({'profilePicture': profileImageBase64, 'currViewedUser': currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
     return;
+    } catch (error) {
+        console.log('sfsfsfsfs');
+        res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
+        return;
+    }
+    
 }
 /**
  * Alters a users profile description
