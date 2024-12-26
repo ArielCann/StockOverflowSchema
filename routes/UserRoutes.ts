@@ -9,7 +9,7 @@ const upload: Multer = multer({ storage });
 
 const router = express.Router();
 router.get('/:userId/messages',getMessages);
-router.get('/:userId/messageSearch',getMessageSearch)
+router.get('/:userId/messageSearch/:text',getMessageSearch)
 router.patch('/:userId/profileDesc',patchProfileDesc);
 router.patch('/:userId/notifications',patchNotifications);
 

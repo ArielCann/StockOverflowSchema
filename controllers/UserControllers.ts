@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Message from "../models/messageSchema";
+import Message, {IMessage} from "../models/messageSchema";
 import Account from "../models/accountSchema";
 import Fuse from "fuse.js";
 import { runStockWorker } from "./StockControllersProd";
@@ -177,17 +177,27 @@ export const patchProfileDesc = async (req: Request, res: Response) => {
  * @param res
  */
 export const getMessages = async (req: Request, res: Response)=> {
-    let account = await Account.findById(req.session.AccountID).exec();
+    const currAccount = await Account.findById(req.session.currAccount).lean().exec();
+    let profileImageBase64 = "";
+    if(currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    let account = await Account.findById(req.params.userId).lean().exec();
     if(account == null){
-        res.status(400).send("Account does not exist!");
+        res.status(400).json({'error': "Account does not exist!",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
         return;
     }
-    let messages = await Message.find({Account: account._id}).exec();
+    let messages = await Message.find({Account: account._id}).lean().exec();
     let messageObjs = [];
     for (let message of messages) {
-        messageObjs.push(message.toJSON());
+        messageObjs.push(message);
     }
-    res.status(200).json({messages: messageObjs});
+    res.status(200).json({'messages': messageObjs,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
 }
 /**
  * Changes the Account's notification settings.
@@ -198,58 +208,119 @@ export const getMessages = async (req: Request, res: Response)=> {
  * @param res sends http code 200 if successful, 500 if failed due to a server error.
  */
 export const patchNotifications = async (req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
-    if(account == null){
-        res.status(400).send("Account does not exist!");
+    if(!req.session.loggedIn || !req.session.currAccount){
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated': false,'currUser': req.session.currAccount, profilePicture: ""});
+        return;
+    }
+    const currAccount = await Account.findById(req.session.currAccount).exec();
+    let profileImageBase64 = "";
+    if(currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    else{
+        res.status(404).json({'error':"Account not found",'isAuthenticated':false,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
         return;
     }
     try {
         if ("receiveSMS" in req.body) {
             if (req.body.receiveSMS as boolean) {
-                account.yesSMS();
+                await currAccount.yesSMS();
             } else {
-                account.noSMS();
+                await currAccount.noSMS();
             }
         }
         if ("receiveEmail" in req.body) {
             if (req.body.receeiveEmail as boolean) {
-                account.yesEmail();
+                await currAccount.yesEmail();
             } else {
-                account.noEmail();
+                await currAccount.noEmail();
             }
         }
         if ("receiveLiked" in req.body) {
             if (req.body.receiveLiked as boolean) {
-                account.yesLikedNotifications();
+                await currAccount.yesLikedNotifications();
             } else {
-                account.noLikedNotifications();
+                await currAccount.noLikedNotifications();
             }
         }
         if ("receiveReplied" in req.body) {
             if (req.body.receiveReplied as boolean) {
-                account.yesResponseNotifications();
+                await currAccount.yesResponseNotifications();
             } else {
-                account.noResponseNotifications();
+                await currAccount.noResponseNotifications();
             }
         }
-        res.status(200);
+        res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
     }catch(err){
         console.error(err);
-        res.status(500).json("Server failed to change notifications");
+        res.status(500).json({'error': "Server failed to change notifications",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
     }
 }
 /**
- * Searches through the Accounts past messages
- * @param req body should have a parameter called 'text'
+ * Searches through the Accounts past messages (specified through userId path param)
+ * for messages similar to text body param.
+ * @param req should contain parameter named text in the body.
+ * The body may also include another parameter called sortBy, which should be one of Likes, Dislikes, or Date_Created.
  * @param res sends a list of matches with http code 200
  */
 export const getMessageSearch = async (req: Request, res: Response) => {
-    const messages = await Message.find({Account: req.session.AccountID}).exec();
-    const searcher = new Fuse(messages,{keys: ["text"]});
-    let results = searcher.search(req.body.Text);
+    const currAccount = await Account.findById(req.session.currAccount).exec();
+    let profileImageBase64 = "";
+    if(currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    else{
+        res.status(404).json({'error':"Account not found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+        return;
+    }
+    const messages = await Message.find({Account: req.params.userId}).lean().exec();
+    let sortBy = 'default';
+    if(req.body.sortBy as string == 'Date_Created' || req.body.sortBy as string == 'Likes' || req.body.sortBy as string == 'Dislikes'){
+         sortBy = req.body.sortBy;
+    }
+    const searcher = new Fuse(messages,{keys: ["Text"],sortFn: (a,b)=> {
+            if(a.score && b.score){
+                a.item
+                if(a.score == b.score){
+                    switch (sortBy){
+                        case "Date_Created":
+                            let aTime = new Date(a.item.Date_Created.toString()).getTime();
+                            let bTime = new Date(b.item.Date_Created.toString()).getTime();
+                            return bTime - aTime;
+                        case "Likes":
+                            let aLikes = +a.item.Likes.toString();
+                            let bLikes = +b.item.Likes.toString();
+                            return aLikes - bLikes;
+                        case "Dislikes":
+                            let aDislikes = +a.item.Dislikes.toString();
+                            let bDislikes = +b.item.Dislikes.toString();
+                            return aDislikes - bDislikes;
+                    }
+                }
+                else{
+                    return a.score - b.score;
+                }
+            }
+            else{
+                return 0;
+            }
+            return 0;
+    }
+    });
+    let results = searcher.search(req.params.text);
     let matches = [];
     for (const result of results) {
-        matches.push(result.item.toJSON());
+        matches.push(result.item);
     }
-    res.status(200).json(matches);
+    res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
 }

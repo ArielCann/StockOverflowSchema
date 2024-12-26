@@ -3,9 +3,9 @@ import { ExpressValidator } from 'express-validator';
 import {
     getLikedDislikedMessages,
     getMessage,
-    getResponseComments, patchClearLike, patchDislikeMessage, patchLikeMessage, postComment,
+    patchClearLike, patchDislikeMessage, patchLikeMessage,
     postQuestion,
-    postResponse, getQuestionSearch, getQuestionPage
+    postReply, getQuestionSearch, getQuestionPage
 } from '../controllers/PublicForumControllers'
 
 const router = express.Router();
@@ -14,9 +14,7 @@ router.get('/messages/:MessageID',getMessage);
 router.get('/questions/search',getQuestionSearch);
 router.get('/questions/:QuestionID/page',getQuestionPage);
 router.post('/questions',postQuestion);
-router.post('/:QuestionID/responses',postResponse);
-router.get('/responses/:ResponseID/comments',getResponseComments);
-router.post('responses/:ResponseID/comments',postComment);
+router.post('/messages/:MessageID',postReply);
 router.patch('/dislike/:MessageID',patchDislikeMessage);
 router.patch('/like/:MessageID',patchLikeMessage);
 router.patch('/clearLike/:MessageID',patchClearLike);
