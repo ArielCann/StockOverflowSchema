@@ -13,7 +13,7 @@ interface IMessage extends Document {
     dislike(): Boolean;
     unlike(): Boolean;
     un_dislike(): Boolean;
-    addReply(message: mongoose.Types.ObjectId): Boolean;
+    addReply(message: mongoose.Types.ObjectId): Promise<Boolean>;
 }
 const  messageSchema = new mongoose.Schema<IMessage>({
     Text: String,
@@ -37,31 +37,32 @@ const  messageSchema = new mongoose.Schema<IMessage>({
     },
     Replies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Message'}],
 })
-messageSchema.methods.like = function(){
+messageSchema.methods.like = async function(){
     this.Likes += 1;
-    this.save();
+    await this.save();
 }
-messageSchema.methods.unlike = function(){
+messageSchema.methods.unlike = async function(){
     this.Likes -= 1;
-    this.save();
+    await this.save();
 }
 
-messageSchema.methods.dislike = function(){
+messageSchema.methods.dislike = async function(){
     this.Dislikes += 1;
-    this.save();
+    await this.save();
 }
-messageSchema.methods.un_dislike = function(){
+messageSchema.methods.un_dislike = async function(){
     this.Dislikes -= 1;
-    this.save();
+    await this.save();
 }
-messageSchema.methods.addReply = function(reply_id: mongoose.Schema.Types.ObjectId){
+messageSchema.methods.addReply = async function(reply_id: mongoose.Schema.Types.ObjectId){
     const oldSize = this.Replies.length;
     this.Replies.addToSet([reply_id]);
     if(this.Replies.length > oldSize){
-        this.save();
+        await this.save();
         return true;
     }
     return false;
 }
 const Message = mongoose.model("Message", messageSchema);
 export default Message;
+export type {IMessage};

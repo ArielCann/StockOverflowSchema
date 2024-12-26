@@ -135,12 +135,22 @@ const accountSchema = new mongoose.Schema<IAccount>({
         type: Map,
         of: String
     },
-    RecieveStockNewsNotifications: Boolean,
-    RecieveResponseNotifications: Boolean,
-    RecieveLikedNotifications: Boolean,
+    RecieveStockNewsNotifications: {
+        type: Boolean,
+        default: false
+    },
+    RecieveResponseNotifications: {
+        type: Boolean,
+        default: false
+    },
+    RecieveLikedNotifications: {
+        type: Boolean,
+        default: false
+    },
     LikedDislikedMessages: {
         type: Map,
-        of: Boolean
+        of: Boolean,
+        default: new Map(),
     },
     ProfileImage: mongoose.Types.ObjectId,
 });
@@ -186,14 +196,13 @@ accountSchema.methods.alterProfileDesc = function(newDesc: string){
  * @return true if the message was successfully liked, false if it was already liked or disliked
  */
 accountSchema.methods.likeMessage = async function (message: mongoose.Types.ObjectId): Promise<boolean> {
-    if (message.toString() in this.LikedDislikedMessages) {
+    if (this.LikedDislikedMessages.has(message.toString())) {
         return false;
     } else {
-        this.LikedDislikedMessages.put(message.toString(), true);
+        this.LikedDislikedMessages.set(message.toString(), true);
         const messageObj = await Message.findById(message).exec()
-        messageObj?.like();
-        messageObj?.save();
-        this.save();
+        await messageObj?.like();
+        await this.save();
         return true;
     }
 }
@@ -203,15 +212,14 @@ accountSchema.methods.likeMessage = async function (message: mongoose.Types.Obje
  * @return true if the message was successfully disliked, false if it was already liked or disliked
  */
 accountSchema.methods.dislikeMessage = async function(message: mongoose.Types.ObjectId): Promise<boolean> {
-    if(message.toString() in this.LikedDislikedMessages){
+    if (this.LikedDislikedMessages.has(message.toString())) {
         return false;
     }
     else{
-        this.LikedDislikedMessages.put(message.toString(),false);
+        this.LikedDislikedMessages.set(message.toString(),false);
         const messageObj = await Message.findById(message).exec()
-        messageObj?.dislike();
-        messageObj?.save();
-        this.save();
+        await messageObj?.dislike();
+        await this.save();
         return true;
     }
 }
@@ -221,18 +229,16 @@ accountSchema.methods.dislikeMessage = async function(message: mongoose.Types.Ob
  * @param message The message to be removed.
  */
 accountSchema.methods.removeMessage = async function(message: mongoose.Types.ObjectId): Promise<boolean> {
-    if(message.toString() in this.LikedDislikedMessages){
-        const liked = this.LikedDislikedMessages[message.toString()];
+    if (this.LikedDislikedMessages.has(message.toString())) {
+        const liked = this.LikedDislikedMessages.get(message.toString());
         const messageObj = await Message.findById(message).exec();
-        if(liked){
-            messageObj?.unlike();
-            messageObj?.save();
+        if(liked == true){
+            await messageObj?.unlike();
             this.LikedDislikedMessages.delete(message.toString());
-            this.save();
+            await this.save();
         }
         else{
-            messageObj?.un_dislike();
-            messageObj?.save();
+            await messageObj?.un_dislike();
             this.LikedDislikedMessages.delete(message.toString());
             this.save();
         }
