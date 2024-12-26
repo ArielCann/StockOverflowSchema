@@ -1,14 +1,14 @@
-import { IAPI_Command } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Command";
+import { IAPI_Executor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
 
 
 export class WorkerSNSTasks {
 
     private sns: any;
-    private stockAPI?: IAPI_Command;
+    private stockAPI?: IAPI_Executor;
     constructor(sns: any) {
         this.sns = sns;
     }
-    public addExecutor(stockAPI: IAPI_Command) {
+    public addExecutor(stockAPI: IAPI_Executor) {
         this.stockAPI = stockAPI;
     }
     /**

@@ -4,6 +4,7 @@ import Account from "../models/accountSchema";
 import { console } from 'inspector';
 import { Notifyer } from '../Notifiers/Subscribers';
 import crypto from 'crypto'
+import mongoose from 'mongoose';
 import { NotifyerFactory } from '../Notifiers/NotifyerFactory';
 
 export class AuthController {
@@ -37,14 +38,23 @@ export class AuthController {
         })
     }
     async Logout(req: Request, res: Response): Promise<void>  {
+        console.log('destor');
+        const db = mongoose.connection.db;
+        const collection = db?.collection('UserData');
+        const results = await collection?.findOneAndDelete({currAccount: req?.session.currAccount});
+        if (!results) {
+            return;
+        }
         req.session.destroy((err) => {
             if (err) {
                 console.error("Error destroying session:", err);
                 return res.status(500).send({ msg: "Failed to log out" });
             }
             res.clearCookie("connect.sid", { path: "/" });
-            return res.status(200).send({ msg: "Logged out Successfully" });
+            console.log(req.session)
+            return res.status(200).json({auth: req.session, msg: "Logged Successfully" });
         });
+       
     }
     /**
      * this function is responsible for changing the passcode. it will check for teh verification code and its eperational date before it saves a new password
