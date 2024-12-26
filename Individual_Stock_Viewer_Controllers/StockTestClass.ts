@@ -1,14 +1,14 @@
-import { IAPI_Command } from "./Stock_API_Commands/IAPI_Executor";
-import { StockDataCommand } from "./Stock_API_Commands/StockDataCommand";
+import { IAPI_Executor } from "./Stock_API_Commands/IAPI_Executor";
+import { StockDataExecutor } from "./Stock_API_Commands/StockDataCommand";
 
 
 
-const stockCommand1: IAPI_Command = new StockDataCommand('YahooEarnings');
-const stockCommand2: IAPI_Command = new StockDataCommand('Shwab');
-const stockCommand3: IAPI_Command = new StockDataCommand('WallStreet Journal');
-const stockCommand4: IAPI_Command = new StockDataCommand('Yahoo Finance');
-const stockCommand5: IAPI_Command = new StockDataCommand('Yahoo News');
-const commands: IAPI_Command[] = [stockCommand1, stockCommand2, stockCommand3, stockCommand4, stockCommand5];
+const stockCommand1: IAPI_Executor = new StockDataExecutor('YahooEarnings');
+const stockCommand2: IAPI_Executor = new StockDataExecutor('Shwab');
+const stockCommand3: IAPI_Executor = new StockDataExecutor('WallStreet Journal');
+const stockCommand4: IAPI_Executor = new StockDataExecutor('Yahoo Finance');
+const stockCommand5: IAPI_Executor = new StockDataExecutor('Yahoo News');
+const commands: IAPI_Executor[] = [stockCommand1, stockCommand2, stockCommand3, stockCommand4, stockCommand5];
 commands.forEach(command => {
     console.log(command.get_data('TSLA'));
 })

@@ -135,9 +135,18 @@ const accountSchema = new mongoose.Schema<IAccount>({
         type: Map,
         of: String
     },
-    RecieveStockNewsNotifications: Boolean,
-    RecieveResponseNotifications: Boolean,
-    RecieveLikedNotifications: Boolean,
+    RecieveStockNewsNotifications: {
+        type: Boolean,
+        default: false
+    },
+    RecieveResponseNotifications: {
+        type: Boolean,
+        default: false
+    },
+    RecieveLikedNotifications: {
+        type: Boolean,
+        default: false
+    },
     LikedDislikedMessages: {
         type: Map,
         of: Boolean,
