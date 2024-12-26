@@ -90,15 +90,19 @@ async function getStockTopic(topicName: string): Promise<string> {
 if (parentPort) {
     if (workerData.isSubscribing) {
         subscribeUser(workerData.topicName, workerData.protocol, workerData.endpoint)
-        .then((result) => {parentPort?.postMessage(result)})
-        .catch((err) => {
-            parentPort?.postMessage({ success: true});
-        })
+            .then(() => {
+                parentPort?.postMessage({ success: true }); 
+            })
+            .catch((err) => {
+                parentPort?.postMessage({ success: false, error: err.message }); 
+            });
     } else {
         unsubscibeUser(workerData.topicName, workerData.endpoint)
-        .then((result) => {parentPort?.postMessage(result)})
-        .catch((err) => {
-            parentPort?.postMessage({error: err.message})
-        })
+            .then(() => {
+                parentPort?.postMessage({ success: true }); 
+            })
+            .catch((err) => {
+                parentPort?.postMessage({ success: false, error: err.message }); 
+            });
     }
 }

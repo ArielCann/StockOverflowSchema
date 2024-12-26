@@ -20,6 +20,9 @@ import { SNSDailyNotifyer } from './StockDailyNotifyer/SNSDailyNotifyer';
 import { DailyNotifyerService } from './StockDailyNotifyer/DailyNotifyerService';
 import AWS from 'aws-sdk';
 import { StockDataExecutor } from './Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
+import { DbManager } from './DatabaseController/DbManager';
+import { MongodbManager } from './DatabaseController/MongodbManager';
+import { connectToMongoDB } from './DatabaseController/MongooseInstance';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
@@ -27,14 +30,19 @@ const app = express();
 
 const dbUrl = process.env.DB_CONNECTION_URL || '';
 
-mongoose.connect(dbUrl)
-    .then(() => {
-        console.log('Connected to MongoDB');
-        app.listen(8000, () => console.log('Server running on http://localhost:8000'));
-    })
-    .catch(err => {
-        console.error('MongoDB connection error:', err);
-    });
+const dbManager: DbManager = new MongodbManager({publicKey: process.env.DB_PUBLIC_KEY || '',
+    privateKey: process.env.DB_PRIVATE_KEY || '',
+    groupId: process.env.GROUP_ID || '',
+    clusterName: process.env.CLUSTER_NAME || ''});
+
+// mongoose.connect(dbUrl)
+//     .then(() => {
+//         console.log('Connected to MongoDB');
+//         app.listen(8000, () => console.log('Server running on http://localhost:8000'));
+//     })
+//     .catch(err => {
+//         console.error('MongoDB connection error:', err);
+//     });
 const store = new MongodbStore({
     uri: dbUrl,
     collection: 'UserData',
@@ -93,5 +101,27 @@ cron.schedule('37 16 * * *', async () => {
 // }).catch(err => {
 //     console.log(err)
 // })
-
+(async () => {
+    try {
+        // await dbManager.stopDbInstance();
+        console.log('Checking database status...');
+        const status = await dbManager.getDbStatus();
+        console.log(`Current database status: ${status}`);
+            
+        if (status !== 'IDLE') {
+                console.log('Starting database instance...');
+                await dbManager.stopDbInstance();
+        }
+    
+        console.log('Connecting to MongoDB...');
+        await connectToMongoDB(dbUrl);
+    
+        console.log('Server starting...');
+        app.listen(8000, () => {
+            console.log(`Server running on http://localhost:8000`);
+        });
+    } catch (error) {
+        console.error('Error during startup:', error);
+    }
+    })();
 

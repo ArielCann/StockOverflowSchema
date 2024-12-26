@@ -212,7 +212,7 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
 export const postAddUserStock = async (req: Request, res: Response): Promise<void> => {
     const account = await Account.findById(req.session.currAccount);
     if (!account) {
-        res.status(422).send({msg: "No Current User is Signed in"});
+        res.status(422).send({msg: "Sign in or Create an Account to Use this Feature"});
         return;
     }
     const StockName = req.body.stockName.replace(/\./g, "");
