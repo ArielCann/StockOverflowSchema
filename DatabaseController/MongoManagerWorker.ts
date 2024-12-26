@@ -8,15 +8,6 @@ import { error } from "console";
 import { header } from "express-validator";
 
 /**
- * this method is reponsivle for getting the Authorization header  
- * @param atlasConfiguration 
- * @returns 
- */
-function getAuthHeader(atlasConfiguration: IAtlasConfig): string {
-    const credentials = `conepklj:77c88505-2337-42b6-bc79-f9076ed7d722`;
-    return `Basic ${Buffer.from(credentials).toString('base64')}`;
-} 
-/**
  * this method is responsible for starting or stopping a database instance 
  * @param atlasConfiguration the api credentials 
  * @param dbURL 
