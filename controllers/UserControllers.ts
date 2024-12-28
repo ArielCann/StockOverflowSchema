@@ -159,7 +159,7 @@ export const GetUserProfile = async (req: Request, res: Response) => {
  * @param res sends http code 200 upon success
  */
 export const patchProfileDesc = async (req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
+    let account = await Account.findById(req.session.currAccount).exec();
     if(account == null){
         res.status(400).send("User does not exist!");
         return;

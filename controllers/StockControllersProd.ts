@@ -219,13 +219,12 @@ export const postAddUserStock = async (req: Request, res: Response): Promise<voi
 
     const isChanged: boolean = await account.addFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
-        console.log('geez')
         res.status(422).send({msg: "Stock Already Added"})
         return;
     }
     if (account.RecieveStockNewsNotifications) {
         const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
-        notifyerHandlerService.subscribeStocks([req.body.ticker], 'email', account.Email.toString())
+        notifyerHandlerService.subscribeStocks([req.body.ticker.toString().toUpperCase()], 'email', account.Email.toString())
     }
     res.status(200).send({msg: "Stock Added Successfully"})
 
@@ -238,16 +237,15 @@ export const postDeleteUserStock = async(req: Request, res: Response): Promise<v
     }
     console.log('removing stock...')
     const StockName = req.body.stockName.replace(/\./g, "");
-    console.log(StockName);
-    const isChanged: boolean = await account.removeFollowedStock(StockName, req.body.ticker)
+    console.log(req.body.ticker);
+    const isChanged: boolean =  account.removeFollowedStock(StockName, req.body.ticker)
     if (!isChanged) {
-        console.log('sfsdfsf')
-        res.status(422).send({msg: "Stock Already Added"})
+        res.status(422).send({msg: "Stock Already Deleted"})
         return;
     }
     if (account.RecieveStockNewsNotifications) {
         const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
-        notifyerHandlerService.unsubscribeStocks([req.body.ticker], account.Email.toString())
+        notifyerHandlerService.unsubscribeStocks([req.body.ticker.toString().toUpperCase()], account.Email.toString())
     }
     res.status(200).send({msg: "Stock Deleted Successfully"})
 }
