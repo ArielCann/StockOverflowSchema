@@ -13,26 +13,29 @@ interface StockTickerParams {
     stockTicker: string;
 }
 /**
- * this method is responsible for getting the latest price of the stock 
+ * this method is responsible for getting the stock chart information. The stock chart data comes ina key value map, as stated in the design document. We put 
+ * this into a seperate backend call instead of combining it with teh rest of the Individual Stock Page information because in future implementations the stock chart, like teh stock ticker 
+ * component will continuously change in real time. However, we dont have the funds to keep dynamically changing the chart information.
  * @param req 
  * @param res 
  * @returns a map representation of the x, y cordinates for the cart {time: price}
  */
 export const getIndividualStockChart = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {
     try {
-        const stockChartCommand: IAPI_Executor = new StockDataExecutor('WallStreet Journal');
-        const commands: IAPI_Executor[] = [stockChartCommand]
+        const tasks = [{id: 1, data: {'API': 'WallStreet Journal', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}}]
+        const result = await Promise.all(tasks.map(task => runStockWorker(task)));
+        const response = result[0];
         const stockChartMap: Map<string, string> = new Map<string, string>();
-        const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
-        const response = await Promise.all(promises);
         let startMarketTime = new Date();
+        console.log('the response')
+        console.log(response['Data']['Data']['data'])
         startMarketTime.setHours(9, 40, 0, 0)
-        const timeLen = response[0]['Data']['data']['Series'][0]['DataPoints'].length;
+        const timeLen = response['Data']['Data']['data']['Series'][0]['DataPoints'].length;
         for (let i = 0; i < timeLen; i++) {
-            stockChartMap.set(startMarketTime.getHours() + ':' + startMarketTime.getMinutes(), response[0]['Data']['data']['Series'][0]['DataPoints'][i][1]);
+            stockChartMap.set(startMarketTime.getHours() + ':' + startMarketTime.getMinutes(), response['Data']['Data']['data']['Series'][0]['DataPoints'][i][1]);
             startMarketTime.setMinutes(startMarketTime.getMinutes() + 10)
         }
-        const isUp: boolean =  response[0]['Data']['data']['Series'][0]['DataPoints'][0][1] < response[0]['Data']['data']['Series'][0]['DataPoints'][timeLen - 1][1]
+        const isUp: boolean =  response['Data']['Data']['data']['Series'][0]['DataPoints'][0][1] < response['Data']['Data']['data']['Series'][0]['DataPoints'][timeLen - 1][1]
         const responseObject = Object.fromEntries(stockChartMap);
         res.status(200).send({'Stock': {'chart': responseObject}, 'isUp': isUp});
     } catch (error) {
@@ -70,41 +73,14 @@ export const getBasicStockInformation = async(req: Request<StockTickerParams>, r
  */
 export const getStockSearcher = async(req: Request, res: Response): Promise<void> => {
     console.log('stock searcher')
-    let currAccount = await Account.findById(req.session.currAccount);
-    let profileImageBase64 = "";
-    if (currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            //have to cast it to base 64 to be read
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    
-    res.status(200).json({isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+    res.status(200).json({isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture});
     return;
 }
 
 /**
- * 
+ * this method is responsible for getting the 
  */
 export const postStockSearcher = async(req: Request, res: Response): Promise<void> => {
-    let currAccount = await Account.findById(req.session.currAccount);
-    let profileImageBase64 = "";
-    if (currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            //have to cast it to base 64 to be read
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    if (req.body.curr_user_input === "") {
-        res.status(200).json({data: []});
-        return;
-    }
     const tasks = [{id: 1, data: {'API': 'StockSearcher', 'Data': req.body.curr_user_input, 'ExecutorType': 'Search'}}]
     try {
         const response = await Promise.all(tasks.map(task => runStockWorker(task)));
@@ -126,6 +102,7 @@ export const postStockSearcher = async(req: Request, res: Response): Promise<voi
 export function runStockWorker(data:any): Promise<any> {
     return new Promise((resolve, reject) => {
         console.log('inside the ')
+        console.log(data)
         const worker = new Worker("./Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockWorker.ts", { execArgv: ['-r', 'ts-node/register'], workerData: data});
         worker.on('message', resolve);
         worker.on('error', reject);
@@ -149,18 +126,7 @@ export const getTrendingPagee = async(req: Request<StockTickerParams>, res: Resp
             {id: 7, data: {'API': 'Shwab', 'Data': 'Low52Wk', 'ExecutorType': 'Trending'}}
         ]
         const results = await Promise.all(tasks.map(task => runStockWorker(task)));
-        let currAccount = await Account.findById(req.session.currAccount);
-        let profileImageBase64 = "";
-        if (currAccount) {
-            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-            if (!currProfilePic) {
-                currProfilePic = null;
-            } else {
-                //have to cast it to base 64 to be read
-                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-            }
-        }
-        res.status(200).json({Stock: results, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+        res.status(200).json({Stock: results, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {
@@ -184,18 +150,7 @@ export const getIndividualStockViewer = async(req: Request<StockTickerParams>, r
             responseMap.set(response.Name, response.Data)
         });
         const responseObject = Object.fromEntries(responseMap);
-        let currAccount = await Account.findById(req.session.currAccount);
-        let profileImageBase64 = "";
-        if (currAccount) {
-            let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-            if (!currProfilePic) {
-                currProfilePic = null;
-            } else {
-                //have to cast it to base 64 to be read
-                profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-            }
-        }
-        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64});
+        res.status(200).json({Stock: responseObject, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture});
     } catch (error) {
         console.error(error);
         if (!res.headersSent) {

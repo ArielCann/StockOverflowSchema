@@ -16,18 +16,7 @@ export const getUserEditProfilePage = async (req: Request, res: Response) => {
         res.status(404).send({'status': 404, 'msg': "Error", 'success': false, 'changed-profile': false})
         return;
     }
-    let currAccount = await Account.findById(req.params.userId);
-    let profileImageBase64 = "";
-    if (currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            //have to cast it to base 64 to be read
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    res.status(200).send({'currAccount': currAccount, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': profileImageBase64})
+    res.status(200).send({'currAccount': res.locals.currAccount, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture})
     return;
 }
 export const postEditProfilePage = async (req: Request, res:Response) => {
@@ -126,26 +115,11 @@ export const getAllStocks = async(userStock: Map<String, String>): Promise<any> 
 export const GetUserProfile = async (req: Request, res: Response) => {
     console.log("Received userId:", req.params.userId); 
     try {
-        let currAccount = await Account.findById(req.params.userId);
-    console.log(currAccount)
-    if (!currAccount) {
-        res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
+        console.log(req.session.loggedIn)
+        const userStocks: any = await getAllStocks(res.locals.currAccount.FollowedStocks);
+        console.log(userStocks);
+        res.status(200).send({'profilePicture': res.locals.profilePicture, 'currViewedUser': res.locals.currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
         return;
-    }
-    let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-    let profileImageBase64 = "";
-    if (!currProfilePic) {
-        currProfilePic = null;
-    } else {
-        //have to cast it to base 64 to be read
-        profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-    }
-
-    console.log(req.session.loggedIn)
-    const userStocks: any = await getAllStocks(currAccount.FollowedStocks);
-    console.log(userStocks);
-    res.status(200).send({'profilePicture': profileImageBase64, 'currViewedUser': currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
-    return;
     } catch (error) {
         console.log('sfsfsfsfs');
         res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
@@ -177,19 +151,10 @@ export const patchProfileDesc = async (req: Request, res: Response) => {
  * @param res
  */
 export const getMessages = async (req: Request, res: Response)=> {
-    const currAccount = await Account.findById(req.session.currAccount).lean().exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
+
     let account = await Account.findById(req.params.userId).lean().exec();
     if(account == null){
-        res.status(400).json({'error': "Account does not exist!",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
+        res.status(400).json({'error': "Account does not exist!",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: res.locals.profilePicture});
         return;
     }
     let messages = await Message.find({Account: account._id}).lean().exec();
@@ -197,7 +162,7 @@ export const getMessages = async (req: Request, res: Response)=> {
     for (let message of messages) {
         messageObjs.push(message);
     }
-    res.status(200).json({'messages': messageObjs,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
+    res.status(200).json({'messages': messageObjs,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: res.locals.profilePicture});
 }
 /**
  * Changes the Account's notification settings.
@@ -213,17 +178,8 @@ export const patchNotifications = async (req: Request, res: Response) => {
         return;
     }
     const currAccount = await Account.findById(req.session.currAccount).exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    else{
-        res.status(404).json({'error':"Account not found",'isAuthenticated':false,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+    if(!currAccount) {
+        res.status(404).json({'error':"Account not found",'isAuthenticated':false,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
         return;
     }
     try {
@@ -255,10 +211,10 @@ export const patchNotifications = async (req: Request, res: Response) => {
                 await currAccount.noResponseNotifications();
             }
         }
-        res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+        res.status(200).json({'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
     }catch(err){
         console.error(err);
-        res.status(500).json({'error': "Server failed to change notifications",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+        res.status(500).json({'error': "Server failed to change notifications",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
     }
 }
 /**
@@ -270,19 +226,6 @@ export const patchNotifications = async (req: Request, res: Response) => {
  */
 export const getMessageSearch = async (req: Request, res: Response) => {
     const currAccount = await Account.findById(req.session.currAccount).exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
-    else{
-        res.status(404).json({'error':"Account not found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
-        return;
-    }
     const messages = await Message.find({Account: req.params.userId}).lean().exec();
     let sortBy = 'default';
     if(req.body.sortBy as string == 'Date_Created' || req.body.sortBy as string == 'Likes' || req.body.sortBy as string == 'Dislikes'){
@@ -322,5 +265,5 @@ export const getMessageSearch = async (req: Request, res: Response) => {
     for (const result of results) {
         matches.push(result.item);
     }
-    res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+    res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
 }

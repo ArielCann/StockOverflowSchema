@@ -2,11 +2,12 @@ import express from 'express';
 import { ExpressValidator } from 'express-validator';
 import { getIndividualStockViewer, getIndividualStockChart, getBasicStockInformation, postAddUserStock, getStockSearcher, postStockSearcher, getTrendingPagee } from '../controllers/StockControllersProd';
 import { postDeleteUserStock } from '../controllers/StockControllersProd';
+import { getAccountInfo } from '../controllers/Middleware/UserMiddleware';
 
 
 const router = express.Router();
 //this route is the main stock route, ie the stock searcher route
-router.get('/', getStockSearcher);
+router.get('/', getAccountInfo ,getStockSearcher);
 router.post('/', postStockSearcher);
 
 //this route adds a stock to a user
@@ -16,10 +17,10 @@ router.post('/add-stock', postAddUserStock);
 router.post('/remove-stock', postDeleteUserStock);
 
 //this route gets the trending page
-router.get('/trending-page', getTrendingPagee);
+router.get('/trending-page', getAccountInfo, getTrendingPagee);
 
 //this route is to grab stock data like the company information
-router.get('/stock-data/:stockTicker', getIndividualStockViewer);
+router.get('/stock-data/:stockTicker', getAccountInfo ,getIndividualStockViewer);
 
 //this route is in order to grab the stock chart
 router.get('/stock-chart/:stockTicker', getIndividualStockChart);
