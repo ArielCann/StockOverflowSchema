@@ -1,17 +1,12 @@
-import { resolve } from "path";
 import { Worker } from 'worker_threads';
 import { IAPI_Executor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/IAPI_Executor";
 import { StockBasicCommand } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockBasicData";
-import { StockDataExecutor } from "../Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand";
-import express, {Request, Response} from 'express';
+import {Request, Response} from 'express';
 import Account from "../models/accountSchema";
-import ProfileImage from "../models/imageSchema";
 import { NotifyerHandlerService } from "../StockDailyNotifyer/NotifyerHandlerService";
 import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerServiceHandlerFactory";
+import { IStockTicker } from "../Interfaces/IStockTicker";
 
-interface StockTickerParams {
-    stockTicker: string;
-}
 /**
  * this method is responsible for getting the stock chart information. The stock chart data comes ina key value map, as stated in the design document. We put 
  * this into a seperate backend call instead of combining it with teh rest of the Individual Stock Page information because in future implementations the stock chart, like teh stock ticker 
@@ -20,7 +15,7 @@ interface StockTickerParams {
  * @param res 
  * @returns a map representation of the x, y cordinates for the cart {time: price}
  */
-export const getIndividualStockChart = async (req: Request<StockTickerParams>, res: Response): Promise<void> => {
+export const getIndividualStockChart = async (req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
         const tasks = [{id: 1, data: {'API': 'WallStreet Journal', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}}]
         const result = await Promise.all(tasks.map(task => runStockWorker(task)));
@@ -51,7 +46,7 @@ export const getIndividualStockChart = async (req: Request<StockTickerParams>, r
  * @param req 
  * @param res 
  */
-export const getBasicStockInformation = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
+export const getBasicStockInformation = async(req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
         const stockBasicDataCommand: IAPI_Executor = new StockBasicCommand('Yahoo');
         const commands: IAPI_Executor[] = [stockBasicDataCommand]
@@ -78,7 +73,7 @@ export const getStockSearcher = async(req: Request, res: Response): Promise<void
 }
 
 /**
- * this method is responsible for getting the 
+ * this method is responsible for getting the reccommended stocks based off of the user input into the stock searcher.
  */
 export const postStockSearcher = async(req: Request, res: Response): Promise<void> => {
     const tasks = [{id: 1, data: {'API': 'StockSearcher', 'Data': req.body.curr_user_input, 'ExecutorType': 'Search'}}]
@@ -113,9 +108,16 @@ export function runStockWorker(data:any): Promise<any> {
         });
     });
 }
-export const getTrendingPagee = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
+/**
+ * this method is responsible for sending the stocks that are trending, either positivly (52 weeks highs/ greatest precentage up today) 
+ * or negativly (52 week lows/ lowest percentages down today)
+ * @param req 
+ * @param res 
+ */
+export const getTrendingPagee = async(req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
-
+        /* the thread workers are responsible for breaking up the different pieces of data in each task and calling the right API based on the data given. For 
+        example, it'll call the Trending Factory to get the Tredning API's. The data is the different tredning categories while the API is the name of the API itself*/
         const tasks = [
             {id: 1, data: {'API': 'Shwab', 'Data': 'MostActive', 'ExecutorType': 'Trending'}},
             {id: 2, data: {'API': 'Shwab', 'Data': 'PctChgGainers', 'ExecutorType': 'Trending'}},
@@ -134,7 +136,13 @@ export const getTrendingPagee = async(req: Request<StockTickerParams>, res: Resp
         }
     }
 }
-export const getIndividualStockViewer = async(req: Request<StockTickerParams>, res: Response): Promise<void> => {
+/**
+ * this method is responsible for getting all the static stock data. Static means that the data wont dynamically change on the screen in real time. 
+ * unlike teh chart and the stock ticker. 
+ * @param req 
+ * @param res 
+ */
+export const getIndividualStockViewer = async(req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
         const responseMap: Map<string, any> = new Map<string, any>();
         const tasks = [
@@ -184,6 +192,12 @@ export const postAddUserStock = async (req: Request, res: Response): Promise<voi
     res.status(200).send({msg: "Stock Added Successfully"})
 
 }
+/**
+ * this method is responsible for removing the current user stock from the user profile page 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export const postDeleteUserStock = async(req: Request, res: Response): Promise<void> => {
     const account = await Account.findById(req.session.currAccount);
     if (!account) {

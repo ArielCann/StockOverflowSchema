@@ -10,34 +10,25 @@ import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerSer
 
 const notifyerHandlerService: NotifyerHandlerService = NotifyerServiceHandlerFactory.getNotifyerService('SNS');
 
+/**
+ * this method is responsible for getting the edit user profile page. 
+ * @param req 
+ * @param res sends a code of 200 with curr account credentials and information 
+ * @returns 
+ */
 export const getUserEditProfilePage = async (req: Request, res: Response) => {
-    if (req.params.userId !== req.session.currAccount?.toString()) {
-        //its a 404 since this page shouldn't exist to the user themselves 
-        res.status(404).send({'status': 404, 'msg': "Error", 'success': false, 'changed-profile': false})
-        return;
-    }
     res.status(200).send({'currAccount': res.locals.currAccount, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture})
     return;
 }
+/**
+ * thie method is responsible for saving the new user information into the database
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export const postEditProfilePage = async (req: Request, res:Response) => {
-    console.log('sfsdfsdfsdfsdfsdfsdfsdf')
-    console.log(req.body)
-    console.log(req.params.userId)
-    console.log(req.session.currAccount)
-    console.log(req.session.loggedIn)
-    if (req.params.userId !== req.session.currAccount) {
-        console.log('not equal')
-        res.status(422).send({'msg': "Error", 'success': false, 'changed-profile': false})
-        return;
-    }
-    let currAccount = await Account.findById(req.params.userId);
+    let currAccount = res.locals.currAccount;
     let changedProfile = false;
-    if (!currAccount) {
-        console.log('no account')
-        res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
-        return;
-    }
-    console.log('working')
     if (req.file) {
         try {
             const accountImage = new ProfileImage({
@@ -65,11 +56,7 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
         currAccount.Username = req.body.username;
         changedProfile = true;
     }
-    console.log('reached here ')
     const recieveStockNews: boolean = req.body.notifyStockNews === 'false' ? false: true;
-    console.log(recieveStockNews)
-    console.log(currAccount.RecieveStockNewsNotifications)
-    console.log((!req.body.notifyStockNews && currAccount.RecieveStockNewsNotifications))
     if ((recieveStockNews && !currAccount.RecieveStockNewsNotifications) || (!recieveStockNews && currAccount.RecieveStockNewsNotifications)) {
         currAccount.RecieveStockNewsNotifications = req.body.notifyStockNews;
         let accountStockArray: string[] = [];
@@ -82,7 +69,6 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
         }
 
     }
-    
     currAccount.RecieveResponseNotifications = req.body.notifyPublicForumResponse;
     currAccount.RecieveLikedNotifications = req.body.notifyPublicForumLikes;
     currAccount.save();
@@ -91,8 +77,7 @@ export const postEditProfilePage = async (req: Request, res:Response) => {
 }
 /**
  * this method is responsible for getting all the stocks for a user. It calls the runStockWorker in the stock controller
- * @param req 
- * @param res 
+
  */
 export const getAllStocks = async(userStock: Map<String, String>): Promise<any> => {
     let counter = 0;
@@ -109,7 +94,7 @@ export const getAllStocks = async(userStock: Map<String, String>): Promise<any> 
  * this method is responsible for getting the user information based off of the passed in user id. Such as there followed stocks
  * username, profile description, profile picture, birthday, ect
  * @param req 
- * @param res 
+ * @param res sends 200 code if the use is found and also sends the user credentials plus user information 
  * @returns 
  */
 export const GetUserProfile = async (req: Request, res: Response) => {
@@ -133,17 +118,12 @@ export const GetUserProfile = async (req: Request, res: Response) => {
  * @param res sends http code 200 upon success
  */
 export const patchProfileDesc = async (req: Request, res: Response) => {
-    let account = await Account.findById(req.session.currAccount).exec();
-    if(account == null){
-        res.status(400).send("User does not exist!");
-        return;
-    }
-    else{
-        account.alterProfileDesc(req.body.profileDesc);
-        account.save();
-        res.status(200);
-        return;
-    }
+    let account = res.locals.currAccount;
+    account.alterProfileDesc(req.body.profileDesc);
+    account.save();
+    res.status(200);
+    return;
+    
 }
 /**
  * Gets all of an account's messages
@@ -151,12 +131,7 @@ export const patchProfileDesc = async (req: Request, res: Response) => {
  * @param res
  */
 export const getMessages = async (req: Request, res: Response)=> {
-
-    let account = await Account.findById(req.params.userId).lean().exec();
-    if(account == null){
-        res.status(400).json({'error': "Account does not exist!",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: res.locals.profilePicture});
-        return;
-    }
+    let account = res.locals.currAccount;
     let messages = await Message.find({Account: account._id}).lean().exec();
     let messageObjs = [];
     for (let message of messages) {
@@ -173,15 +148,7 @@ export const getMessages = async (req: Request, res: Response)=> {
  * @param res sends http code 200 if successful, 500 if failed due to a server error.
  */
 export const patchNotifications = async (req: Request, res: Response) => {
-    if(!req.session.loggedIn || !req.session.currAccount){
-        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated': false,'currUser': req.session.currAccount, profilePicture: ""});
-        return;
-    }
-    const currAccount = await Account.findById(req.session.currAccount).exec();
-    if(!currAccount) {
-        res.status(404).json({'error':"Account not found",'isAuthenticated':false,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
-        return;
-    }
+    const currAccount = res.locals.currAccount;
     try {
         if ("receiveSMS" in req.body) {
             if (req.body.receiveSMS as boolean) {
