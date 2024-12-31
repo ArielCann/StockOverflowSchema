@@ -159,7 +159,7 @@ export const GetUserProfile = async (req: Request, res: Response) => {
  * @param res sends http code 200 upon success
  */
 export const patchProfileDesc = async (req: Request, res: Response) => {
-    let account = await Account.findById(req.session.AccountID).exec();
+    let account = await Account.findById(req.session.currAccount).exec();
     if(account == null){
         res.status(400).send("User does not exist!");
         return;
@@ -263,9 +263,8 @@ export const patchNotifications = async (req: Request, res: Response) => {
 }
 /**
  * Searches through the Accounts past messages (specified through userId path param)
- * for messages similar to text body param.
- * @param req should contain parameter named text in the body.
- * The body may also include another parameter called sortBy, which should be one of Likes, Dislikes, or Date_Created.
+ * for messages similar to text path param, sorting with sortBy path param..
+ * @param req should contain text and sortBy (one of Date_Created, Likes, or Dislikes) as path paramaters..
  * @param res sends a list of matches with http code 200
  */
 export const getMessageSearch = async (req: Request, res: Response) => {
@@ -285,8 +284,8 @@ export const getMessageSearch = async (req: Request, res: Response) => {
     }
     const messages = await Message.find({Account: req.params.userId}).lean().exec();
     let sortBy = 'default';
-    if(req.body.sortBy as string == 'Date_Created' || req.body.sortBy as string == 'Likes' || req.body.sortBy as string == 'Dislikes'){
-         sortBy = req.body.sortBy;
+    if(req.params.sortBy as string == 'Date_Created' || req.params.sortBy as string == 'Likes' || req.params.sortBy as string == 'Dislikes'){
+         sortBy = req.params.sortBy;
     }
     const searcher = new Fuse(messages,{keys: ["Text"],sortFn: (a,b)=> {
             if(a.score && b.score){
