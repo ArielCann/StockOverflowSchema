@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Message, {IMessage} from "../models/messageSchema";
 import Account from "../models/accountSchema";
-import Fuse from "fuse.js";
+import Fuse, {IFuseOptions} from "fuse.js";
 import { runStockWorker } from "./StockControllersProd";
 import ProfileImage from "../models/imageSchema";
 import mongoose from "mongoose";
@@ -278,48 +278,26 @@ export const getMessageSearch = async (req: Request, res: Response) => {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
     }
-    else{
-        res.status(404).json({'error':"Account not found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
-        return;
-    }
     const messages = await Message.find({Account: req.params.userId}).lean().exec();
-    let sortBy = 'default';
-    if(req.params.sortBy as string == 'Date_Created' || req.params.sortBy as string == 'Likes' || req.params.sortBy as string == 'Dislikes'){
-         sortBy = req.params.sortBy;
-    }
-    const searcher = new Fuse(messages,{keys: ["Text"],sortFn: (a,b)=> {
-            if(a.score && b.score){
-                a.item
-                if(a.score == b.score){
-                    switch (sortBy){
-                        case "Date_Created":
-                            let aTime = new Date(a.item.Date_Created.toString()).getTime();
-                            let bTime = new Date(b.item.Date_Created.toString()).getTime();
-                            return bTime - aTime;
-                        case "Likes":
-                            let aLikes = +a.item.Likes.toString();
-                            let bLikes = +b.item.Likes.toString();
-                            return aLikes - bLikes;
-                        case "Dislikes":
-                            let aDislikes = +a.item.Dislikes.toString();
-                            let bDislikes = +b.item.Dislikes.toString();
-                            return aDislikes - bDislikes;
-                    }
-                }
-                else{
-                    return a.score - b.score;
-                }
-            }
-            else{
-                return 0;
-            }
-            return 0;
-    }
-    });
+    const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"]}
+    const searcher = new Fuse(messages as IMessage[],options);
+    let sortBy = req.params.sortBy;
     let results = searcher.search(req.params.text);
     let matches = [];
     for (const result of results) {
         matches.push(result.item);
+    }
+    if(sortBy == 'Date_Created' || sortBy == 'Likes' || sortBy == 'Dislikes') {
+        matches.sort(function (a, b) {
+            switch (sortBy) {
+                case 'Likes':
+                    return a.Likes >= b.Likes ? -1 : 1;
+                case 'Dislikes':
+                    return a.Dislikes >= b.Dislikes ? -1 : 1;
+                case 'Date_Created':
+                    return a.Date_Created >= b.Date_Created ? -1 : 1;
+            }
+        })
     }
     res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
 }

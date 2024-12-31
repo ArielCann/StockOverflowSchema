@@ -1,10 +1,25 @@
 import mongoose from "mongoose";
 import {Request, Response} from "express";
-import Message from "../models/messageSchema";
+import Message, {IMessage} from "../models/messageSchema";
 import Account from "../models/accountSchema";
-import Fuse from "fuse.js";
+import Fuse, {IFuseOptions} from "fuse.js";
 import ProfileImage from "../models/imageSchema";
 import {NotifyerFactory} from "../Notifiers/NotifyerFactory";
+export const getRecentQuestions = async(req: Request, res: Response) => {
+    const currAccount = await Account.findById(req.session.currAccount).lean().exec();
+    let profileImageBase64 = "";
+    if(currAccount) {
+        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
+        if (!currProfilePic) {
+            currProfilePic = null;
+        } else {
+            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
+        }
+    }
+    const questions = await Message.find({IsQuestion: true}).sort({Date_Created: -1}).lean().exec();
+    let slice = questions.slice(0,Math.min(50,questions.length));
+    res.status(200).json({'matches': slice,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+}
 export const getQuestionSearch = async (req: Request, res: Response) => {
     const currAccount = await Account.findById(req.session.currAccount).exec();
     let profileImageBase64 = "";
@@ -16,14 +31,28 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
             profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
         }
     }
-    const questions = await Message.find({IsQuestion: true}).exec();
-    const searcher = new Fuse(questions,{keys: ["text"]});
-    let results = searcher.search(req.body.Text);
+    const questions = await Message.find({IsQuestion: true}).lean().exec();
+    const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"]}
+    const searcher = new Fuse(questions as IMessage[],options);
+    let sortBy = req.params.sortBy;
+    let results = searcher.search(req.params.Text);
     let matches = [];
     for (const result of results) {
-        matches.push(result.item.toJSON());
+        matches.push(result.item);
     }
-    res.status(200).json({'matches': matches,'isAuthenticated': req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: profileImageBase64});
+    if(sortBy == 'Date_Created' || sortBy == 'Likes' || sortBy == 'Dislikes') {
+        matches.sort(function (a, b) {
+            switch (sortBy) {
+                case 'Likes':
+                    return a.Likes >= b.Likes ? -1 : 1;
+                case 'Dislikes':
+                    return a.Dislikes >= b.Dislikes ? -1 : 1;
+                case 'Date_Created':
+                    return a.Date_Created >= b.Date_Created ? -1 : 1;
+            }
+        })
+    }
+    res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
 }
 export const getMessage = async(req: Request, res: Response) => {
     const currAccount = await Account.findById(req.session.currAccount).lean().exec();
