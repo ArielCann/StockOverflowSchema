@@ -103,7 +103,18 @@ export const GetUserProfile = async (req: Request, res: Response) => {
         console.log(req.session.loggedIn)
         const userStocks: any = await getAllStocks(res.locals.currAccount.FollowedStocks);
         console.log(userStocks);
-        res.status(200).send({'profilePicture': res.locals.profilePicture, 'currViewedUser': res.locals.currAccount, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
+        const currUser = res.locals.currAccount
+        /* instead of sending the the frontend the entire user object which includes the hashed password and email, created a new temp user object to send only needed information about the current account*/
+        const currViewedUser = {
+            Birthday: currUser.Birthday,
+            FollowedStocks: currUser.FollowedStocks,
+            LikedDislikedMessages: currUser.LikedDislikedMessages,
+            ProfileDesc: currUser.ProfileDesc,
+            ProfileImage: currUser.ProfileImage,
+            Signup: currUser.Signup,
+            Username: currUser.Username
+        }
+        res.status(200).send({'profilePicture': res.locals.profilePicture, 'currViewedUser': currViewedUser, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
         return;
     } catch (error) {
         console.log('sfsfsfsfs');
