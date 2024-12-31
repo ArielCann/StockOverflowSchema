@@ -7,6 +7,12 @@ import nodemailer from 'nodemailer'
  */
 
 export class EmailService implements Notifyer  {
+  /**
+   * this method is responsible for sending out an email to a user that forgot there password 
+   * @param toEmail the email where the verification code is being sent to 
+   * @param subject the title of the email
+   * @param bodyText the test, ie the verification code, of the email
+   */
     async notify(toEmail: string, subject: string, bodyText: string) {
         var transporter = nodemailer.createTransport({
             service: 'gmail',

@@ -7,6 +7,9 @@ import crypto from 'crypto'
 import mongoose from 'mongoose';
 import { NotifyerFactory } from '../Notifiers/NotifyerFactory';
 
+/**
+ * this class is resposnsible for handling all of the authentication operations 
+ */
 export class AuthController {
 
     private Service: Array<Notifyer>;
@@ -32,11 +35,24 @@ export class AuthController {
             }
         };
     }
+    /**
+     * responsible for notifying all observers of an even that just happened in authentication 
+     * @param email the user email
+     * @param title the title of the email
+     * @param body the contents of the email
+     */
     public notify(email: string, title: string, body: string) {
         this.Service.forEach(service => {
             service.notify(email, title, body)
         })
     }
+    /**
+     * this method is responsible for loging out a user by destroying the current user session and removing the session from the 
+     * database 
+     * @param req destroys the sesssion
+     * @param res sends the status if logged out succesfuly or not
+     * @returns 
+     */
     async Logout(req: Request, res: Response): Promise<void>  {
         console.log('destor');
         const db = mongoose.connection.db;
@@ -59,7 +75,7 @@ export class AuthController {
     /**
      * this function is responsible for changing the passcode. it will check for teh verification code and its eperational date before it saves a new password
      * @param req 
-     * @param res 
+     * @param res res sends the status if password was changed out succesfuly or not
      * @returns 
      */
     async PostChangePassword(req: Request, res: Response): Promise<void>  {
@@ -91,7 +107,7 @@ export class AuthController {
      * this this route is responsible for getting the change password route which gets the email of that account, send a confirmation email to the user with the 
      * verfication 
      * @param req 
-     * @param res 
+     * @param res res sends the status if it sent an email with verification code or not succesfuly or not
      * @returns 
      */
     async GetChangePassword(req: Request, res: Response): Promise<void> {
@@ -152,7 +168,7 @@ export class AuthController {
     /**
      * this method is responsible for doing the database operations to save a new account 
      * @param req 
-     * @param res 
+     * @param res res sends the status if signed up user succesfuly or not
      * @returns 
      */
     async PostSignup(req: Request, res: Response): Promise<void> {

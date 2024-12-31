@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
-
+/**
+ * this method is responsible for connecting the current mongo db isntance to mongoose
+ * @param dbURI 
+ */
 const connectToMongoDB = async (dbURI: string): Promise<void> => {
     try {
         await mongoose.connect(dbURI, {});
@@ -9,7 +12,9 @@ const connectToMongoDB = async (dbURI: string): Promise<void> => {
         throw error;
     }
 };
-
+/**
+ * this method is responsible for disconnecting the current mongo db isntance to mongoose
+ */
 const disconnectFromMongoDB = async (): Promise<void> => {
     try {
         await mongoose.disconnect();

@@ -4,12 +4,6 @@ import { Worker } from 'worker_threads';
 import { IAtlasConfig } from "./IAtlasConfiguration";
 import AxiosDigestAuth from '@mhoc/axios-digest-auth';
 
-interface ClusterStatusResponse {
-    name: string;
-    paused: boolean;
-    stateName: string;
-    // Add other fields based on the API response
-  }
 /**
  * this class is responsible for managing a mongo database instance 
  */

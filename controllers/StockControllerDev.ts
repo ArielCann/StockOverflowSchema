@@ -4,6 +4,9 @@ import data from './IdividualStockDataForDev.json'
 import Account from '../models/accountSchema';
 import TrendingPageData from './TrendingPageData.json'
 import ProfileImage from '../models/imageSchema';
+/**
+ * this controller is for testing
+ */
 interface StockTickerParams {
     stockTicker: string;
 }
