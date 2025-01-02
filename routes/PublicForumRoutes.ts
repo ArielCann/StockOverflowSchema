@@ -12,6 +12,7 @@ const router = express.Router();
 router.get('/likedDislikedMessages',getLikedDislikedMessages)
 router.get('/messages/:MessageID',getMessage);
 router.get('/questions/search',getQuestionSearch);
+router.get('questions/recent')
 router.get('/questions/:QuestionID/page',getQuestionPage);
 router.post('/questions',postQuestion);
 router.post('/messages/:MessageID',postReply);

@@ -6,6 +6,15 @@ import Account from "../models/accountSchema";
 import { NotifyerHandlerService } from "../StockDailyNotifyer/NotifyerHandlerService";
 import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerServiceHandlerFactory";
 import { IStockTicker } from "../Interfaces/IStockTicker";
+import StockCacher from "../Caching/StockCacher";
+const IsInsideMarketHours = ()=>{
+    const now = new Date();
+    return now.getHours() <= 16 || ((now.getHours() * 60) + now.getMinutes()) >= 570;
+}
+const IsCloseToMarketHours = ()=>{
+    const now = new Date();
+    return now.getHours() >= 15 && now.getHours() <= 17;
+}
 
 /**
  * this method is responsible for getting the stock chart information. The stock chart data comes ina key value map, as stated in the design document. We put 
@@ -18,7 +27,16 @@ import { IStockTicker } from "../Interfaces/IStockTicker";
 export const getIndividualStockChart = async (req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
         const tasks = [{id: 1, data: {'API': 'WallStreet Journal', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}}]
-        const result = await Promise.all(tasks.map(task => runStockWorker(task)));
+        let result;
+        if(IsInsideMarketHours()) {
+             result = await Promise.all(tasks.map(task => runStockWorker(task)));
+            if(IsCloseToMarketHours()) {
+                StockCacher.cacher.set<any>("Chart:" + req.params.stockTicker,result);
+            }
+        }
+        else{
+            result = StockCacher.cacher.get<any>("Chart:" + req.params.stockTicker);
+        }
         const response = result[0];
         const stockChartMap: Map<string, string> = new Map<string, string>();
         let startMarketTime = new Date();
@@ -30,6 +48,7 @@ export const getIndividualStockChart = async (req: Request<IStockTicker>, res: R
             stockChartMap.set(startMarketTime.getHours() + ':' + startMarketTime.getMinutes(), response['Data']['Data']['data']['Series'][0]['DataPoints'][i][1]);
             startMarketTime.setMinutes(startMarketTime.getMinutes() + 10)
         }
+        StockCacher.cacher.set("Chart:" + req.params.stockTicker, stockChartMap);
         const isUp: boolean =  response['Data']['Data']['data']['Series'][0]['DataPoints'][0][1] < response['Data']['Data']['data']['Series'][0]['DataPoints'][timeLen - 1][1]
         const responseObject = Object.fromEntries(stockChartMap);
         res.status(200).send({'Stock': {'chart': responseObject}, 'isUp': isUp});

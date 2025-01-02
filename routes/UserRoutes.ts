@@ -10,7 +10,7 @@ const upload: Multer = multer({ storage });
 
 const router = express.Router();
 router.get('/:userId/messages', checkIfAccountExists ,getAccountInfo, getMessages);
-router.get('/:userId/messageSearch/:text', getAccountInfo, getMessageSearch)
+router.get('/:userId/messageSearch/:text/:sortBy', getAccountInfo, getMessageSearch)
 router.patch('/:userId/profileDesc', checkIfAccountExists ,patchProfileDesc);
 router.patch('/:userId/notifications', checkIfAccountsAreEqual, patchNotifications);
 
