@@ -5,17 +5,29 @@ import { IAtlasConfig } from "./IAtlasConfiguration";
 import AxiosDigestAuth from '@mhoc/axios-digest-auth';
 
 /**
- * this class is responsible for managing a mongo database instance 
+ * this class is responsible for managing a mongo database instance. Because its managing a database instance, we made it a singleton so it doesn't 
+ * lead to additional overhead 
  */
 export class MongodbManager implements DbManager {
 
     private mongoDbURL: string;
     private mongoConfig: IAtlasConfig;
+    private static instance: MongodbManager;
 
-    constructor (mongoConfig: IAtlasConfig) {
+    private constructor (mongoConfig: IAtlasConfig) {
         this.mongoDbURL = 'https://cloud.mongodb.com/api/atlas/v1.0';
         this.mongoConfig = mongoConfig;
         console.log(mongoConfig)
+    }
+
+    static getMongodbManager(mongoConfig: IAtlasConfig):  MongodbManager{
+        if (this.instance) {
+            return this.instance;
+        }
+        else {
+            this.instance = new MongodbManager(mongoConfig);
+            return this.instance;
+        }
     }
     /**
      * this method is responsible for handling the thread that is responsible for starting up the database instance

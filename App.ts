@@ -30,7 +30,7 @@ const app = express();
 
 const dbUrl = process.env.DB_CONNECTION_URL || '';
 
-const dbManager: DbManager = new MongodbManager({publicKey: process.env.DB_PUBLIC_KEY || '',
+const dbManager: DbManager = MongodbManager.getMongodbManager({publicKey: process.env.DB_PUBLIC_KEY || '',
     privateKey: process.env.DB_PRIVATE_KEY || '',
     groupId: process.env.GROUP_ID || '',
     clusterName: process.env.CLUSTER_NAME || ''});
