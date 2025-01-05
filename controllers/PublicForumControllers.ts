@@ -21,7 +21,7 @@ export const getRecentQuestions = async(req: Request, res: Response) => {
  */
 export const getQuestionSearch = async (req: Request, res: Response) => {
     const questions = await Message.find({IsQuestion: true}).lean().exec();
-    const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"],minMatchCharLength: 6}
+    const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"]}
     const searcher = new Fuse(questions as IMessage[],options);
     let sortBy = req.params.sortBy;
     let results = searcher.search(req.params.text);
