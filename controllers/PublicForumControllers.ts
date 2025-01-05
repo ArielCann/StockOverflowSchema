@@ -56,7 +56,6 @@ export const getMessage = async(req: Request, res: Response) => {
         message = await Message.findById(req.params.MessageID).lean().exec();
     }
     catch(error){
-        console.log(error);
         res.status(404).json({'error': "Message could not be found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount,profilePicture: res.locals.profilePicture});
         return;
     }
@@ -143,7 +142,6 @@ export const getQuestionPage = async (req: Request, res: Response) => {
     try {
         question = await Message.findById(req.params.QuestionID).lean().exec();
     }catch(error){
-        console.log(error);
         res.status(404).json({'error': "Question could not be found",'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount ? req.session.currAccount : "",profilePicture: res.locals.profilePicture});
         return;
     }
