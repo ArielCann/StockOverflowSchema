@@ -3,7 +3,6 @@ import {Request, Response} from "express";
 import Message, {IMessage} from "../models/messageSchema";
 import Account from "../models/accountSchema";
 import Fuse, {IFuseOptions} from "fuse.js";
-import ProfileImage from "../models/imageSchema";
 import {NotifyerFactory} from "../Notifiers/NotifyerFactory";
 export const getRecentQuestions = async(req: Request, res: Response) => {
     const questions = await Message.find({IsQuestion: true}).sort({Date_Created: -1}).lean().exec();
@@ -15,6 +14,11 @@ export const getRecentQuestions = async(req: Request, res: Response) => {
     }
     res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount? req.session.currAccount : "", profilePicture: res.locals.profilePicture});
 }
+/**
+ * Searches for questions on the public forum, using text and (optionally) sortBy path param.
+ * @param req
+ * @param res
+ */
 export const getQuestionSearch = async (req: Request, res: Response) => {
     const questions = await Message.find({IsQuestion: true}).lean().exec();
     const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"],minMatchCharLength: 6}
@@ -40,6 +44,12 @@ export const getQuestionSearch = async (req: Request, res: Response) => {
     }
     res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount ? req.session.currAccount: "", profilePicture: res.locals.profilePicture});
 }
+/**
+ * Gets a message with id matching the MessageID path param,
+ * responding with 404 if the message couldn't be found
+ * @param req
+ * @param res
+ */
 export const getMessage = async(req: Request, res: Response) => {
     let message;
     try{

@@ -1,4 +1,4 @@
-import * as policy from "./policy.json";
+import * as policy from "./config/policy.json";
 
 /**
  * Reads policy from policy.json file, which should be abstracted from other classes.
@@ -6,10 +6,10 @@ import * as policy from "./policy.json";
 class PolicyReader {
     /**
      * Retrieves the configured time to live in the stock data cache, in seconds.
-     * If the number is 0 or fewer seconds, it will instead return 120.
+     * If the number is 0 or fewer seconds, or a decimal it will default to 120 seconds.
      */
     public static getTTL(): number{
-        if(policy.TTL > 0){
+        if(policy.TTL > 0 && Number.isInteger(policy.TTL)){
             return policy.TTL;
         }
         else{
@@ -32,6 +32,19 @@ class PolicyReader {
             return validTrends;
         }
         else return ["High52Wk"];
+    }
+
+    /**
+     * Retrieves number of news articles to be returned to client.
+     * Will default to 20 if the configured number is a decimal or negative.
+     */
+    public static getArticleNum(): number{
+        if(policy.NewsArticles > 0 && Number.isInteger(policy.NewsArticles)){
+            return policy.NewsArticles;
+        }
+        else{
+            return 20;
+        }
     }
 }
 export default PolicyReader;
