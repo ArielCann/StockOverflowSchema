@@ -14,7 +14,6 @@ async function processTask(data: any): Promise<any> {
     console.log(data)
     const StockExecutor: IAPI_Executor = StockExecutorFactory.GetStockExecutor(data.data.ExecutorType, data.data.API)
     const result: any = await StockExecutor.get_data(data.data.Data)
-    console.log('dfd')
     return {Name: result.Name, DataType: data.data.Data, Data: result};
 }
 

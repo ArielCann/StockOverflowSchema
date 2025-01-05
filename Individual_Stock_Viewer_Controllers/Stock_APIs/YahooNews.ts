@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { IIndividualStockPageAPIInformation } from './IIndividualStockPageAPIInformation';
 import * as dotenv from 'dotenv';
+import PolicyReader from "../../PolicyReader";
 /**
  * this class is responsible for getting all the news for a specific stock 
  */
@@ -21,7 +22,7 @@ export class YahooNews implements IIndividualStockPageAPIInformation{
             params: {
               s: ticker,
               region: 'US',
-              snippetCount: '20'
+              snippetCount: String(PolicyReader.getArticleNum())
             },
             headers: {
               'x-rapidapi-key': process.env.RAPID_API_KEY,

@@ -6,7 +6,12 @@ import Account from "../models/accountSchema";
 import { NotifyerHandlerService } from "../StockDailyNotifyer/NotifyerHandlerService";
 import { NotifyerServiceHandlerFactory } from "../StockDailyNotifyer/NotifyerServiceHandlerFactory";
 import { IStockTicker } from "../Interfaces/IStockTicker";
-
+import StockCacherSingleton from "../Caching/StockCacherSingleton";
+import PolicyReader from "../PolicyReader";
+const IsInsideMarketHours = ()=>{
+    const now = new Date();
+    return now.getHours() <= 16 && ((now.getHours() * 60) + now.getMinutes()) >= 570;
+}
 /**
  * this method is responsible for getting the stock chart information. The stock chart data comes ina key value map, as stated in the design document. We put 
  * this into a seperate backend call instead of combining it with teh rest of the Individual Stock Page information because in future implementations the stock chart, like teh stock ticker 
@@ -17,8 +22,20 @@ import { IStockTicker } from "../Interfaces/IStockTicker";
  */
 export const getIndividualStockChart = async (req: Request<IStockTicker>, res: Response): Promise<void> => {
     try {
+        const cacher = StockCacherSingleton.getCacher();
         const tasks = [{id: 1, data: {'API': 'WallStreet Journal', 'Data': req.params.stockTicker, 'ExecutorType': 'IndividualStockPageData'}}]
-        const result = await Promise.all(tasks.map(task => runStockWorker(task)));
+        let result;
+        if(IsInsideMarketHours() || !cacher.has("Chart:" + req.params.stockTicker)) {
+             result = await Promise.all(tasks.map(task => runStockWorker(task)));
+             if(!IsInsideMarketHours() && !cacher.has("Chart:" + req.params.stockTicker)){
+                 cacher.set("Chart:" + req.params.stockTicker, result);
+             }
+        }
+        else{
+            result = cacher.get<any>("Chart:" + req.params.stockTicker);
+            console.log("got cached chart data");
+            console.log(result);
+        }
         const response = result[0];
         const stockChartMap: Map<string, string> = new Map<string, string>();
         let startMarketTime = new Date();
@@ -47,13 +64,23 @@ export const getIndividualStockChart = async (req: Request<IStockTicker>, res: R
  * @param res 
  */
 export const getBasicStockInformation = async(req: Request<IStockTicker>, res: Response): Promise<void> => {
+    const cacher = StockCacherSingleton.getCacher();
     try {
-        const stockBasicDataCommand: IAPI_Executor = new StockBasicCommand('Yahoo');
-        const commands: IAPI_Executor[] = [stockBasicDataCommand]
-        const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
-        const response = await Promise.all(promises);
-        res.status(200).send(response);
-    } catch (error) {
+        if(IsInsideMarketHours() || !cacher.has(`BasicStockInfo:${req.params.stockTicker}`)) {
+            const stockBasicDataCommand: IAPI_Executor = new StockBasicCommand('Yahoo');
+            const commands: IAPI_Executor[] = [stockBasicDataCommand]
+            const promises = commands.map(command => {return command.get_data(req.params.stockTicker)});
+            const response = await Promise.all(promises);
+            if(!IsInsideMarketHours() && !cacher.has(`BasicStockInfo:${req.params.stockTicker}`)) {
+                cacher.set(`BasicStockInfo:${req.params.stockTicker}`, response);
+            }
+            res.status(200).send(response);
+        }
+        else{
+            const result = cacher.get(`BasicStockInfo:${req.params.stockTicker}`);
+            res.status(200).send(result);
+        }
+    }catch (error) {
         console.error(error);
         if (!res.headersSent) {
             res.status(500).send({error: 'Failed to retrieve stock data'})
@@ -118,15 +145,11 @@ export const getTrendingPagee = async(req: Request<IStockTicker>, res: Response)
     try {
         /* the thread workers are responsible for breaking up the different pieces of data in each task and calling the right API based on the data given. For 
         example, it'll call the Trending Factory to get the Tredning API's. The data is the different tredning categories while the API is the name of the API itself*/
-        const tasks = [
-            {id: 1, data: {'API': 'Shwab', 'Data': 'MostActive', 'ExecutorType': 'Trending'}},
-            {id: 2, data: {'API': 'Shwab', 'Data': 'PctChgGainers', 'ExecutorType': 'Trending'}},
-            {id: 3, data: {'API': 'Shwab', 'Data': 'PctChgLosers', 'ExecutorType': 'Trending'}},
-            {id: 4, data: {'API': 'Shwab', 'Data': 'NetGainers', 'ExecutorType': 'Trending'}},
-            {id: 5, data: {'API': 'Shwab', 'Data': 'NetLosers', 'ExecutorType': 'Trending'}},
-            {id: 6, data: {'API': 'Shwab', 'Data': 'High52Wk', 'ExecutorType': 'Trending'}},
-            {id: 7, data: {'API': 'Shwab', 'Data': 'Low52Wk', 'ExecutorType': 'Trending'}}
-        ]
+        const trends = PolicyReader.getTrends();
+        let tasks = []
+        for (let i = 0; i < trends.length; i++) {
+            tasks.push({id: i + 1, data: {'API': "Shwab", 'Data': trends[i], 'ExecutorType': 'Trending'}});
+        }
         const results = await Promise.all(tasks.map(task => runStockWorker(task)));
         res.status(200).json({Stock: results, isAuthenticated: req.session.loggedIn, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture});
     } catch (error) {

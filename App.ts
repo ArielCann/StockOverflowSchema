@@ -2,7 +2,7 @@
 import session from 'express-session';
 import MongodbSession from 'connect-mongodb-session';
 import express from 'express';
-import bodyParser from 'body-parser';
+import sanitize from 'express-mongo-sanitize';
 import mongoose from 'mongoose';
 import flash from 'connect-flash';
 import cron from 'node-cron'
@@ -69,6 +69,7 @@ app.use(session({
 }));
 
 app.use(express.json()); // Parse JSON request bodies
+app.use(sanitize())
 app.use('/auth', AuthRoutes);
 app.use(ErrorRoutes);
 app.use(GeneralRoutes)

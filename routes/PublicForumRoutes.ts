@@ -1,23 +1,23 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
 import {
-    getLikedDislikedMessages,
     getMessage,
     patchClearLike, patchDislikeMessage, patchLikeMessage,
     postQuestion,
-    postReply, getQuestionSearch, getQuestionPage
+    postReply, getQuestionSearch, getQuestionPage, getRecentQuestions
 } from '../controllers/PublicForumControllers'
+import {checkAuth, checkIfAccountExists, getAccountInfo} from "../controllers/Middleware/UserMiddleware";
 
 const router = express.Router();
-router.get('/likedDislikedMessages',getLikedDislikedMessages)
-router.get('/messages/:MessageID',getMessage);
-router.get('/questions/search',getQuestionSearch);
-router.get('/questions/:QuestionID/page',getQuestionPage);
-router.post('/questions',postQuestion);
-router.post('/messages/:MessageID',postReply);
-router.patch('/dislike/:MessageID',patchDislikeMessage);
-router.patch('/like/:MessageID',patchLikeMessage);
-router.patch('/clearLike/:MessageID',patchClearLike);
+router.get('/messages/:MessageID',getAccountInfo, getMessage);
+router.get('/questions/search/:text/:sortBy', getAccountInfo, getQuestionSearch);
+router.get('/questions/recent',getAccountInfo, getRecentQuestions);
+router.get('/questions/:QuestionID/page',getAccountInfo, getQuestionPage);
+router.post('/questions',getAccountInfo, checkAuth, postQuestion);
+router.post('/messages/:MessageID',getAccountInfo, checkAuth, postReply);
+router.patch('/dislike/:MessageID',getAccountInfo, checkAuth, patchDislikeMessage);
+router.patch('/like/:MessageID',getAccountInfo, checkAuth, patchLikeMessage);
+router.patch('/clearLike/:MessageID',getAccountInfo, checkAuth, patchClearLike);
 //individual
 
 
