@@ -30,14 +30,17 @@ const sns = new AWS.SNS({ region: 'us-east-1' });
         const stockNewsAPI: IAPI_Executor = new StockDataExecutor('Yahoo News');
         const stockNews = await stockNewsAPI.get_data(extractTickerName(topicArn));
         const formattedStockNews = formatNews(stockNews['Data']['data']['main']['stream']);
-        const htmlContent = `<html><body><ul>
+        const htmlContent = `Your Daily News
                             ${Object.entries(formattedStockNews).map(([index, newsItem]) => `
-                                <li>
-                                    <a href="${newsItem.url}">${newsItem.title}</a>
-                                    <strong>${newsItem.provider}</strong>
-                                </li>
+                                
+                                    ${newsItem.title}
+                                    ------------------------------------
+                                    ${newsItem.url}
+                                    --
+                                    ${newsItem.provider}
+                                
                                 `)}
-                            </ul></body></html>`
+                            ___________________________________________________________________`
         const response = await sns.publish({
             TopicArn: topicArn,
             MessageStructure: 'html',
