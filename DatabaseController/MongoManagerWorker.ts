@@ -6,6 +6,7 @@ import { parentPort, workerData } from "worker_threads";
 import AxiosDigestAuth from '@mhoc/axios-digest-auth';
 import { error } from "console";
 import { header } from "express-validator";
+import { IDBStatus } from "../Interfaces/IDBStatus";
 
 /**
  * this method is responsible for starting or stopping a database instance 
@@ -33,7 +34,7 @@ async function startStopDbInstance(atlasConfiguration: IAtlasConfig, dbURL: stri
         console.log(response)
     }
 }
-async function getDbStatus(atlasConfiguration: IAtlasConfig, dbURL: string): Promise<string> {
+async function getDbStatus(atlasConfiguration: IAtlasConfig, dbURL: string): Promise<IDBStatus> {
     try {  
         const digestAuth = new AxiosDigestAuth({
             username: atlasConfiguration.publicKey,
@@ -45,12 +46,12 @@ async function getDbStatus(atlasConfiguration: IAtlasConfig, dbURL: string): Pro
 
         })
         console.log('current statys')
-        const currentstate = response.data.stateName;
+        const currentstate = response.data.paused;
         console.log(currentstate)
-        return currentstate;
+        return {paused: response.data.paused, status: response.data.stateName};
     } catch (error) {
         console.log(error);
-        return 'ERROR'
+        return {paused: false, status: "ERROR"};
     }
 }
 if (parentPort) {
@@ -64,7 +65,7 @@ if (parentPort) {
         })
     } else {
         getDbStatus(workerData.atlasConfiguration, workerData.dbURL)
-        .then((status: string) => {
+        .then((status: IDBStatus) => {
             parentPort?.postMessage({success: true, status: status});
         })
         .catch((err) => {

@@ -3,19 +3,32 @@ import axios from "axios";
 import { Worker } from 'worker_threads';
 import { IAtlasConfig } from "./IAtlasConfiguration";
 import AxiosDigestAuth from '@mhoc/axios-digest-auth';
+import { IDBStatus } from "../Interfaces/IDBStatus";
 
 /**
- * this class is responsible for managing a mongo database instance 
+ * this class is responsible for managing a mongo database instance. Because its managing a database instance, we made it a singleton so it doesn't 
+ * lead to additional overhead 
  */
 export class MongodbManager implements DbManager {
 
     private mongoDbURL: string;
     private mongoConfig: IAtlasConfig;
+    private static instance: MongodbManager;
 
-    constructor (mongoConfig: IAtlasConfig) {
+    private constructor (mongoConfig: IAtlasConfig) {
         this.mongoDbURL = 'https://cloud.mongodb.com/api/atlas/v1.0';
         this.mongoConfig = mongoConfig;
         console.log(mongoConfig)
+    }
+
+    static getMongodbManager(mongoConfig: IAtlasConfig):  MongodbManager{
+        if (this.instance) {
+            return this.instance;
+        }
+        else {
+            this.instance = new MongodbManager(mongoConfig);
+            return this.instance;
+        }
     }
     /**
      * this method is responsible for handling the thread that is responsible for starting up the database instance
@@ -92,9 +105,9 @@ export class MongodbManager implements DbManager {
             console.log("Error puasing the db")
         }
     }
-    async getDbStatus(): Promise<string> {
+    async getDbStatus(): Promise<IDBStatus> {
         try {
-            const dbPromise = new Promise<string>((resolve, reject) => {
+            const dbPromise = new Promise<IDBStatus>((resolve, reject) => {
                 const worker = new Worker('./DatabaseController/MongoManagerWorker.ts', {
                     execArgv: ['-r', 'ts-node/register'],
                     workerData: { atlasConfiguration: this.mongoConfig, dbURL: this.mongoDbURL, startStopDbInstance: false},
@@ -120,11 +133,11 @@ export class MongodbManager implements DbManager {
                     }
                 });
             })
-            const status: string = await dbPromise;
+            const status: IDBStatus = await dbPromise;
             return status;
         } catch (error) {
             console.log("Error puasing the db");
-            return 'ERROR'
+            return {paused: false, status: "ERROR"};
         }
         
     }
