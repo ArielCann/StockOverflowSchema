@@ -22,12 +22,13 @@ import AWS from 'aws-sdk';
 import { StockDataExecutor } from './Individual_Stock_Viewer_Controllers/Stock_API_Commands/StockDataCommand';
 import { DbManager } from './DatabaseController/DbManager';
 import { MongodbManager } from './DatabaseController/MongodbManager';
-import { connectToMongoDB } from './DatabaseController/MongooseInstance';
+import { connectToMongoDB, disconnectFromMongoDB } from './DatabaseController/MongooseInstance';
+import { startUpServer, stopServer } from './DatabaseController/DbUtils';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
 const app = express();
-
+let server: ReturnType<typeof app.listen>;
 const dbUrl = process.env.DB_CONNECTION_URL || '';
 
 const dbManager: DbManager = MongodbManager.getMongodbManager({publicKey: process.env.DB_PUBLIC_KEY || '',
@@ -92,6 +93,36 @@ const triggerNotifications = () => {
 cron.schedule('37 16 * * *', async () => {
     await triggerNotifications();
 });
+(async () => {
+    try {
+        // await dbManager.stopDbInstance();
+        await startUpServer(dbManager);
+    
+        console.log('Server starting...');
+        server = app.listen(8000, () => {
+            console.log(`Server running on http://localhost:8000`);
+        });
+    } catch (error) {
+        console.error('Error during startup:', error);
+    }
+    })();
+
+
+/* this method is responsible for stopping the database instance for "repairs" to simulate db operations  */
+cron.schedule('25 22 * * *', async () => {
+    await stopServer(dbManager);
+        server.close(() => {
+            console.log('closing server ')
+        })
+});
+cron.schedule('30 22 * * *', async () => {
+    await startUpServer(dbManager);
+        console.log('Server starting...');
+        app.listen(8000, () => {
+            console.log(`Server running on http://localhost:8000`);
+        });
+});
+
 // (async () => {
 //     await triggerNotifications();
 // })();
@@ -101,27 +132,6 @@ cron.schedule('37 16 * * *', async () => {
 // }).catch(err => {
 //     console.log(err)
 // })
-(async () => {
-    try {
-        // await dbManager.stopDbInstance();
-        console.log('Checking database status...');
-        const status = await dbManager.getDbStatus();
-        console.log(`Current database status: ${status}`);
-            
-        if (status !== 'IDLE') {
-                console.log('Starting database instance...');
-                await dbManager.stopDbInstance();
-        }
-    
-        console.log('Connecting to MongoDB...');
-        await connectToMongoDB(dbUrl);
-    
-        console.log('Server starting...');
-        app.listen(8000, () => {
-            console.log(`Server running on http://localhost:8000`);
-        });
-    } catch (error) {
-        console.error('Error during startup:', error);
-    }
-    })();
-
+function sleep(milliseconds: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}

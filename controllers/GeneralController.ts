@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express';
 import { MongodbManager } from '../DatabaseController/MongodbManager';
+import { IDBStatus } from '../Interfaces/IDBStatus';
 
 export class GeneralController {
 
@@ -10,7 +11,7 @@ export class GeneralController {
             privateKey: process.env.DB_PRIVATE_KEY || '',
             groupId: process.env.GROUP_ID || '',
             clusterName: process.env.CLUSTER_NAME || ''});
-        const status: string = await mongodbManager.getDbStatus()
-        res.status(200).send({'path': "home", 'isAuthenticated': req.session.loggedIn ? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture, 'dbStatus': status})
+        const status: IDBStatus = await mongodbManager.getDbStatus()
+        res.status(200).send({'path': "home", 'isAuthenticated': req.session.loggedIn ? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : "", 'profilePicture': res.locals.profilePicture, 'dbStatus': status.status})
     }
 }

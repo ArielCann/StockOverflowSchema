@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 /**
  * this method is responsible for connecting the current mongo db isntance to mongoose
@@ -8,8 +9,9 @@ const connectToMongoDB = async (dbURI: string): Promise<void> => {
         await mongoose.connect(dbURI, {});
         console.log('Connected to MongoDB');
     } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-        throw error;
+        //the following was suggested by chatgpt
+        console.error('Error connecting to MongoDB, retrying in 5 seconds...', error);
+        setTimeout(connectToMongoDB, 5000);
     }
 };
 /**
