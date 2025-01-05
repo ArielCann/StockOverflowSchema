@@ -36,14 +36,6 @@ const dbManager: DbManager = MongodbManager.getMongodbManager({publicKey: proces
     groupId: process.env.GROUP_ID || '',
     clusterName: process.env.CLUSTER_NAME || ''});
 
-// mongoose.connect(dbUrl)
-//     .then(() => {
-//         console.log('Connected to MongoDB');
-//         app.listen(8000, () => console.log('Server running on http://localhost:8000'));
-//     })
-//     .catch(err => {
-//         console.error('MongoDB connection error:', err);
-//     });
 const store = new MongodbStore({
     uri: dbUrl,
     collection: 'UserData',
@@ -123,16 +115,6 @@ cron.schedule('30 22 * * *', async () => {
             console.log(`Server running on http://localhost:8000`);
         });
 });
-
-// (async () => {
-//     await triggerNotifications();
-// })();
-
-// mongoose.connect(dbUrl).then(result => {
-//     app.listen(8000)
-// }).catch(err => {
-//     console.log(err)
-// })
 function sleep(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
