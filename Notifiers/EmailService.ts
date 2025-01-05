@@ -1,7 +1,6 @@
 import { Notifyer } from "./Subscribers";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import nodemailer from 'nodemailer'
-
 /**
  * this email service class sends emails to Accounts using the Simple Email Service by AWS to notify them 
  */

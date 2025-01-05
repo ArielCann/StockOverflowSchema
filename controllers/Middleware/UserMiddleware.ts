@@ -47,3 +47,18 @@ export const checkIfAccountExists = async(req: Request, res: Response, next: Nex
     res.locals.currAccount = currAccount;
     next();
 }
+/**
+ * Checks if a user is logged in
+ * @param req must have a logged in session to pass
+ * @param res should have currAccount and profile picture in res.locals
+ * @param next
+ */
+export const checkAuth = async(req: Request, res: Response, next: NextFunction) => {
+    if(req.session.loggedIn){
+        next();
+    }
+    else{
+        res.status(401).json({'error':"Invalid Credentials",'isAuthenticated': false,'currUser': req.session.currAccount, profilePicture: res.locals.profilePicture});
+        return;
+    }
+}

@@ -101,9 +101,14 @@ export const GetUserProfile = async (req: Request, res: Response) => {
     console.log("Received userId:", req.params.userId); 
     try {
         console.log(req.session.loggedIn)
-        const userStocks: any = await getAllStocks(res.locals.currAccount.FollowedStocks);
+        const currUser = await Account.findById(req.params.userId);
+
+        if(!currUser){
+            res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
+            return;
+        }
+        const userStocks: any = await getAllStocks(currUser.FollowedStocks);
         console.log(userStocks);
-        const currUser = res.locals.currAccount
         /* instead of sending the the frontend the entire user object which includes the hashed password and email, created a new temp user object to send only needed information about the current account*/
         const currViewedUser = {
             Birthday: currUser.Birthday,
@@ -117,7 +122,7 @@ export const GetUserProfile = async (req: Request, res: Response) => {
         res.status(200).send({'profilePicture': res.locals.profilePicture, 'currViewedUser': currViewedUser, 'userStocks': userStocks, isAuthenticated: req.session.loggedIn? true : false, 'currUser': req.session.currAccount ? req.session.currAccount : ''});
         return;
     } catch (error) {
-        console.log('sfsfsfsfs');
+        console.log(error);
         res.status(404).send({'status': 404, 'msg': 'This isnt the user your looking for'});
         return;
     }
@@ -142,8 +147,7 @@ export const patchProfileDesc = async (req: Request, res: Response) => {
  * @param res
  */
 export const getMessages = async (req: Request, res: Response)=> {
-    let account = res.locals.currAccount;
-    let messages = await Message.find({Account: account._id}).lean().exec();
+    let messages = await Message.find({Account:  new mongoose.Types.ObjectId(req.params.userId)}).lean().exec();
     let messageObjs = [];
     for (let message of messages) {
         messageObjs.push(message);
@@ -202,16 +206,6 @@ export const patchNotifications = async (req: Request, res: Response) => {
  * @param res sends a list of matches with http code 200
  */
 export const getMessageSearch = async (req: Request, res: Response) => {
-    const currAccount = await Account.findById(req.session.currAccount).exec();
-    let profileImageBase64 = "";
-    if(currAccount) {
-        let currProfilePic = await ProfileImage.findById(currAccount.ProfileImage);
-        if (!currProfilePic) {
-            currProfilePic = null;
-        } else {
-            profileImageBase64 = `data:${currProfilePic.imageType};base64,${currProfilePic.imageData.toString("base64")}`;
-        }
-    }
     const messages = await Message.find({Account: req.params.userId}).lean().exec();
     const options: IFuseOptions<IMessage> = {keys: ["Text","Likes","Dislikes","Date_Created"]}
     const searcher = new Fuse(messages as IMessage[],options);
@@ -233,5 +227,5 @@ export const getMessageSearch = async (req: Request, res: Response) => {
             }
         })
     }
-    res.status(200).json({'matches': matches,'isAuthenticated':req.session.loggedIn,'currUser': req.session.currAccount, profilePicture: profileImageBase64});
+    res.status(200).json({'matches': matches,'isAuthenticated':!!req.session.loggedIn,'currUser': req.session.currAccount? req.session.currAccount : "", profilePicture: res.locals.profilePicture});
 }
