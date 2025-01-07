@@ -192,6 +192,7 @@ export class AuthController {
                 Email: email,
                 Signup: Date.now(),
                 FollowedStocks: {},
+                Birthday: Date.now()
             });
     
             const result = await account.save();

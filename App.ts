@@ -24,6 +24,7 @@ import { DbManager } from './DatabaseController/DbManager';
 import { MongodbManager } from './DatabaseController/MongodbManager';
 import { connectToMongoDB, disconnectFromMongoDB } from './DatabaseController/MongooseInstance';
 import { startUpServer, stopServer } from './DatabaseController/DbUtils';
+import PolicyReader from './PolicyReader';
 dotenv.config();
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 const MongodbStore = MongodbSession(session);
@@ -83,7 +84,7 @@ const triggerNotifications = () => {
 /**
  * this method is responsible for triggering sns to send the latest stock news to users
  */
-cron.schedule('37 16 * * *', async () => {
+cron.schedule(PolicyReader.getSNStime(), async () => {
     await triggerNotifications();
 });
 (async () => {
@@ -102,13 +103,13 @@ cron.schedule('37 16 * * *', async () => {
 
 
 /* this method is responsible for stopping the database instance for "repairs" to simulate db operations  */
-cron.schedule('25 22 * * *', async () => {
+cron.schedule(PolicyReader.getDbStop(), async () => {
     await stopServer(dbManager);
         server.close(() => {
             console.log('closing server ')
         })
 });
-cron.schedule('30 22 * * *', async () => {
+cron.schedule(PolicyReader.getDbStart(), async () => {
     await startUpServer(dbManager);
         console.log('Server starting...');
         app.listen(8000, () => {

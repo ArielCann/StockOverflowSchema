@@ -114,7 +114,6 @@ export class MongodbManager implements DbManager {
                 });
                 worker.on('message', (data) => {
                     if (data.success) {
-                        console.log("Successfully stopping the DB Instance");
                         resolve(data.status);
                     }
                     else {

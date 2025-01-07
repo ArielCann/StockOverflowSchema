@@ -46,5 +46,69 @@ class PolicyReader {
             return 20;
         }
     }
+    /**
+     * Retrieves time to Cron schedule database start
+     * @returns a proper cron string, resorting to default if the configured one is invalid
+     */
+    public static getDbStart(): string{
+        if(this.checkCron(policy.CronStartDB)){
+            return policy.CronStartDB;
+        }
+        else{
+            return "30 22 * * *";
+        }
+    }
+    /**
+     * Retrieves time to Cron schedule database stop
+     * @returns a proper cron string, resorting to default if the configured one is invalid
+     */
+    public static getDbStop(): string{
+        if(this.checkCron(policy.CronStopDB)){
+            return policy.CronStopDB;
+        }
+        else{
+            return "25 22 * * *";
+        }
+    }
+    /**
+     * Retrieves time to Cron schedule SNS stock news notifications
+     * @returns a proper cron string, resorting to default if the configured one is invalid
+     */
+    public static getSNStime(): string{
+        console.log(this.checkCron(policy.CronSNS))
+        if(this.checkCron(policy.CronSNS)){
+            return policy.CronSNS;
+        }
+        else{
+            return "37 16 * * *";
+        }
+    }
+    /**
+     * @param cronString A configured cron string
+     * @returns true if formatted properly, false otherwise.
+     */
+    private static checkCron(cronString: string): boolean{
+        const cronStrings = cronString.split(' ');
+        if(cronStrings.length != 5){
+            return false;
+        }
+        let firstTime: number;
+        let secondTime: number;
+        try{
+         firstTime = parseInt(cronStrings[0]);
+         secondTime = parseInt(cronStrings[1]);
+        }catch(err){
+            return false;
+        }
+        if (firstTime < 0 || secondTime < 0){
+            return false;
+        }
+        cronStrings.slice(2).forEach(asterisk =>{
+            if(asterisk != "*"){
+                return false;
+            }
+        })
+        return true;
+    }
 }
 export default PolicyReader;
